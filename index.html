@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nalbana Properties</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #faf9f7;
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+
+    /* ── Password Wall ── */
+    #pw-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0f0f0e;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 24px;
+    }
+    #pw-overlay .pw-logo {
+      font-family: 'Georgia', serif;
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #a89070;
+    }
+    #pw-overlay h2 {
+      font-size: 22px;
+      font-weight: 400;
+      color: #f0ece6;
+      letter-spacing: 0.04em;
+    }
+    #pw-overlay input {
+      width: 280px;
+      padding: 14px 18px;
+      background: transparent;
+      border: 1px solid #3a3530;
+      color: #f0ece6;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      outline: none;
+      text-align: center;
+    }
+    #pw-overlay input::placeholder { color: #5a5048; }
+    #pw-overlay input:focus { border-color: #a89070; }
+    #pw-overlay button {
+      width: 280px;
+      padding: 14px;
+      background: #a89070;
+      border: none;
+      color: #fff;
+      font-family: 'Georgia', serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #pw-overlay button:hover { background: #8a7358; }
+    #pw-error { color: #c0604a; font-size: 13px; letter-spacing: 0.05em; min-height: 18px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(250,249,247,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+      font-family: 'Georgia', serif;
+    }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #5a5a5a;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #1a1a1a; }
+
+    /* ── Hero ── */
+    .hero {
+      height: 100vh; min-height: 600px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      background: #0f0f0e;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('10th St Listing/exterior-057- 1745 SW 10th St_1oakstudiosdrone_13.jpg');
+      background-size: cover; background-position: center 55%;
+      opacity: 0.62;
+      transform: scale(1.02);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 0 24px;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #c8b89a;
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-size: clamp(38px, 6vw, 80px);
+      font-weight: 400;
+      color: #f5f0ea;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 28px;
+    }
+    .hero-title em { font-style: italic; color: #d4b896; }
+    .hero-sub {
+      font-size: 15px;
+      color: #b0a090;
+      letter-spacing: 0.06em;
+      max-width: 480px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+    }
+    .hero-stats {
+      display: flex; gap: 48px; justify-content: center;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 36px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-size: 28px;
+      color: #f5f0ea;
+      letter-spacing: -0.02em;
+    }
+    .hero-stat .label {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #8a7a6a;
+      margin-top: 4px;
+    }
+
+    /* ── Section Basics ── */
+    section { padding: 100px 48px; }
+    .section-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #a89070;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Properties ── */
+    #properties { background: #faf9f7; }
+    .properties-header { max-width: 600px; margin: 0 auto 72px; text-align: center; }
+    .properties-header .section-title { margin-bottom: 20px; }
+    .properties-header p {
+      font-size: 16px; color: #6a6a6a; line-height: 1.75;
+    }
+
+    .property-grid {
+      max-width: 1280px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2px;
+    }
+
+    .property-card {
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .property-card:hover .card-img img {
+      transform: scale(1.04);
+    }
+    .card-img {
+      height: 280px; overflow: hidden; position: relative;
+    }
+    .card-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .card-location-badge {
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(15,15,14,0.65);
+      backdrop-filter: blur(4px);
+      color: #d4b896;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+    }
+    .card-body { padding: 28px 28px 32px; }
+    .card-title {
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      margin-bottom: 8px;
+    }
+    .card-meta {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #a89070;
+      margin-bottom: 16px;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: #5a5a5a;
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+    .card-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .card-link:hover { color: #a89070; border-color: #a89070; }
+    .card-link svg { width: 12px; height: 12px; }
+
+    /* ── Track Record ── */
+    #track-record {
+      background: #0f0f0e;
+      color: #f0ece6;
+      text-align: center;
+    }
+    #track-record .section-eyebrow { color: #a89070; }
+    #track-record .section-title { color: #f0ece6; margin-bottom: 20px; }
+    #track-record .section-sub {
+      font-size: 16px;
+      color: #8a7a6a;
+      line-height: 1.8;
+      max-width: 560px;
+      margin: 0 auto 72px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      max-width: 900px; margin: 0 auto;
+      border: 1px solid #2a2520;
+    }
+    .metric {
+      padding: 48px 32px;
+      border: 1px solid #2a2520;
+      text-align: center;
+    }
+    .metric .value {
+      font-size: 42px;
+      font-weight: 400;
+      color: #d4b896;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .metric .desc {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #6a5a4a;
+    }
+
+    /* ── About ── */
+    #about { background: #f2ede6; }
+    .about-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+    .about-text .section-title { margin-bottom: 24px; }
+    .about-text p {
+      font-size: 16px;
+      color: #4a4a4a;
+      line-height: 1.85;
+      margin-bottom: 20px;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-visual {
+      position: relative;
+    }
+    .about-img-wrap {
+      height: 500px; overflow: hidden;
+    }
+    .about-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .about-accent {
+      position: absolute;
+      bottom: -20px; left: -20px;
+      width: 160px; height: 160px;
+      border: 1px solid #c8b89a;
+      z-index: -1;
+    }
+
+    /* ── Contact ── */
+    #contact {
+      background: #faf9f7;
+      text-align: center;
+    }
+    #contact .section-title { margin-bottom: 20px; }
+    #contact .section-sub {
+      font-size: 16px;
+      color: #6a6a6a;
+      line-height: 1.8;
+      max-width: 480px;
+      margin: 0 auto 48px;
+    }
+    .contact-actions {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 40px;
+      background: #1a1a1a;
+      color: #f5f0ea;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #3a3530; }
+    .btn-outline {
+      display: inline-block;
+      padding: 16px 40px;
+      border: 1px solid #1a1a1a;
+      color: #1a1a1a;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { background: #1a1a1a; color: #f5f0ea; }
+
+    /* ── Footer ── */
+    footer {
+      background: #0f0f0e;
+      color: #4a4040;
+      padding: 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .footer-logo {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #6a5a4a;
+    }
+    .footer-copy {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: #3a3030;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { gap: 20px; }
+      section { padding: 72px 24px; }
+      .about-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-visual { order: -1; }
+      .about-img-wrap { height: 320px; }
+      .about-accent { display: none; }
+      footer { padding: 36px 24px; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 28px; }
+      .property-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PASSWORD WALL
+══════════════════════════════════════ -->
+<div id="pw-overlay">
+  <div class="pw-logo">Nalbana Properties</div>
+  <h2>Private Portfolio</h2>
+  <input type="password" id="pw-input" placeholder="Enter password" />
+  <div id="pw-error"></div>
+  <button onclick="checkPassword()">Enter</button>
+</div>
+
+<script>
+  // Change this to whatever password you want
+  const SITE_PASSWORD = '1986';
+
+  function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    if (val === SITE_PASSWORD) {
+      document.getElementById('pw-overlay').style.display = 'none';
+    } else {
+      document.getElementById('pw-error').textContent = 'Incorrect password.';
+      document.getElementById('pw-input').value = '';
+    }
+  }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+</script>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo">Nalbana Properties</div>
+  <ul class="nav-links">
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#track-record">Track Record</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Miami · Yucca Valley</div>
+    <h1 class="hero-title">
+      Luxury Rentals,<br><em>Expertly Managed</em>
+    </h1>
+    <p class="hero-sub">
+      Six design-forward properties across Miami and the California desert — short-term and long-term, self-managed since 2021.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">6</div>
+        <div class="label">Properties</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">$850K+</div>
+        <div class="label">TTM Revenue</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">4+</div>
+        <div class="label">Years Self-Managed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PROPERTIES
+══════════════════════════════════════ -->
+<section id="properties">
+  <div class="properties-header">
+    <div class="section-eyebrow">The Portfolio</div>
+    <h2 class="section-title">Six Properties, Two Markets</h2>
+    <p>From Brickell to Little Havana to the Mojave desert — each home is individually designed, professionally photographed, and operated to five-star standards.</p>
+  </div>
+
+  <div class="property-grid">
+
+    <!-- 21st Rd -->
+    <div class="property-card">
+      <div class="card-img">
+        <img src="21st Rd Listing/airbnb-001-812cdfd6.jpg" alt="341 SW 21st Rd — Brickell, Miami" loading="lazy" />
+        <div class="card-location-badge">Miami · Brickell</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Villa Nalbana</div>
+        <div class="card-meta">4 Bed · 3 Bath · Short-Term</div>
+        <p class="card-desc">A sprawling entertainer's compound steps from Brickell with a resort-style pool, covered lanai, and lush tropical gardens. Ideal for groups seeking a private Miami oasis.</p>
+        <a href="https://www.airbnb.com/rooms/51283421" target="_blank" class="card-link">
+          View on Airbnb
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 10th St -->
+    <div class="property-card">
+      <div class="card-img">
+        <img src="10th St Listing/airbnb-001-9cf1da23.jpg" alt="1745 SW 10th St — Little Havana, Miami" loading="lazy" />
+        <div class="card-location-badge">Miami · Little Havana</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Villa Marqueza</div>
+        <div class="card-meta">5 Bed · 3.5 Bath · Short-Term</div>
+        <p class="card-desc">A two-story modern villa with a heated pool and spa, rooftop terrace, outdoor cinema, and a private guest house — set in one of Miami's most vibrant neighborhoods.</p>
+        <a href="https://www.airbnb.com/rooms/1371543678014557369" target="_blank" class="card-link">
+          View on Airbnb
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 23rd Rd -->
+    <div class="property-card">
+      <div class="card-img">
+        <img src="23rd Rd Listing/airbnb-001-5ca57cc9.jpg" alt="23rd Road — Miami" loading="lazy" />
+        <div class="card-location-badge">Miami</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Villa Maganda</div>
+        <div class="card-meta">4 Bed · 3 Bath · Short-Term</div>
+        <p class="card-desc">A sleek, architect-designed retreat with a resort-style pool, spa, and floor-to-ceiling glass opening onto a lush private yard. Contemporary interiors with a warm tropical edge.</p>
+        <a href="https://www.airbnb.com/rooms/1297056429185208299" target="_blank" class="card-link">
+          View on Airbnb
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 13th St — Buko House -->
+    <div class="property-card">
+      <div class="card-img">
+        <img src="13th St Listing/airbnb-001-81c30a40.jpg" alt="1745 SW 13th St — Buko House, Miami" loading="lazy" />
+        <div class="card-location-badge">Miami · Little Havana</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Buko House</div>
+        <div class="card-meta">3 Bed · 2 Bath · Short-Term</div>
+        <p class="card-desc">The Buko House is a luminous, plant-forward sanctuary with a pristine pool and spa, open living spaces, and a relaxed boutique-hotel energy just minutes from Coconut Grove.</p>
+        <a href="https://www.airbnb.com/rooms/1376844965121549879" target="_blank" class="card-link">
+          View on Airbnb
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 22nd Rd -->
+    <div class="property-card">
+      <div class="card-img">
+        <img src="22nd Rd Listing/cover-2J9A4615.jpg" alt="620 SW 22nd Rd — Brickell, Miami" loading="lazy" />
+        <div class="card-location-badge">Miami · Brickell</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Villa Armaza</div>
+        <div class="card-meta">4 Bed · 4 Bath · Short-Term</div>
+        <p class="card-desc">A villa in Brickell with a massive resort-style pool, covered outdoor kitchen, and lush tropical grounds. One of Miami's most impressive short-term rental offerings — 4.96 stars across 120+ reviews.</p>
+        <a href="https://www.airbnb.com/rooms/587750272435957342" target="_blank" class="card-link">
+          View on Airbnb
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Jemez -->
+    <div class="property-card">
+      <div class="card-img">
+        <img src="Jemez Listing/airbnb-044-d34cd7c8.jpg" alt="Desert Oasis — Yucca Valley, CA" loading="lazy" />
+        <div class="card-location-badge">Yucca Valley · California</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Four Winds Trail</div>
+        <div class="card-meta">3 Bed · 2 Bath · Short-Term</div>
+        <p class="card-desc">A curated desert retreat in Yucca Valley — earthy textures, warm interiors, a hot tub under the stars, fire pit, and panoramic mountain views. A Joshua Tree experience at its finest.</p>
+        <a href="https://www.airbnb.com/rooms/52732943" target="_blank" class="card-link">
+          View on Airbnb
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     TRACK RECORD
+══════════════════════════════════════ -->
+<section id="track-record">
+  <div class="section-eyebrow">Performance</div>
+  <h2 class="section-title">Built from the Ground Up</h2>
+  <p class="section-sub">Every property in this portfolio was sourced, renovated, designed, and self-managed by a single operator — with no property management company, no outside fund, and no shortcuts.</p>
+
+  <div class="metrics-grid">
+    <div class="metric">
+      <div class="value">$850K+</div>
+      <div class="desc">TTM Revenue</div>
+    </div>
+    <div class="metric">
+      <div class="value">6</div>
+      <div class="desc">Active Properties</div>
+    </div>
+    <div class="metric">
+      <div class="value">2</div>
+      <div class="desc">Markets</div>
+    </div>
+    <div class="metric">
+      <div class="value">2021</div>
+      <div class="desc">Self-Managed Since</div>
+    </div>
+    <div class="metric">
+      <div class="value">5★</div>
+      <div class="desc">Average Guest Rating</div>
+    </div>
+    <div class="metric">
+      <div class="value">100%</div>
+      <div class="desc">Owner Operated</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     ABOUT
+══════════════════════════════════════ -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <div class="section-eyebrow">The Operator</div>
+      <h2 class="section-title">Armen Nalband</h2>
+      <p>Nalbana Properties is a privately held portfolio of luxury short-term and long-term rentals in Miami, FL and Yucca Valley, CA — built, designed, and self-managed by Armen Nalband since 2021.</p>
+      <p>Every property was acquired with a hands-on renovation and a clear design vision: create homes that feel like boutique hotels, not vacation rentals. The result is a portfolio that commands premium nightly rates, attracts repeat guests, and maintains five-star ratings across platforms.</p>
+      <p>With backgrounds in finance and operations, Armen manages every aspect of the business in-house — from pricing strategy and revenue management to guest experience and property maintenance.</p>
+    </div>
+    <div class="about-visual">
+      <div class="about-img-wrap">
+        <img src="10th St Listing/exterior-050- 1745 SW 10th St_1oakstudios_74.jpg" alt="10th Street property entrance" />
+      </div>
+      <div class="about-accent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CONTACT
+══════════════════════════════════════ -->
+<section id="contact">
+  <div class="section-eyebrow">Get in Touch</div>
+  <h2 class="section-title">Investor Inquiries &amp; Bookings</h2>
+  <p class="section-sub">Interested in partnering, investing, or learning more about the portfolio? Reach out directly.</p>
+  <div class="contact-actions">
+    <a href="mailto:nalbana@gmail.com" class="btn-primary">Send a Message</a>
+    <a href="#properties" class="btn-outline">View Properties</a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-logo">Nalbana Properties</div>
+  <div class="footer-copy">Miami, FL · Yucca Valley, CA</div>
+</footer>
+
+</body>
+</html>
