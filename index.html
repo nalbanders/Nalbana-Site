@@ -234,6 +234,7 @@
       line-height: 1.75;
       margin-bottom: 24px;
     }
+    .card-img-link { display: block; }
     .card-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
     .card-link {
       display: inline-flex; align-items: center; gap: 8px;
@@ -427,12 +428,18 @@
 </div>
 
 <script>
-  // Change this to whatever password you want
   const SITE_PASSWORD = '1986';
+  const AUTH_KEY = 'nalbana_auth';
+
+  // Skip wall if already authenticated this session
+  if (sessionStorage.getItem(AUTH_KEY) === '1') {
+    document.getElementById('pw-overlay').style.display = 'none';
+  }
 
   function checkPassword() {
     const val = document.getElementById('pw-input').value;
     if (val === SITE_PASSWORD) {
+      sessionStorage.setItem(AUTH_KEY, '1');
       document.getElementById('pw-overlay').style.display = 'none';
     } else {
       document.getElementById('pw-error').textContent = 'Incorrect password.';
@@ -501,10 +508,12 @@
 
     <!-- 21st Rd -->
     <div class="property-card">
+      <a href="21st-rd.html" class="card-img-link">
       <div class="card-img">
         <img src="21st Rd Listing/airbnb-001-812cdfd6.jpg" alt="341 SW 21st Rd — Brickell, Miami" loading="lazy" />
         <div class="card-location-badge">Miami · Brickell</div>
       </div>
+      </a>
       <div class="card-body">
         <div class="card-title">Villa Nalbana</div>
         <div class="card-meta">4 Bed · 3 Bath · Short-Term</div>
@@ -524,10 +533,12 @@
 
     <!-- 10th St -->
     <div class="property-card">
+      <a href="10th-st.html" class="card-img-link">
       <div class="card-img">
         <img src="10th St Listing/airbnb-001-9cf1da23.jpg" alt="1745 SW 10th St — Little Havana, Miami" loading="lazy" />
         <div class="card-location-badge">Miami · Little Havana</div>
       </div>
+      </a>
       <div class="card-body">
         <div class="card-title">Villa Marqueza</div>
         <div class="card-meta">5 Bed · 3.5 Bath · Short-Term</div>
@@ -547,10 +558,12 @@
 
     <!-- 23rd Rd -->
     <div class="property-card">
+      <a href="23rd-rd.html" class="card-img-link">
       <div class="card-img">
         <img src="23rd Rd Listing/airbnb-001-5ca57cc9.jpg" alt="23rd Road — Miami" loading="lazy" />
         <div class="card-location-badge">Miami</div>
       </div>
+      </a>
       <div class="card-body">
         <div class="card-title">Villa Maganda</div>
         <div class="card-meta">4 Bed · 3 Bath · Short-Term</div>
@@ -570,10 +583,12 @@
 
     <!-- 13th St — Buko House -->
     <div class="property-card">
+      <a href="13th-st.html" class="card-img-link">
       <div class="card-img">
         <img src="13th St Listing/airbnb-001-81c30a40.jpg" alt="1745 SW 13th St — Buko House, Miami" loading="lazy" />
         <div class="card-location-badge">Miami · Little Havana</div>
       </div>
+      </a>
       <div class="card-body">
         <div class="card-title">Buko House</div>
         <div class="card-meta">3 Bed · 2 Bath · Short-Term</div>
@@ -593,10 +608,12 @@
 
     <!-- 22nd Rd -->
     <div class="property-card">
+      <a href="22nd-rd.html" class="card-img-link">
       <div class="card-img">
         <img src="22nd Rd Listing/cover-2J9A4615.jpg" alt="620 SW 22nd Rd — Brickell, Miami" loading="lazy" />
         <div class="card-location-badge">Miami · Brickell</div>
       </div>
+      </a>
       <div class="card-body">
         <div class="card-title">Villa Armaza</div>
         <div class="card-meta">4 Bed · 4 Bath · Short-Term</div>
@@ -616,10 +633,12 @@
 
     <!-- Jemez -->
     <div class="property-card">
+      <a href="jemez.html" class="card-img-link">
       <div class="card-img">
         <img src="Jemez Listing/airbnb-044-d34cd7c8.jpg" alt="Desert Oasis — Yucca Valley, CA" loading="lazy" />
         <div class="card-location-badge">Yucca Valley · California</div>
       </div>
+      </a>
       <div class="card-body">
         <div class="card-title">Four Winds Trail</div>
         <div class="card-meta">3 Bed · 2 Bath · Short-Term</div>

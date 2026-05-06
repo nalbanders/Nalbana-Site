@@ -468,8 +468,16 @@ footer{background:#0f0f0e;color:#4a4040;padding:40px 64px;display:flex;align-ite
 
 <script>
 const SITE_PASSWORD = '1986';
+const AUTH_KEY = 'nalbana_auth';
+
+// Skip wall if already authenticated this session
+if (sessionStorage.getItem(AUTH_KEY) === '1') {
+  document.getElementById('pw-overlay').style.display = 'none';
+}
+
 function checkPassword() {
   if (document.getElementById('pw-input').value === SITE_PASSWORD) {
+    sessionStorage.setItem(AUTH_KEY, '1');
     document.getElementById('pw-overlay').style.display = 'none';
   } else {
     document.getElementById('pw-error').textContent = 'Incorrect password.';
