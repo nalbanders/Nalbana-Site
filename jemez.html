@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Four Winds Trail — Nalbana Properties</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Georgia','Times New Roman',serif;background:#faf9f7;color:#1a1a1a;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%}
+#pw-overlay{position:fixed;inset:0;z-index:9999;background:#0f0f0e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+#pw-overlay .pw-logo{font-size:13px;letter-spacing:.25em;text-transform:uppercase;color:#a89070}
+#pw-overlay h2{font-size:22px;font-weight:400;color:#f0ece6;letter-spacing:.04em}
+#pw-overlay input{width:280px;padding:14px 18px;background:transparent;border:1px solid #3a3530;color:#f0ece6;font-size:15px;letter-spacing:.08em;outline:none;text-align:center}
+#pw-overlay input::placeholder{color:#5a5048}
+#pw-overlay input:focus{border-color:#a89070}
+#pw-overlay button{width:280px;padding:14px;background:#a89070;border:none;color:#fff;font-family:'Georgia',serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+#pw-overlay button:hover{background:#8a7358}
+#pw-error{color:#c0604a;font-size:13px;min-height:18px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(250,249,247,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.06)}
+.nav-left{display:flex;align-items:center;gap:24px}
+.nav-back{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a89070;display:flex;align-items:center;gap:8px;transition:color .2s}
+.nav-back:hover{color:#1a1a1a}
+.nav-back svg{width:14px;height:14px}
+.nav-logo{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#1a1a1a}
+.nav-book{padding:10px 24px;background:#1a1a1a;color:#f5f0ea;font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s}
+.nav-book:hover{background:#3a3530}
+.hero{position:relative;height:100vh;min-height:560px;overflow:hidden;background:#0f0f0e}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1s ease}
+.slide.active{opacity:1}
+.slide-img{position:absolute;inset:0;background-size:cover;background-position:center;animation:none}
+.slide.active .slide-img{animation:kenburns 8s ease-out forwards}
+@keyframes kenburns{from{transform:scale(1) translate(0,0)}to{transform:scale(1.07) translate(-1.5%,-1%)}}
+.slide:nth-child(2).active .slide-img{animation:kenburns2 8s ease-out forwards}
+@keyframes kenburns2{from{transform:scale(1) translate(0,0)}to{transform:scale(1.08) translate(1.5%,-1%)}}
+.slide:nth-child(3).active .slide-img{animation:kenburns3 8s ease-out forwards}
+@keyframes kenburns3{from{transform:scale(1.04) translate(1%,0)}to{transform:scale(1) translate(-1%,-0.5%)}}
+.slide:nth-child(4).active .slide-img{animation:kenburns4 8s ease-out forwards}
+@keyframes kenburns4{from{transform:scale(1.02) translate(-1%,0)}to{transform:scale(1.08) translate(1%,-1%)}}
+.slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,15,14,.65) 0%,rgba(15,15,14,.15) 50%,transparent 100%)}
+.hero-content{position:absolute;bottom:80px;left:64px;z-index:2;color:#f5f0ea}
+.hero-eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#c8b89a;margin-bottom:16px}
+.hero-title{font-size:clamp(36px,5vw,68px);font-weight:400;line-height:1.08;letter-spacing:-.01em;margin-bottom:16px}
+.hero-title em{font-style:italic;color:#d4b896}
+.hero-meta{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8a7a6a}
+.hero-dots{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:background .3s}
+.hero-dot.active{background:#d4b896}
+.hero-arrows{position:absolute;bottom:24px;right:48px;display:flex;gap:12px;z-index:3}
+.hero-arrow{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
+.hero-arrow:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.08)}
+.hero-arrow svg{width:16px;height:16px}
+.stats-strip{background:#fff;border-bottom:1px solid #ede8e0;display:flex;justify-content:center}
+.stat-item{padding:28px 48px;text-align:center;border-right:1px solid #ede8e0}
+.stat-item:last-child{border-right:none}
+.stat-value{font-size:28px;color:#1a1a1a;letter-spacing:-.02em;line-height:1}
+.stat-label{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#a89070;margin-top:6px}
+section{padding:88px 64px}
+.section-eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#a89070;margin-bottom:14px}
+.section-title{font-size:clamp(26px,3vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.01em}
+#gallery{background:#faf9f7;padding:88px 0}
+.gallery-header{padding:0 64px 48px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.room-filters{display:flex;gap:4px;flex-wrap:wrap}
+.rf-btn{padding:9px 18px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;border:1px solid #ddd8d0;background:transparent;color:#6a6a6a;cursor:pointer;transition:all .2s;font-family:'Georgia',serif}
+.rf-btn:hover{border-color:#a89070;color:#a89070}
+.rf-btn.active{background:#1a1a1a;border-color:#1a1a1a;color:#f5f0ea}
+.gallery-grid{columns:3 280px;gap:3px;padding:0 3px}
+.gallery-item{break-inside:avoid;margin-bottom:3px;position:relative;overflow:hidden;cursor:pointer}
+.gallery-item img{width:100%;display:block;transition:transform .5s ease}
+.gallery-item:hover img{transform:scale(1.03)}
+.gallery-item .img-overlay{position:absolute;inset:0;background:rgba(15,15,14,0);transition:background .3s}
+.gallery-item:hover .img-overlay{background:rgba(15,15,14,.18)}
+.gallery-item .room-tag{position:absolute;bottom:10px;left:10px;background:rgba(15,15,14,.6);color:#d4b896;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:4px 10px;opacity:0;transition:opacity .3s}
+.gallery-item:hover .room-tag{opacity:1}
+.gallery-item.reveal{animation:revealUp .4s ease forwards}
+@keyframes revealUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+#lightbox{position:fixed;inset:0;z-index:1000;background:rgba(10,10,10,.96);display:none;align-items:center;justify-content:center}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:88vh;object-fit:contain}
+.lb-close{position:absolute;top:24px;right:32px;color:#fff;font-size:28px;cursor:pointer;opacity:.6;transition:opacity .2s;background:none;border:none;line-height:1}
+.lb-close:hover{opacity:1}
+.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);background:none;border:1px solid rgba(255,255,255,.2);color:#fff;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
+.lb-arrow:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
+.lb-prev{left:24px}.lb-next{right:24px}
+.lb-arrow svg{width:18px;height:18px}
+.lb-counter{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.4);font-size:12px;letter-spacing:.2em}
+#floorplan{background:#f2ede6}
+.fp-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.fp-left .section-title{margin-bottom:20px}
+.fp-left p{font-size:15px;color:#5a5a5a;line-height:1.85;margin-bottom:16px}
+.fp-note{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#a89070;margin-top:28px;padding-top:28px;border-top:1px solid #ddd8d0}
+.fp-svg-wrap svg{width:100%;height:auto}
+.fp-room{fill:#f8f5f0;stroke:#d0c8bc;stroke-width:1.5;cursor:pointer;transition:fill .25s,stroke .25s}
+.fp-room:hover{fill:#ede4d6;stroke:#a89070}
+.fp-room.fp-active{fill:#d4b896;stroke:#a89070;stroke-width:2}
+.fp-label{font-family:'Georgia',serif;font-size:9px;fill:#6a5a4a;letter-spacing:.15em;text-transform:uppercase;pointer-events:none;text-anchor:middle}
+.fp-sublabel{font-family:'Georgia',serif;font-size:7px;fill:#a89070;letter-spacing:.1em;text-transform:uppercase;pointer-events:none;text-anchor:middle}
+.fp-reset{margin-top:16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#a89070;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:none;background:none;font-family:'Georgia',serif;padding:0}
+.fp-reset:hover{color:#1a1a1a}
+#amenities{background:#fff}
+.amenities-inner{max-width:1000px;margin:0 auto}
+.amenities-inner .section-title{margin-bottom:48px;text-align:center}
+.amenity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:32px}
+.amenity{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.amenity-icon{width:44px;height:44px;color:#a89070}
+.amenity-name{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#4a4a4a}
+#location{background:#faf9f7}
+.location-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:64px;align-items:start}
+.location-text .section-title{margin-bottom:20px}
+.location-text p{font-size:15px;color:#5a5a5a;line-height:1.85;margin-bottom:16px}
+.nearby-list{margin-top:32px;list-style:none;display:flex;flex-direction:column;gap:10px}
+.nearby-list li{display:flex;align-items:center;gap:12px;font-size:13px;color:#5a5a5a;letter-spacing:.02em}
+.nearby-dot{width:6px;height:6px;border-radius:50%;background:#a89070;flex-shrink:0}
+.map-wrap iframe{width:100%;height:420px;border:none;filter:grayscale(20%)}
+#related{background:#0f0f0e}
+#related .section-eyebrow{color:#a89070}
+#related .section-title{color:#f0ece6;margin-bottom:48px}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.related-card{position:relative;overflow:hidden;cursor:pointer}
+.related-card img{height:260px;width:100%;object-fit:cover;transition:transform .6s ease;filter:brightness(.85)}
+.related-card:hover img{transform:scale(1.04);filter:brightness(.95)}
+.related-card-body{position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(to top,rgba(15,15,14,.85),transparent)}
+.related-card-title{font-size:15px;color:#f0ece6;margin-bottom:4px}
+.related-card-meta{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#a89070}
+#sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:200;background:#1a1a1a;padding:16px 48px;display:flex;align-items:center;justify-content:space-between;transform:translateY(100%);transition:transform .4s ease}
+#sticky-cta.visible{transform:translateY(0)}
+.sticky-info{color:#f0ece6}
+.sticky-info .prop-name{font-size:14px;letter-spacing:.04em;margin-bottom:2px}
+.sticky-info .prop-meta{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#6a5a4a}
+.sticky-cta-btn{display:flex;align-items:center;gap:32px}
+.sticky-airbnb{padding:12px 32px;background:#a89070;color:#fff;font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s;white-space:nowrap}
+.sticky-airbnb:hover{background:#8a7358}
+footer{background:#0f0f0e;color:#4a4040;padding:40px 64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.footer-logo{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#6a5a4a}
+.footer-copy{font-size:11px;letter-spacing:.1em;color:#3a3030}
+@media(max-width:960px){nav{padding:16px 24px}section{padding:64px 24px}#gallery{padding:64px 0}.gallery-header{padding:0 24px 36px}.gallery-grid{columns:2 200px}.fp-inner{grid-template-columns:1fr;gap:40px}.location-inner{grid-template-columns:1fr;gap:40px}.related-grid{grid-template-columns:1fr 1fr}.hero-content{left:32px;bottom:60px}footer{padding:32px 24px;flex-direction:column;text-align:center}#sticky-cta{padding:14px 24px}}
+@media(max-width:600px){.gallery-grid{columns:1}.related-grid{grid-template-columns:1fr}.stats-strip{flex-wrap:wrap}.stat-item{flex:1 1 50%;border-bottom:1px solid #ede8e0}}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-logo">Nalbana Properties</div>
+  <h2>Private Portfolio</h2>
+  <input type="password" id="pw-input" placeholder="Enter password"/>
+  <div id="pw-error"></div>
+  <button onclick="checkPassword()">Enter</button>
+</div>
+
+<nav>
+  <div class="nav-left">
+    <a href="index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Portfolio
+    </a>
+    <div class="nav-logo">Four Winds Trail</div>
+  </div>
+  <a href="https://www.airbnb.com/rooms/52732943" target="_blank" class="nav-book">Book on Airbnb</a>
+</nav>
+
+<section class="hero">
+  <div class="slide active">
+    <div class="slide-img" style="background-image:url('Jemez Listing/airbnb-044-d34cd7c8.jpg')"></div>
+    <div class="slide-overlay"></div>
+  </div>
+  <div class="slide">
+    <div class="slide-img" style="background-image:url('Jemez Listing/zillow-ext-001-e6a2ba24.jpg')"></div>
+    <div class="slide-overlay"></div>
+  </div>
+  <div class="slide">
+    <div class="slide-img" style="background-image:url('Jemez Listing/airbnb-001-36f5cf7f.jpg')"></div>
+    <div class="slide-overlay"></div>
+  </div>
+  <div class="slide">
+    <div class="slide-img" style="background-image:url('Jemez Listing/airbnb-020-d9b9abce.jpg')"></div>
+    <div class="slide-overlay"></div>
+  </div>
+  <div class="slide">
+    <div class="slide-img" style="background-image:url('Jemez Listing/airbnb-050-c1e4746a.jpg')"></div>
+    <div class="slide-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Yucca Valley · California</div>
+    <h1 class="hero-title">Four Winds Trail<br><em>Desert Oasis</em></h1>
+    <div class="hero-meta">3 Bed · 2 Bath · Up to 8 Guests</div>
+  </div>
+  <div class="hero-dots">
+    <div class="hero-dot active" onclick="goSlide(0)"></div>
+    <div class="hero-dot" onclick="goSlide(1)"></div>
+    <div class="hero-dot" onclick="goSlide(2)"></div>
+    <div class="hero-dot" onclick="goSlide(3)"></div>
+    <div class="hero-dot" onclick="goSlide(4)"></div>
+  </div>
+  <div class="hero-arrows">
+    <button class="hero-arrow" onclick="prevSlide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="hero-arrow" onclick="nextSlide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="stat-item"><div class="stat-value counter" data-target="3">0</div><div class="stat-label">Bedrooms</div></div>
+  <div class="stat-item"><div class="stat-value counter" data-target="2">0</div><div class="stat-label">Bathrooms</div></div>
+  <div class="stat-item"><div class="stat-value">5.0★</div><div class="stat-label">Guest Rating</div></div>
+  <div class="stat-item"><div class="stat-value counter" data-target="8">0</div><div class="stat-label">Max Guests</div></div>
+</div>
+
+<section id="gallery">
+  <div class="gallery-header">
+    <div>
+      <div class="section-eyebrow">Gallery</div>
+      <h2 class="section-title">Every Room, Every Angle</h2>
+    </div>
+    <div class="room-filters">
+      <button class="rf-btn active" data-filter="all">All</button>
+      <button class="rf-btn" data-filter="outdoor">Outdoor & Desert</button>
+      <button class="rf-btn" data-filter="living">Living</button>
+      <button class="rf-btn" data-filter="kitchen">Kitchen</button>
+      <button class="rf-btn" data-filter="dining">Dining</button>
+      <button class="rf-btn" data-filter="bedroom1">Master Suite</button>
+      <button class="rf-btn" data-filter="bedroom2">Bedrooms</button>
+      <button class="rf-btn" data-filter="bathroom">Bathrooms</button>
+      <button class="rf-btn" data-filter="neighborhood">Views & Landscape</button>
+    </div>
+  </div>
+  <div class="gallery-grid" id="galleryGrid"></div>
+</section>
+
+<section id="floorplan">
+  <div class="fp-inner">
+    <div class="fp-left">
+      <div class="section-eyebrow">Layout</div>
+      <h2 class="section-title">Floor Plan</h2>
+      <p>Four Winds Trail is a classic desert hideaway nestled in the heart of Yucca Valley, steps from Joshua Tree National Park. The low-profile single-story home sits on a generous desert lot, embracing the stark beauty of its surroundings through panoramic windows and an expansive outdoor deck.</p>
+      <p>A serene living room with mountain views, a fully equipped kitchen, and three well-appointed bedrooms make it a perfect base for stargazing, hiking, and deep desert rest. The outdoor lounge area with fire pit is where the real magic happens — especially after sundown.</p>
+      <p class="fp-note">Click any room to filter the gallery above. This is a schematic representation — a precise survey plan is coming soon.</p>
+      <button class="fp-reset" onclick="resetFloorplan()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset filter
+      </button>
+    </div>
+    <div class="fp-svg-wrap">
+      <svg viewBox="0 0 620 460" xmlns="http://www.w3.org/2000/svg">
+        <rect width="620" height="460" fill="#ede8df"/>
+        <!-- Outdoor desert patio -->
+        <rect class="fp-room" id="fp-outdoor" x="20" y="20" width="580" height="110" rx="2" data-room="outdoor"/>
+        <text class="fp-label" x="310" y="66">Desert Patio &amp; Outdoor Lounge</text>
+        <text class="fp-sublabel" x="310" y="80">Fire Pit · Lounge Chairs · Mountain Views</text>
+        <!-- Joshua tree shapes -->
+        <circle cx="60" cy="55" r="10" fill="rgba(120,160,80,.1)" stroke="rgba(120,160,80,.2)" stroke-width="1" pointer-events="none"/>
+        <circle cx="560" cy="65" r="14" fill="rgba(120,160,80,.1)" stroke="rgba(120,160,80,.2)" stroke-width="1" pointer-events="none"/>
+        <!-- Living Room -->
+        <rect class="fp-room" id="fp-living" x="20" y="132" width="240" height="140" rx="2" data-room="living"/>
+        <text class="fp-label" x="140" y="196">Living Room</text>
+        <text class="fp-sublabel" x="140" y="210">Mountain Views · Fireplace</text>
+        <!-- Kitchen -->
+        <rect class="fp-room" id="fp-kitchen" x="262" y="132" width="148" height="70" rx="2" data-room="kitchen"/>
+        <text class="fp-label" x="336" y="168">Kitchen</text>
+        <text class="fp-sublabel" x="336" y="182">Open Plan</text>
+        <!-- Dining -->
+        <rect class="fp-room" id="fp-dining" x="262" y="204" width="148" height="68" rx="2" data-room="dining"/>
+        <text class="fp-label" x="336" y="236">Dining</text>
+        <text class="fp-sublabel" x="336" y="250">Seats 8</text>
+        <!-- Entry / Hallway -->
+        <rect class="fp-room" id="fp-entry" x="20" y="274" width="80" height="58" rx="2" data-room="living"/>
+        <text class="fp-label" x="60" y="307">Entry</text>
+        <!-- Master Suite -->
+        <rect class="fp-room" id="fp-master" x="412" y="132" width="188" height="140" rx="2" data-room="bedroom1"/>
+        <text class="fp-label" x="506" y="196">Master Suite</text>
+        <text class="fp-sublabel" x="506" y="210">King · Desert Views</text>
+        <rect x="430" y="215" width="130" height="48" rx="4" fill="rgba(160,140,110,.12)" stroke="rgba(160,140,110,.25)" stroke-width="1" pointer-events="none"/>
+        <rect x="430" y="215" width="130" height="14" rx="2" fill="rgba(160,140,110,.2)" stroke="none" pointer-events="none"/>
+        <!-- Bedroom 2 -->
+        <rect class="fp-room" id="fp-bed2" x="100" y="274" width="180" height="110" rx="2" data-room="bedroom2"/>
+        <text class="fp-label" x="190" y="325">Bedroom 2</text>
+        <text class="fp-sublabel" x="190" y="339">Queen</text>
+        <!-- Bedroom 3 -->
+        <rect class="fp-room" id="fp-bed3" x="282" y="274" width="180" height="110" rx="2" data-room="bedroom2"/>
+        <text class="fp-label" x="372" y="325">Bedroom 3</text>
+        <!-- Bathrooms -->
+        <rect class="fp-room" id="fp-bath1" x="20" y="334" width="78" height="80" rx="2" data-room="bathroom"/>
+        <text class="fp-label" x="59" y="374">Bath 1</text>
+        <rect class="fp-room" id="fp-bath2" x="464" y="274" width="136" height="110" rx="2" data-room="bathroom"/>
+        <text class="fp-label" x="532" y="325">Master Bath</text>
+        <text class="fp-sublabel" x="532" y="339">Soaking Tub</text>
+        <!-- Hot tub on patio -->
+        <circle cx="490" cy="70" r="28" fill="rgba(100,160,220,.1)" stroke="rgba(100,160,220,.2)" stroke-width="1.5" pointer-events="none"/>
+        <text font-family="Georgia,serif" font-size="7" fill="#a89070" x="490" y="73" text-anchor="middle" pointer-events="none">Hot Tub</text>
+        <g transform="translate(582,432)">
+          <circle cx="0" cy="0" r="20" fill="rgba(15,15,14,.06)" stroke="#c8b89a" stroke-width="1"/>
+          <text font-family="Georgia,serif" font-size="9" fill="#a89070" x="0" y="-7" text-anchor="middle">N</text>
+          <line x1="0" y1="-3" x2="0" y2="-14" stroke="#a89070" stroke-width="1.5"/>
+          <polygon points="0,-16 2.5,-10 -2.5,-10" fill="#a89070"/>
+        </g>
+        <text font-family="Georgia,serif" font-size="7" fill="#a89070" x="20" y="452" letter-spacing="1">SCHEMATIC — NOT TO SCALE</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="amenities">
+  <div class="amenities-inner">
+    <div class="section-eyebrow" style="text-align:center">What's Included</div>
+    <h2 class="section-title">Amenities</h2>
+    <div class="amenity-grid">
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><div class="amenity-name">Hot Tub</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg><div class="amenity-name">Desert Patio</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg><div class="amenity-name">Joshua Tree Park</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v4l-4-4H9a1.994 1.994 0 0 1-1.414-.586m0 0L11 14h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v4l.586-.586z"/></svg><div class="amenity-name">Fire Pit</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><div class="amenity-name">Smart TVs</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg><div class="amenity-name">High-Speed WiFi</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="amenity-name">Updated Kitchen</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><div class="amenity-name">Sleeps 8</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg><div class="amenity-name">Washer / Dryer</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><div class="amenity-name">Nespresso</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><div class="amenity-name">Stargazing</div></div>
+      <div class="amenity"><svg class="amenity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg><div class="amenity-name">Mountain Views</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="location">
+  <div class="location-inner">
+    <div class="location-text">
+      <div class="section-eyebrow">Location</div>
+      <h2 class="section-title">Four Winds Trail<br>Yucca Valley, CA</h2>
+      <p>Set in the sweeping high desert of Yucca Valley, Four Winds Trail sits at the gateway to Joshua Tree National Park. The property is surrounded by iconic boulder formations and ancient Joshua Trees — a landscape that transforms hourly as the desert light shifts from dawn to the most breathtaking night skies you've ever seen.</p>
+      <ul class="nearby-list">
+        <li><div class="nearby-dot"></div>Joshua Tree National Park — 10 min drive</li>
+        <li><div class="nearby-dot"></div>Pioneer Town — 15 min drive</li>
+        <li><div class="nearby-dot"></div>Palm Springs — 40 min drive</li>
+        <li><div class="nearby-dot"></div>Palm Springs Airport — 45 min drive</li>
+        <li><div class="nearby-dot"></div>Los Angeles — 2.5 hr drive</li>
+      </ul>
+    </div>
+    <div class="map-wrap">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26368.0!2d-116.4400!3d34.1147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80da96f41b9db8a5%3A0x2d04d1d6f5e7440!2sYucca+Valley%2C+CA!5e0!3m2!1sen!2sus!4v1699000000005" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+
+<section id="related">
+  <div class="section-eyebrow">More Properties</div>
+  <h2 class="section-title">Continue Exploring</h2>
+  <div class="related-grid">
+    <a href="23rd-rd.html" class="related-card">
+      <img src="23rd Rd Listing/airbnb-001-5ca57cc9.jpg" alt="23rd Road" loading="lazy"/>
+      <div class="related-card-body"><div class="related-card-title">Villa Maganda</div><div class="related-card-meta">4 Bed · Miami</div></div>
+    </a>
+    <a href="10th-st.html" class="related-card">
+      <img src="10th St Listing/exterior-057- 1745 SW 10th St_1oakstudiosdrone_13.jpg" alt="10th Street" loading="lazy"/>
+      <div class="related-card-body"><div class="related-card-title">Villa Marqueza</div><div class="related-card-meta">5 Bed · Miami</div></div>
+    </a>
+    <a href="22nd-rd.html" class="related-card">
+      <img src="22nd Rd Listing/cover-2J9A4615.jpg" alt="22nd Road" loading="lazy"/>
+      <div class="related-card-body"><div class="related-card-title">Villa Armaza</div><div class="related-card-meta">4 Bed · Miami</div></div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Nalbana Properties</div>
+  <div class="footer-copy">© 2024 Nalbana Properties · Miami, FL · Yucca Valley, CA</div>
+</footer>
+
+<div id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <button class="lb-arrow lb-prev" onclick="lbNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <img id="lb-img" src="" alt=""/>
+  <button class="lb-arrow lb-next" onclick="lbNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
+
+<div id="sticky-cta">
+  <div class="sticky-info">
+    <div class="prop-name">Four Winds Trail — Desert Oasis</div>
+    <div class="prop-meta">Yucca Valley · 3 Bed · 2 Bath · Sleeps 8</div>
+  </div>
+  <div class="sticky-cta-btn">
+    <a href="https://www.airbnb.com/rooms/52732943" target="_blank" class="sticky-airbnb">Book on Airbnb</a>
+  </div>
+</div>
+
+<script>
+const SITE_PASSWORD='1986';
+function checkPassword(){if(document.getElementById('pw-input').value===SITE_PASSWORD){document.getElementById('pw-overlay').style.display='none';}else{document.getElementById('pw-error').textContent='Incorrect password.';document.getElementById('pw-input').value='';}}
+document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
+let currentSlide=0;const slides=document.querySelectorAll('.slide');const dots=document.querySelectorAll('.hero-dot');let slideTimer;
+function goSlide(n){slides[currentSlide].classList.remove('active');dots[currentSlide].classList.remove('active');slides[currentSlide].querySelector('.slide-img').style.animation='none';currentSlide=(n+slides.length)%slides.length;slides[currentSlide].classList.add('active');dots[currentSlide].classList.add('active');const ni=slides[currentSlide].querySelector('.slide-img');ni.style.animation='none';requestAnimationFrame(()=>requestAnimationFrame(()=>{ni.style.animation='';}));clearInterval(slideTimer);slideTimer=setInterval(()=>goSlide(currentSlide+1),6000);}
+function nextSlide(){goSlide(currentSlide+1);}function prevSlide(){goSlide(currentSlide-1);}
+slideTimer=setInterval(()=>goSlide(currentSlide+1),6000);
+
+const PHOTOS=[
+  {src:'Jemez Listing/airbnb-044-d34cd7c8.jpg',room:'outdoor',caption:'Desert Lounge'},
+  {src:'Jemez Listing/airbnb-001-36f5cf7f.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-002-df614b08.jpg',room:'outdoor',caption:'Desert Patio'},
+  {src:'Jemez Listing/airbnb-003-d75fe095.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-004-e3d4ad0b.jpg',room:'outdoor',caption:'Desert Views'},
+  {src:'Jemez Listing/airbnb-005-243f2fc5.jpg',room:'outdoor',caption:'Patio'},
+  {src:'Jemez Listing/airbnb-006-1d3d48b3.jpg',room:'outdoor',caption:'Outdoor Lounge'},
+  {src:'Jemez Listing/airbnb-007-367d60ad.jpg',room:'living',caption:'Living Room'},
+  {src:'Jemez Listing/airbnb-008-8c8fde01.jpg',room:'living',caption:'Living Room'},
+  {src:'Jemez Listing/airbnb-009-984c5428.jpg',room:'living',caption:'Living Area'},
+  {src:'Jemez Listing/airbnb-010-407d80e1.jpg',room:'living',caption:'Open Plan'},
+  {src:'Jemez Listing/airbnb-011-21ed1436.jpg',room:'kitchen',caption:'Kitchen'},
+  {src:'Jemez Listing/airbnb-012-ac842592.jpg',room:'kitchen',caption:'Kitchen'},
+  {src:'Jemez Listing/airbnb-013-98ba54f3.jpg',room:'dining',caption:'Dining Room'},
+  {src:'Jemez Listing/airbnb-014-52d05719.jpg',room:'dining',caption:'Dining'},
+  {src:'Jemez Listing/airbnb-015-b5c6f379.jpg',room:'bedroom1',caption:'Master Suite'},
+  {src:'Jemez Listing/airbnb-016-94600afc.jpg',room:'bedroom1',caption:'Master Suite'},
+  {src:'Jemez Listing/airbnb-018-43f22daa.jpg',room:'bedroom1',caption:'Master Bedroom'},
+  {src:'Jemez Listing/airbnb-019-4b38509f.jpg',room:'bedroom2',caption:'Bedroom 2'},
+  {src:'Jemez Listing/airbnb-020-d9b9abce.jpg',room:'bedroom2',caption:'Bedroom 2'},
+  {src:'Jemez Listing/airbnb-021-b8836a6a.jpg',room:'bedroom2',caption:'Bedroom 3'},
+  {src:'Jemez Listing/airbnb-024-1a4df8ad.jpg',room:'bathroom',caption:'Bathroom'},
+  {src:'Jemez Listing/airbnb-025-5d31315d.jpg',room:'bathroom',caption:'En Suite'},
+  {src:'Jemez Listing/airbnb-026-653f5f2e.jpg',room:'bathroom',caption:'Bathroom'},
+  {src:'Jemez Listing/airbnb-027-c1ab63d6.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-028-72f81e16.jpg',room:'outdoor',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-029-3f429253.jpg',room:'outdoor',caption:'Desert Views'},
+  {src:'Jemez Listing/airbnb-030-6e7f38cb.jpg',room:'outdoor',caption:'Sunset'},
+  {src:'Jemez Listing/airbnb-031-1d8dbc3f.jpg',room:'outdoor',caption:'Night Sky'},
+  {src:'Jemez Listing/airbnb-032-358a9540.jpg',room:'outdoor',caption:'Stargazing'},
+  {src:'Jemez Listing/airbnb-033-68ffda51.jpg',room:'outdoor',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-034-d82f9da2.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-035-035a390a.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-036-6cd36dc5.jpg',room:'outdoor',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-037-ed45dfc6.jpg',room:'outdoor',caption:'Fire Pit'},
+  {src:'Jemez Listing/airbnb-039-9332b9d4.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-040-4e0ac806.jpg',room:'outdoor',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-041-85179cf0.jpg',room:'outdoor',caption:'Desert Views'},
+  {src:'Jemez Listing/airbnb-042-22f24baf.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-043-f0c5e346.jpg',room:'outdoor',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-045-73881c3c.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/airbnb-046-b1cf6fa8.jpg',room:'outdoor',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-050-c1e4746a.jpg',room:'neighborhood',caption:'Aerial'},
+  {src:'Jemez Listing/airbnb-051-8abce756.jpg',room:'neighborhood',caption:'Aerial View'},
+  {src:'Jemez Listing/airbnb-052-735370b8.jpg',room:'neighborhood',caption:'Desert Landscape'},
+  {src:'Jemez Listing/airbnb-053-6691db87.jpg',room:'neighborhood',caption:'Joshua Trees'},
+  {src:'Jemez Listing/airbnb-054-bdb5286e.jpg',room:'neighborhood',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-055-e1d0360c.jpg',room:'neighborhood',caption:'Landscape'},
+  {src:'Jemez Listing/airbnb-056-8112aa74.jpg',room:'neighborhood',caption:'Joshua Tree'},
+  {src:'Jemez Listing/airbnb-057-e8a33b52.jpg',room:'neighborhood',caption:'Desert'},
+  {src:'Jemez Listing/airbnb-058-18d5a770.jpg',room:'neighborhood',caption:'Landscape'},
+  {src:'Jemez Listing/airbnb-059-541391e3.jpg',room:'neighborhood',caption:'Yucca Valley'},
+  {src:'Jemez Listing/airbnb-060-e8bcb064.jpg',room:'neighborhood',caption:'Desert Views'},
+  {src:'Jemez Listing/airbnb-061-0b06da9a.jpg',room:'neighborhood',caption:'Landscape'},
+  {src:'Jemez Listing/zillow-ext-001-e6a2ba24.jpg',room:'neighborhood',caption:'Exterior'},
+  {src:'Jemez Listing/zillow-ext-002-6cb20393.jpg',room:'neighborhood',caption:'Exterior'},
+  {src:'Jemez Listing/zillow-ext-003-c7df9a50.jpg',room:'neighborhood',caption:'Exterior'},
+  {src:'Jemez Listing/zillow-ext-004-4e423816.jpg',room:'neighborhood',caption:'Exterior'},
+  {src:'Jemez Listing/zillow-ext-005-b7400ee1.jpg',room:'neighborhood',caption:'Street View'},
+  {src:'Jemez Listing/zillow-ext-006-f74913a6.jpg',room:'neighborhood',caption:'Exterior'},
+  {src:'Jemez Listing/zillow-ext-007-4d2f0efe.jpg',room:'neighborhood',caption:'Exterior'},
+  {src:'Jemez Listing/zillow-ext-008-71b2c759.jpg',room:'outdoor',caption:'Outdoor'},
+  {src:'Jemez Listing/zillow-ext-009-f5f8d93e.jpg',room:'outdoor',caption:'Desert Patio'},
+  {src:'Jemez Listing/zillow-ext-010-86d62e6e.jpg',room:'outdoor',caption:'Outdoor'},
+];
+
+const grid=document.getElementById('galleryGrid');let activePhotos=PHOTOS.map((_,i)=>i);let activeFilter='all';
+function buildGallery(filter){activeFilter=filter;activePhotos=[];grid.innerHTML='';PHOTOS.forEach((p,i)=>{if(filter!=='all'&&p.room!==filter)return;activePhotos.push(i);const div=document.createElement('div');div.className='gallery-item reveal';div.innerHTML=`<img src="${p.src}" alt="${p.caption}" loading="lazy"/><div class="img-overlay"></div><div class="room-tag">${p.caption}</div>`;div.addEventListener('click',()=>openLightbox(activePhotos.indexOf(i)));grid.appendChild(div);});const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.animationDelay='0s';obs.unobserve(e.target);}});},{threshold:0.1});document.querySelectorAll('.gallery-item').forEach((el,i)=>{el.style.opacity='0';el.style.animationDelay=(i%9)*0.05+'s';obs.observe(el);setTimeout(()=>el.style.opacity='',50+i*30);});}
+document.querySelectorAll('.rf-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');buildGallery(btn.dataset.filter);document.querySelectorAll('.fp-room').forEach(r=>r.classList.remove('fp-active'));if(btn.dataset.filter!=='all')document.querySelectorAll(`[data-room="${btn.dataset.filter}"]`).forEach(r=>r.classList.add('fp-active'));});});
+const roomFilterMap={'fp-outdoor':'outdoor','fp-entry':'living','fp-living':'living','fp-kitchen':'kitchen','fp-dining':'dining','fp-master':'bedroom1','fp-bed2':'bedroom2','fp-bed3':'bedroom2','fp-bath1':'bathroom','fp-bath2':'bathroom'};
+document.querySelectorAll('.fp-room').forEach(room=>{room.addEventListener('click',()=>{const k=roomFilterMap[room.id];if(!k)return;document.querySelectorAll('.fp-room').forEach(r=>r.classList.remove('fp-active'));document.querySelectorAll(`[data-room="${k}"]`).forEach(r=>r.classList.add('fp-active'));document.querySelectorAll('.rf-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===k));buildGallery(k);document.getElementById('gallery').scrollIntoView({behavior:'smooth',block:'start'});});room.style.cursor='pointer';});
+function resetFloorplan(){document.querySelectorAll('.fp-room').forEach(r=>r.classList.remove('fp-active'));document.querySelectorAll('.rf-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));buildGallery('all');}
+let lbIndex=0;
+function openLightbox(idx){lbIndex=idx;updateLightbox();document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
+function updateLightbox(){const i=activePhotos[lbIndex];document.getElementById('lb-img').src=PHOTOS[i].src;document.getElementById('lb-counter').textContent=(lbIndex+1)+' / '+activePhotos.length;}
+function lbNav(d){lbIndex=(lbIndex+d+activePhotos.length)%activePhotos.length;updateLightbox();}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('open'))return;if(e.key==='Escape')closeLightbox();if(e.key==='ArrowRight')lbNav(1);if(e.key==='ArrowLeft')lbNav(-1);});
+const counters=document.querySelectorAll('.counter');const counterObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,target=parseInt(el.dataset.target);let c=0;const s=target/40;const t=setInterval(()=>{c=Math.min(c+s,target);el.textContent=Math.floor(c);if(c>=target)clearInterval(t);},30);counterObs.unobserve(el);});},{threshold:0.5});
+counters.forEach(c=>counterObs.observe(c));
+window.addEventListener('scroll',()=>document.getElementById('sticky-cta').classList.toggle('visible',window.scrollY>window.innerHeight*0.8));
+buildGallery('all');
+</script>
+</body>
+</html>

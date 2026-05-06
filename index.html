@@ -234,6 +234,7 @@
       line-height: 1.75;
       margin-bottom: 24px;
     }
+    .card-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
     .card-link {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 11px;
@@ -246,6 +247,18 @@
     }
     .card-link:hover { color: #a89070; border-color: #a89070; }
     .card-link svg { width: 12px; height: 12px; }
+    .card-detail {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #a89070;
+      border-bottom: 1px solid #a89070;
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .card-detail:hover { color: #1a1a1a; border-color: #1a1a1a; }
+    .card-detail svg { width: 12px; height: 12px; }
 
     /* ── Track Record ── */
     #track-record {
@@ -496,10 +509,16 @@
         <div class="card-title">Villa Nalbana</div>
         <div class="card-meta">4 Bed · 3 Bath · Short-Term</div>
         <p class="card-desc">A sprawling entertainer's compound steps from Brickell with a resort-style pool, covered lanai, and lush tropical gardens. Ideal for groups seeking a private Miami oasis.</p>
-        <a href="https://www.airbnb.com/rooms/51283421" target="_blank" class="card-link">
-          View on Airbnb
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="card-actions">
+          <a href="21st-rd.html" class="card-detail">
+            Explore Property
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.airbnb.com/rooms/51283421" target="_blank" class="card-link">
+            Airbnb
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -513,10 +532,16 @@
         <div class="card-title">Villa Marqueza</div>
         <div class="card-meta">5 Bed · 3.5 Bath · Short-Term</div>
         <p class="card-desc">A two-story modern villa with a heated pool and spa, rooftop terrace, outdoor cinema, and a private guest house — set in one of Miami's most vibrant neighborhoods.</p>
-        <a href="https://www.airbnb.com/rooms/1371543678014557369" target="_blank" class="card-link">
-          View on Airbnb
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="card-actions">
+          <a href="10th-st.html" class="card-detail">
+            Explore Property
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.airbnb.com/rooms/1371543678014557369" target="_blank" class="card-link">
+            Airbnb
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -530,10 +555,16 @@
         <div class="card-title">Villa Maganda</div>
         <div class="card-meta">4 Bed · 3 Bath · Short-Term</div>
         <p class="card-desc">A sleek, architect-designed retreat with a resort-style pool, spa, and floor-to-ceiling glass opening onto a lush private yard. Contemporary interiors with a warm tropical edge.</p>
-        <a href="https://www.airbnb.com/rooms/1297056429185208299" target="_blank" class="card-link">
-          View on Airbnb
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="card-actions">
+          <a href="23rd-rd.html" class="card-detail">
+            Explore Property
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.airbnb.com/rooms/1297056429185208299" target="_blank" class="card-link">
+            Airbnb
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -547,10 +578,16 @@
         <div class="card-title">Buko House</div>
         <div class="card-meta">3 Bed · 2 Bath · Short-Term</div>
         <p class="card-desc">The Buko House is a luminous, plant-forward sanctuary with a pristine pool and spa, open living spaces, and a relaxed boutique-hotel energy just minutes from Coconut Grove.</p>
-        <a href="https://www.airbnb.com/rooms/1376844965121549879" target="_blank" class="card-link">
-          View on Airbnb
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="card-actions">
+          <a href="13th-st.html" class="card-detail">
+            Explore Property
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.airbnb.com/rooms/1376844965121549879" target="_blank" class="card-link">
+            Airbnb
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -564,10 +601,16 @@
         <div class="card-title">Villa Armaza</div>
         <div class="card-meta">4 Bed · 4 Bath · Short-Term</div>
         <p class="card-desc">A villa in Brickell with a massive resort-style pool, covered outdoor kitchen, and lush tropical grounds. One of Miami's most impressive short-term rental offerings — 4.96 stars across 120+ reviews.</p>
-        <a href="https://www.airbnb.com/rooms/587750272435957342" target="_blank" class="card-link">
-          View on Airbnb
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="card-actions">
+          <a href="22nd-rd.html" class="card-detail">
+            Explore Property
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.airbnb.com/rooms/587750272435957342" target="_blank" class="card-link">
+            Airbnb
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -581,10 +624,16 @@
         <div class="card-title">Four Winds Trail</div>
         <div class="card-meta">3 Bed · 2 Bath · Short-Term</div>
         <p class="card-desc">A curated desert retreat in Yucca Valley — earthy textures, warm interiors, a hot tub under the stars, fire pit, and panoramic mountain views. A Joshua Tree experience at its finest.</p>
-        <a href="https://www.airbnb.com/rooms/52732943" target="_blank" class="card-link">
-          View on Airbnb
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="card-actions">
+          <a href="jemez.html" class="card-detail">
+            Explore Property
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.airbnb.com/rooms/52732943" target="_blank" class="card-link">
+            Airbnb
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
