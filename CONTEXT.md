@@ -132,61 +132,93 @@ document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='E
 ### Goal
 Add a multi-property availability calendar to the website showing which dates are booked vs. available across the 5 Miami properties (Jemez optional).
 
-### Data source: bookings.json (already exists — use this, NOT iCal)
+### Data architecture (three layers)
 
-The FP&A daily pipeline (Nalbana_FPA repo) already ingests booking confirmation emails from Gmail every day at 9 AM ET and publishes the result to GitHub Pages:
+#### Layer 1 — iCal feeds (availability truth)
+Airbnb exposes a private iCal `.ics` URL per listing. This is the **ground truth** for blocked dates — it captures everything: confirmed Airbnb bookings, manually blocked dates, maintenance holds, LTR blocks. A scheduled GitHub Action on the Nalbana-Site repo fetches all 5 Miami iCal feeds on a schedule (every 1–2 hours), parses VEVENT blocked ranges, and writes `availability.json` to the repo. The calendar page reads this file (same-origin, no CORS).
 
-**Live URL:** `https://nalbanders.github.io/Nalbana_FPA/bookings.json`
+**iCal URLs needed** — Armen to provide (Airbnb → Hosting → select property → Calendar → Export calendar → copy `.ics` URL):
+- Villa Marqueza (10th)
+- Villa Nalbana (21st)
+- Villa Armaza (22nd)
+- Villa Maganda (23rd)
+- Buko House (13th)
 
-GitHub Pages serves with `Access-Control-Allow-Origin: *` so the calendar page can `fetch()` this URL directly cross-origin — no proxy, no new infrastructure needed.
+**Non-Airbnb occupancy** (leases, direct bookings): Armen manually blocks the dates on Airbnb → iCal automatically captures the block. The *reason* is passed separately via Layer 3.
 
-### bookings.json schema
+#### Layer 2 — bookings.json (Airbnb enrichment)
+Already published daily at `https://nalbanders.github.io/Nalbana_FPA/bookings.json` by the FP&A pipeline (9 AM ET). Overlaid on top of iCal to enrich confirmed Airbnb blocks with guest name, payout, hometown etc. **Not** the availability source of truth — iCal is.
+
+**bookings.json schema:**
 ```json
 {
   "CONFIRMATION_CODE": {
-    "guest_name": "...",
     "property": "10th" | "21st" | "22nd" | "23rd" | "13th" | "jemez",
-    "listing_id": "...",
     "check_in": "YYYY-MM-DD",
     "check_out": "YYYY-MM-DD",
-    "nights": N,
-    "payout": 0.00,
     "status": "confirmed" | "canceled",
-    "platform": "airbnb",
-    "ingested_at": "ISO timestamp",
-    "booked_at": "YYYY-MM-DD",
+    "guest_name": "...",
+    "payout": 0.00,
+    "nights": N,
     "guests": N,
     "hometown": "..."
   }
 }
 ```
 
-- **37 bookings** as of May 12, 2026
-- **Date range:** 2026-04-30 → 2026-07-23
-- **Filter:** use only `status === "confirmed"` for blocked dates
-- **Updated:** daily at 9 AM ET automatically by the pipeline
+#### Layer 3 — occupancy_notes.json (non-Airbnb annotation)
+Labels manually-blocked iCal ranges with a reason (lease, direct booking, maintenance). Populated via email — the unified input channel for all non-Airbnb occupancy. No separate form or backend needed.
 
-### Pipeline source (Nalbana_FPA repo)
-- **Repo:** `https://github.com/nalbanders/Nalbana_FPA`
-- **Workflow:** `.github/workflows/daily_pipeline.yml` — step "Ingest booking emails" runs `agents/fp-and-a/booking_ingester.py`, writes `agents/fp-and-a/bookings.json`, then copies to `docs/bookings.json`
-- **Local path:** `/Users/nalband/Dropbox/Portfolio Management/Nalbana_FPA/agents/fp-and-a/bookings.json`
+**Email convention:**
+- **To:** pipeline Gmail address (same one booking_ingester.py reads)
+- **Subject:** `OCCUPANCY — [property nickname]` e.g. `OCCUPANCY — Villa Nalbana`
+- **Body or attachment:** anything — pipeline uses Claude to extract dates/type/notes from whatever is present (structured text for direct bookings, forwarded PDF for leases)
+
+**Direct booking example email body:**
+```
+Guest: John Smith
+Dates: Aug 1–10 2026
+Rate: $500/night
+Notes: friend of Armen, no cleaning fee
+```
+
+**Lease example:** just forward the lease PDF with subject `OCCUPANCY — Buko House`
+
+**Pipeline:** extend `booking_ingester.py` (or add `occupancy_ingester.py`) to look for `OCCUPANCY —` subject pattern, call Claude API to extract structured fields, write to `agents/fp-and-a/occupancy_notes.json` → synced to `docs/` by the existing GitHub Action.
+
+**Calendar UX:** a "Record Booking" button on `calendar.html` opens a pre-filled `mailto:` link with subject template already set — one click, fill in the blanks, send.
+
+**occupancy_notes.json schema (proposed):**
+```json
+[
+  {
+    "property": "21st",
+    "start": "2026-08-01",
+    "end": "2026-08-10",
+    "type": "direct" | "lease" | "maintenance" | "hold",
+    "note": "John Smith — friend rate $500/night",
+    "ingested_at": "ISO timestamp"
+  }
+]
+```
 
 ### Calendar UI design (reference: Airbnb multi-listing calendar)
 - Horizontal timeline: X-axis = dates (scrollable, show ~8–10 weeks ahead)
-- Y-axis = one row per Miami property (label with property nickname)
-- Confirmed bookings = blocked/dark fill (diagonal hatch pattern like Airbnb)
-- Available dates = light / open
-- No need to show guest names or prices — just available vs. blocked
-- Should match the Nalbana site design system (dark/gold/serif aesthetic)
-- Lives on a dedicated `calendar.html` page linked from the nav on index.html
-- Password protected with same sessionStorage auth pattern as other pages
+- Y-axis = one row per Miami property (labeled with property nickname)
+- Blocked dates: dark/hatched fill — Airbnb blocks shown differently from lease/direct blocks
+- Available dates: light/open
+- Hover/tooltip: show enrichment from bookings.json (guest name, nights, payout) or occupancy note reason
+- No need to show guest names in the main view — just available vs. blocked
+- Matches Nalbana site design system (dark/gold/serif aesthetic)
+- Lives on a dedicated `calendar.html` linked from the nav on index.html
+- Password protected with same sessionStorage auth pattern (AUTH_KEY = 'nalbana_auth', password = '1986')
 
-### Property name mapping (bookings.json → display name)
-| bookings.json `property` | Display name |
-|---|---|
-| `10th` | Villa Marqueza |
-| `21st` | Villa Nalbana |
-| `22nd` | Villa Armaza |
-| `23rd` | Villa Maganda |
-| `13th` | Buko House |
-| `jemez` | Four Winds Trail |
+### Property name mapping
+| iCal / bookings.json key | Display name | Airbnb listing ID |
+|---|---|---|
+| `10th` | Villa Marqueza | 1371543678014557369 |
+| `21st` | Villa Nalbana | 51283421 |
+| `22nd` | Villa Armaza | 587750272435957342 |
+| `23rd` | Villa Maganda | 1297056429185208299 |
+| `13th` | Buko House | 1376844965121549879 |
+| `jemez` | Four Winds Trail | 52732943 (optional — CA property) |

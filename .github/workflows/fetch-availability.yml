@@ -1,0 +1,58 @@
+name: Fetch Availability
+
+# Runs every 2 hours and can be triggered manually from the GitHub UI.
+# Fetches each property's private Airbnb iCal feed, parses blocked date
+# ranges, and writes availability.json to the repo root. GitHub Pages
+# then serves the file at:
+#   https://nalbanders.github.io/Nalbana-Site/availability.json
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   ICAL_10TH   — Villa Marqueza iCal URL
+#   ICAL_21ST   — Villa Nalbana  iCal URL
+#   ICAL_22ND   — Villa Armaza   iCal URL
+#   ICAL_23RD   — Villa Maganda  iCal URL
+#   ICAL_13TH   — Buko House     iCal URL
+#   ICAL_JEMEZ  — Four Winds Trail iCal URL  (optional)
+
+on:
+  schedule:
+    - cron: '15 */2 * * *'   # Every 2 hours at :15 past the hour
+  workflow_dispatch:           # Manual trigger via GitHub UI → Actions tab
+
+permissions:
+  contents: write              # Needed to commit availability.json back to the repo
+
+jobs:
+  fetch-availability:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch iCal feeds and write availability.json
+        env:
+          ICAL_10TH:  ${{ secrets.ICAL_10TH }}
+          ICAL_21ST:  ${{ secrets.ICAL_21ST }}
+          ICAL_22ND:  ${{ secrets.ICAL_22ND }}
+          ICAL_23RD:  ${{ secrets.ICAL_23RD }}
+          ICAL_13TH:  ${{ secrets.ICAL_13TH }}
+          ICAL_JEMEZ: ${{ secrets.ICAL_JEMEZ }}
+        run: python fetch_availability.py
+
+      - name: Commit and push availability.json if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add availability.json
+          if git diff --staged --quiet; then
+            echo "availability.json unchanged — nothing to commit."
+          else
+            git commit -m "chore: update availability.json [skip ci]"
+            git push
+          fi
