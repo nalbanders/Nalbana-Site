@@ -477,10 +477,6 @@
 const SITE_PASSWORD = '1986';
 const AUTH_KEY = 'nalbana_auth';
 
-if (sessionStorage.getItem(AUTH_KEY) === '1') {
-  document.getElementById('pw-overlay').style.display = 'none';
-  init();
-}
 function checkPassword() {
   if (document.getElementById('pw-input').value === SITE_PASSWORD) {
     sessionStorage.setItem(AUTH_KEY, '1');
@@ -822,6 +818,12 @@ document.addEventListener('mousemove', e => {
   scrollWrap.scrollLeft = dragScrollL - (e.pageX - scrollWrap.offsetLeft - dragStartX);
 });
 document.addEventListener('mouseup', () => { isDragging = false; });
+
+// Auth check — runs after all consts are declared
+if (sessionStorage.getItem(AUTH_KEY) === '1') {
+  document.getElementById('pw-overlay').style.display = 'none';
+  init();
+}
 
 /* ════════════════════════════════════════
    INIT
