@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Property Calendar — Nalbana Properties</title>
+  <title>Portfolio Calendar — Nalbana Properties</title>
   <style>
     /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,7 +71,7 @@
     }
     .nav-links a {
       font-size: 12px; letter-spacing: 0.18em;
-      text-transform: uppercase; color: #5a5048;
+      text-transform: uppercase; color: #7a6a58;
       transition: color 0.2s;
     }
     .nav-links a:hover { color: #c8b89a; }
@@ -81,72 +81,17 @@
     .page-header {
       padding: 110px 48px 44px;
       background: #0f0f0e;
-      border-bottom: 1px solid #1e1c1a;
-    }
-    .page-header-row {
-      display: flex; align-items: flex-end;
-      justify-content: space-between; gap: 32px;
-      flex-wrap: wrap;
-    }
-    .page-eyebrow {
-      font-size: 11px; letter-spacing: 0.3em;
-      text-transform: uppercase; color: #5a4a3a;
-      margin-bottom: 14px;
+      border-bottom: 1px solid #2a2826;
     }
     .page-title {
-      font-size: 38px; font-weight: 400;
-      color: #e0d8cc; letter-spacing: 0.01em;
+      font-size: 42px; font-weight: 400;
+      font-style: italic; color: #c8a878;
+      letter-spacing: 0.02em;
       line-height: 1.1; margin-bottom: 10px;
     }
-    .page-title em { font-style: italic; color: #c8a878; }
     .page-meta {
-      font-size: 11px; color: #4a4038;
+      font-size: 11px; color: #6a5a48;
       letter-spacing: 0.1em;
-    }
-
-    /* ── Record Booking Button ── */
-    .record-wrap { position: relative; flex-shrink: 0; }
-    .btn-record {
-      display: flex; align-items: center; gap: 8px;
-      padding: 13px 22px;
-      background: transparent;
-      border: 1px solid #a89070;
-      color: #a89070;
-      font-family: 'Georgia', serif;
-      font-size: 11px; letter-spacing: 0.22em;
-      text-transform: uppercase; cursor: pointer;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .btn-record:hover { background: #a89070; color: #0f0f0e; }
-    .btn-record svg { width: 14px; height: 14px; }
-    .record-menu {
-      position: absolute; right: 0; top: calc(100% + 6px);
-      background: #161412;
-      border: 1px solid #2e2a24;
-      min-width: 210px; z-index: 200;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-      display: none;
-    }
-    .record-menu.open { display: block; }
-    .record-menu-title {
-      padding: 10px 18px 8px;
-      font-size: 9px; letter-spacing: 0.25em;
-      text-transform: uppercase; color: #4a4038;
-      border-bottom: 1px solid #242018;
-    }
-    .record-menu-item {
-      padding: 12px 18px;
-      font-size: 12px; letter-spacing: 0.08em;
-      color: #a09080; cursor: pointer;
-      transition: all 0.15s;
-      border-bottom: 1px solid #1e1c18;
-    }
-    .record-menu-item:last-child { border-bottom: none; }
-    .record-menu-item:hover { background: #1e1c18; color: #d4b896; }
-    .record-menu-item .prop-addr-sm {
-      display: block; font-size: 10px;
-      color: #4a4038; margin-top: 2px;
-      letter-spacing: 0.05em;
     }
 
     /* ── Calendar Section ── */
@@ -162,7 +107,7 @@
     .cal-scroll-wrap::-webkit-scrollbar { height: 4px; }
     .cal-scroll-wrap::-webkit-scrollbar-track { background: #0a0a09; }
     .cal-scroll-wrap::-webkit-scrollbar-thumb {
-      background: #2e2826; border-radius: 2px;
+      background: #3a3530; border-radius: 2px;
     }
     .cal-scroll-wrap::-webkit-scrollbar-thumb:hover { background: #a89070; }
 
@@ -172,132 +117,141 @@
       min-width: max-content;
     }
 
-    /* Corner cells (sticky on both axes) */
+    /* Corner cells */
     .cal-corner-mo, .cal-corner-day {
       position: sticky; left: 0; z-index: 22;
       background: #0c0c0b;
-      min-width: 186px; max-width: 186px; width: 186px;
-      border-right: 1px solid #2a2826;
+      min-width: 224px; max-width: 224px; width: 224px;
+      border-right: 1px solid #2e2c28;
     }
     .cal-corner-mo  { border-bottom: none; }
-    .cal-corner-day { border-bottom: 1px solid #222018; }
+    .cal-corner-day { border-bottom: 1px solid #2a2826; }
 
     /* Month header row */
     .month-header {
       background: #0c0c0b;
-      color: #7a6a50;
+      color: #a08060;
       font-family: 'Georgia', serif;
       font-size: 10px; letter-spacing: 0.22em;
       text-transform: uppercase;
       text-align: left; padding: 14px 10px 10px;
       border-bottom: none;
-      border-right: 1px solid #1a1816;
+      border-right: 1px solid #1e1c18;
       white-space: nowrap; vertical-align: bottom;
     }
-    .month-header.month-boundary {
-      border-left: 1px solid #2a2826;
-    }
+    .month-header.month-boundary { border-left: 1px solid #2e2c28; }
 
     /* Day header row */
     .day-header {
       background: #0f0f0e;
-      color: #3e3630;
       font-size: 10px; text-align: center;
       padding: 5px 0 10px;
       min-width: 38px; max-width: 38px; width: 38px;
-      border-bottom: 1px solid #222018;
-      border-right: 1px solid #161412;
+      border-bottom: 1px solid #2a2826;
+      border-right: 1px solid #1e1c18;
       vertical-align: bottom;
     }
     .day-header .dow {
       display: block;
       font-family: 'Georgia', serif;
       font-size: 9px; letter-spacing: 0.04em;
-      text-transform: uppercase; color: #302a24;
+      text-transform: uppercase; color: #5a5048;
     }
     .day-header .dom {
-      display: block; font-size: 13px;
-      color: #5a5048; margin-top: 3px;
+      display: block; font-size: 14px;
+      color: #8a7a68; margin-top: 3px;
       font-family: 'Georgia', serif;
     }
-    .day-header.weekend .dom { color: #4a4038; }
-    .day-header.today-head { background: #121110; }
-    .day-header.today-head .dow { color: #6a5a3a; }
-    .day-header.today-head .dom { color: #c8a878; }
-    .day-header.month-boundary { border-left: 1px solid #2a2826; }
+    .day-header.weekend .dom { color: #6a5a48; }
+    .day-header.month-boundary { border-left: 1px solid #2e2c28; }
+
+    /* Today header — gold text + "TODAY" marker */
+    .day-header.today-head { background: #131210; }
+    .day-header.today-head .dow {
+      color: #a89070;
+      font-size: 8px; letter-spacing: 0.08em;
+    }
+    .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
 
     /* Property label cells */
     .prop-label {
       position: sticky; left: 0; z-index: 10;
       background: #0f0f0e;
-      min-width: 186px; max-width: 186px; width: 186px;
-      height: 58px;
-      border-right: 1px solid #2a2826;
-      border-bottom: 1px solid #1a1816;
-      padding: 0 20px;
+      min-width: 224px; max-width: 224px; width: 224px;
+      height: 64px;
+      border-right: 1px solid #2e2c28;
+      border-bottom: 1px solid #1e1c18;
+      padding: 0;
       vertical-align: middle;
-      white-space: nowrap;
+      overflow: hidden;
     }
     .prop-label-inner {
-      display: flex; flex-direction: column; gap: 3px;
+      display: flex; align-items: stretch; height: 100%;
+    }
+    .prop-thumb {
+      width: 72px; height: 64px;
+      object-fit: cover; flex-shrink: 0;
+      filter: brightness(0.42) saturate(0.55);
+      transition: filter 0.3s;
+    }
+    .prop-label:hover .prop-thumb {
+      filter: brightness(0.6) saturate(0.7);
+    }
+    .prop-text {
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 4px;
+      padding: 0 14px;
     }
     .prop-name {
       font-family: 'Georgia', serif;
-      font-size: 12px; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #a09070;
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #c8b090;
     }
     .prop-addr-label {
-      font-size: 10px; color: #3e3830;
+      font-size: 10px; color: #7a6a58;
       letter-spacing: 0.05em;
     }
 
     /* Day cells */
     .day-cell {
       width: 38px; min-width: 38px; max-width: 38px;
-      height: 58px;
-      border-right: 1px solid #161412;
-      border-bottom: 1px solid #1a1816;
+      height: 64px;
+      border-right: 1px solid #1a1816;
+      border-bottom: 1px solid #1e1c18;
       position: relative;
       cursor: default;
-      /* CSS custom properties for block styling */
-      --blk-bg:  #252220;
+      --blk-bg:  #3a3835;
       --blk-il:  0px;
       --blk-ir:  0px;
       --blk-rl:  0px;
       --blk-rr:  0px;
     }
-    .day-cell.weekend  { background: rgba(255,255,255,0.004); }
-    .day-cell.today-col { background: rgba(168,144,112,0.03); }
-    .day-cell.today-col::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 2px; background: #a89070; z-index: 2;
-    }
-    .day-cell.month-boundary { border-left: 1px solid #2a2826; }
+    .day-cell.weekend  { background: rgba(255,255,255,0.006); }
+    .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
 
-    /* Blocked cell — visual block via ::before */
+    /* Blocked cell */
     .day-cell.blocked { cursor: pointer; }
     .day-cell.blocked::before {
       content: '';
       position: absolute;
-      top: 9px; bottom: 9px;
+      top: 10px; bottom: 10px;
       left: var(--blk-il); right: var(--blk-ir);
       background: var(--blk-bg);
       border-radius: var(--blk-rl) var(--blk-rr) var(--blk-rr) var(--blk-rl);
       z-index: 1;
       transition: filter 0.12s;
     }
-    .day-cell.blocked:hover::before { filter: brightness(1.6); }
+    .day-cell.blocked:hover::before { filter: brightness(1.5); }
 
-    /* Block type colors */
-    .day-cell.blk-airbnb_confirmed { --blk-bg: #201e1c; }
-    .day-cell.blk-airbnb_block     { --blk-bg: #2a2724; }
-    .day-cell.blk-direct           { --blk-bg: #2c2218; }
-    .day-cell.blk-lease            { --blk-bg: #162228; }
-    .day-cell.blk-maintenance      { --blk-bg: #262618; }
-    .day-cell.blk-hold             { --blk-bg: #221820; }
+    /* Block type colors — visible against dark background */
+    .day-cell.blk-airbnb_confirmed { --blk-bg: #484440; }
+    .day-cell.blk-airbnb_block     { --blk-bg: #383430; }
+    .day-cell.blk-direct           { --blk-bg: #4a3828; }
+    .day-cell.blk-lease            { --blk-bg: #1e3848; }
+    .day-cell.blk-maintenance      { --blk-bg: #3a3a20; }
+    .day-cell.blk-hold             { --blk-bg: #3a2030; }
 
-    /* Block position modifiers (adjust insets + border-radius) */
+    /* Block pill positions */
     .day-cell.bk-start { --blk-il: 4px; --blk-rl: 5px; }
     .day-cell.bk-end   { --blk-ir: 4px; --blk-rr: 5px; }
     .day-cell.bk-solo  { --blk-il: 4px; --blk-ir: 4px; --blk-rl: 5px; --blk-rr: 5px; }
@@ -306,7 +260,7 @@
     #cal-tooltip {
       position: fixed; z-index: 900;
       background: #161412;
-      border: 1px solid #302c28;
+      border: 1px solid #3a3530;
       padding: 14px 16px;
       min-width: 196px; max-width: 250px;
       box-shadow: 0 16px 48px rgba(0,0,0,0.75);
@@ -325,7 +279,7 @@
       font-family: 'Georgia', serif;
     }
     .tt-dates {
-      font-size: 11px; color: #7a6a58;
+      font-size: 11px; color: #8a7a68;
       margin-bottom: 10px; padding-bottom: 10px;
       border-bottom: 1px solid #2a2826;
     }
@@ -333,29 +287,25 @@
       display: flex; justify-content: space-between;
       gap: 12px; margin-bottom: 4px; font-size: 11px;
     }
-    .tt-row .tt-k { color: #4a4038; letter-spacing: 0.05em; }
-    .tt-row .tt-v { color: #b0a080; text-align: right; }
+    .tt-row .tt-k { color: #5a5048; letter-spacing: 0.05em; }
+    .tt-row .tt-v { color: #c0a880; text-align: right; }
     .tt-note {
-      font-size: 11px; color: #6a5a48;
+      font-size: 11px; color: #7a6a58;
       font-style: italic; margin-top: 8px;
       padding-top: 8px; border-top: 1px solid #2a2826;
       line-height: 1.5;
-    }
-    .tt-avail {
-      font-size: 12px; color: #4a6a4a;
-      font-family: 'Georgia', serif;
     }
 
     /* ── Legend ── */
     .cal-legend {
       padding: 18px 48px;
       background: #0c0c0b;
-      border-top: 1px solid #1e1c1a;
+      border-top: 1px solid #2a2826;
       display: flex; align-items: center;
       gap: 24px; flex-wrap: wrap;
     }
     .legend-section-label {
-      font-size: 9px; color: #3a3028;
+      font-size: 9px; color: #5a5048;
       letter-spacing: 0.2em; text-transform: uppercase;
     }
     .legend-item {
@@ -365,16 +315,16 @@
       width: 22px; height: 10px; border-radius: 3px;
     }
     .legend-text {
-      font-size: 10px; color: #5a5048;
+      font-size: 10px; color: #7a6a58;
       letter-spacing: 0.08em;
     }
-    .legend-div { width: 1px; height: 14px; background: #252220; }
+    .legend-div { width: 1px; height: 14px; background: #2a2826; }
 
     /* ── Status bar ── */
     .cal-status {
       padding: 11px 48px;
       background: #0a0a09;
-      border-top: 1px solid #141210;
+      border-top: 1px solid #161412;
       display: flex; align-items: center;
       justify-content: space-between; flex-wrap: wrap; gap: 8px;
     }
@@ -386,7 +336,7 @@
     .status-dot.stale   { background: #7a4a2a; }
     .status-dot.loading { background: #4a6a7a; }
     .status-text {
-      font-size: 10px; color: #3a3028;
+      font-size: 10px; color: #5a5048;
       letter-spacing: 0.1em;
     }
 
@@ -397,20 +347,18 @@
       display: flex; align-items: center;
       justify-content: space-between;
       flex-wrap: wrap; gap: 24px;
-      border-top: 1px solid #1a1816;
+      border-top: 1px solid #2a2826;
     }
     .footer-logo {
       font-size: 11px; letter-spacing: 0.3em;
-      text-transform: uppercase; color: #6a5a4a;
+      text-transform: uppercase; color: #7a6a58;
     }
-    .footer-copy {
-      font-size: 11px; letter-spacing: 0.1em; color: #3a3030;
-    }
+    .footer-copy { font-size: 11px; letter-spacing: 0.1em; color: #4a3a30; }
 
-    /* ── Loading / empty states ── */
+    /* ── Loading state ── */
     .cal-loading {
       padding: 80px 48px; text-align: center;
-      color: #3a3028; font-size: 11px;
+      color: #4a4038; font-size: 11px;
       letter-spacing: 0.2em; text-transform: uppercase;
     }
 
@@ -424,8 +372,7 @@
     }
     @media (max-width: 600px) {
       .nav-links { display: none; }
-      .page-header-row { flex-direction: column; align-items: flex-start; }
-      .page-title { font-size: 28px; }
+      .page-title { font-size: 30px; }
     }
   </style>
 </head>
@@ -459,48 +406,8 @@
      PAGE HEADER
 ══════════════════════════════════════ -->
 <div class="page-header">
-  <div class="page-header-row">
-    <div>
-      <div class="page-eyebrow">Portfolio · Miami</div>
-      <h1 class="page-title">Availability <em>Calendar</em></h1>
-      <div class="page-meta" id="updated-time">Fetching availability data…</div>
-    </div>
-    <div class="record-wrap">
-      <button class="btn-record" id="btn-record" onclick="toggleRecordMenu(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
-        Record Booking
-      </button>
-      <div class="record-menu" id="record-menu">
-        <div class="record-menu-title">Select property</div>
-        <div class="record-menu-item" onclick="recordBooking('Villa Marqueza')">
-          Villa Marqueza
-          <span class="prop-addr-sm">1745 SW 10th St</span>
-        </div>
-        <div class="record-menu-item" onclick="recordBooking('Villa Nalbana')">
-          Villa Nalbana
-          <span class="prop-addr-sm">341 SW 21st Rd</span>
-        </div>
-        <div class="record-menu-item" onclick="recordBooking('Villa Armaza')">
-          Villa Armaza
-          <span class="prop-addr-sm">620 SW 22nd Rd</span>
-        </div>
-        <div class="record-menu-item" onclick="recordBooking('Villa Maganda')">
-          Villa Maganda
-          <span class="prop-addr-sm">SW 23rd Rd</span>
-        </div>
-        <div class="record-menu-item" onclick="recordBooking('Buko House')">
-          Buko House
-          <span class="prop-addr-sm">1860 SW 13th St</span>
-        </div>
-        <div class="record-menu-item" onclick="recordBooking('Four Winds Trail')">
-          Four Winds Trail
-          <span class="prop-addr-sm">329 Jemez Trl, Yucca Valley CA</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <h1 class="page-title">Portfolio Calendar</h1>
+  <div class="page-meta" id="updated-time">Fetching availability data…</div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -518,25 +425,25 @@
 <div class="cal-legend">
   <span class="legend-section-label">Airbnb</span>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#201e1c;border:1px solid #302e2a"></div>
+    <div class="legend-swatch" style="background:#484440"></div>
     <span class="legend-text">Confirmed Booking</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#2a2724;border:1px solid #383430"></div>
+    <div class="legend-swatch" style="background:#383430"></div>
     <span class="legend-text">Blocked / Hold</span>
   </div>
   <div class="legend-div"></div>
   <span class="legend-section-label">Non-Airbnb</span>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#2c2218;border:1px solid #3e3020"></div>
+    <div class="legend-swatch" style="background:#4a3828"></div>
     <span class="legend-text">Direct Booking</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#162228;border:1px solid #1e3038"></div>
+    <div class="legend-swatch" style="background:#1e3848"></div>
     <span class="legend-text">Lease</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#262618;border:1px solid #343420"></div>
+    <div class="legend-swatch" style="background:#3a3a20"></div>
     <span class="legend-text">Maintenance</span>
   </div>
 </div>
@@ -592,20 +499,20 @@ document.getElementById('pw-input').addEventListener('keydown', e => {
    CONFIG
 ════════════════════════════════════════ */
 const PROPERTIES = [
-  { key: '10th',  name: 'Villa Marqueza',   addr: '1745 SW 10th St' },
-  { key: '21st',  name: 'Villa Nalbana',    addr: '341 SW 21st Rd' },
-  { key: '22nd',  name: 'Villa Armaza',     addr: '620 SW 22nd Rd' },
-  { key: '23rd',  name: 'Villa Maganda',    addr: 'SW 23rd Rd' },
-  { key: '13th',  name: 'Buko House',       addr: '1860 SW 13th St' },
-  { key: 'jemez', name: 'Four Winds Trail', addr: 'Yucca Valley, CA' },
+  { key: '10th',  name: 'Villa Marqueza',   addr: '1745 SW 10th St',   img: '10th St Listing/airbnb-001-9cf1da23.jpg' },
+  { key: '21st',  name: 'Villa Nalbana',    addr: '341 SW 21st Rd',    img: '21st Rd Listing/airbnb-001-812cdfd6.jpg' },
+  { key: '22nd',  name: 'Villa Armaza',     addr: '620 SW 22nd Rd',    img: '22nd Rd Listing/cover-2J9A4615.jpg' },
+  { key: '23rd',  name: 'Villa Maganda',    addr: 'SW 23rd Rd',        img: '23rd Rd Listing/airbnb-001-5ca57cc9.jpg' },
+  { key: '13th',  name: 'Buko House',       addr: '1860 SW 13th St',   img: '13th St Listing/airbnb-001-81c30a40.jpg' },
+  { key: 'jemez', name: 'Four Winds Trail', addr: 'Yucca Valley, CA',  img: 'Jemez Listing/airbnb-044-d34cd7c8.jpg' },
 ];
 
 const AVAILABILITY_URL = './availability.json';
 const BOOKINGS_URL     = 'https://nalbanders.github.io/Nalbana_FPA/bookings.json';
 const OCCUPANCY_URL    = './occupancy_notes.json';
 
-const DAYS_BEFORE = 7;   // Show this many days before today
-const DAYS_TOTAL  = 120; // Total days in the calendar window
+const DAYS_BEFORE = 7;
+const DAYS_TOTAL  = 120;
 
 /* ════════════════════════════════════════
    DATE UTILITIES
@@ -620,9 +527,7 @@ function fromYMD(s) {
   return new Date(y, m - 1, d);
 }
 function addDays(d, n) {
-  const nd = new Date(d);
-  nd.setDate(nd.getDate() + n);
-  return nd;
+  const nd = new Date(d); nd.setDate(nd.getDate() + n); return nd;
 }
 function fmtShort(s) {
   return fromYMD(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -646,25 +551,24 @@ async function loadData() {
 
 /* ════════════════════════════════════════
    BLOCK LOOKUP
-   Returns: { propKey: { 'YYYY-MM-DD': { type, bk?, note? } } }
 ════════════════════════════════════════ */
 function buildLookup(avail, bookings, occupancy) {
   const lookup = {};
   PROPERTIES.forEach(p => {
     lookup[p.key] = {};
 
-    // Layer 1 — iCal blocks (ground truth for all blocked dates)
+    // Layer 1 — iCal blocks
     const ranges = avail?.properties?.[p.key] || [];
     ranges.forEach(r => {
       let d = fromYMD(r.start);
-      const end = fromYMD(r.end); // DTEND is exclusive (iCal convention)
+      const end = fromYMD(r.end);
       while (d < end) {
         lookup[p.key][toYMD(d)] = { type: 'airbnb_block' };
         d = addDays(d, 1);
       }
     });
 
-    // Layer 2 — Enrich with bookings.json (confirmed Airbnb reservations)
+    // Layer 2 — Bookings.json enrichment
     if (bookings) {
       Object.entries(bookings).forEach(([code, bk]) => {
         if (bk.property !== p.key || bk.status !== 'confirmed') return;
@@ -672,24 +576,20 @@ function buildLookup(avail, bookings, occupancy) {
         const end = fromYMD(bk.check_out);
         while (d < end) {
           const ds = toYMD(d);
-          if (lookup[p.key][ds]) {
-            lookup[p.key][ds] = { type: 'airbnb_confirmed', code, bk };
-          }
+          if (lookup[p.key][ds]) lookup[p.key][ds] = { type: 'airbnb_confirmed', code, bk };
           d = addDays(d, 1);
         }
       });
     }
 
-    // Layer 3 — Overlay occupancy_notes.json (direct bookings, leases, etc.)
+    // Layer 3 — Occupancy notes
     if (Array.isArray(occupancy)) {
       occupancy.filter(n => n.property === p.key).forEach(note => {
         let d = fromYMD(note.start);
         const end = fromYMD(note.end);
         while (d < end) {
           const ds = toYMD(d);
-          if (lookup[p.key][ds]) {
-            lookup[p.key][ds] = { type: note.type || 'direct', note };
-          }
+          if (lookup[p.key][ds]) lookup[p.key][ds] = { type: note.type || 'direct', note };
           d = addDays(d, 1);
         }
       });
@@ -698,7 +598,6 @@ function buildLookup(avail, bookings, occupancy) {
   return lookup;
 }
 
-// Returns a group ID so consecutive same-booking days are merged visually
 function groupId(block) {
   if (!block) return null;
   if (block.type === 'airbnb_confirmed' && block.code) return block.code;
@@ -718,9 +617,8 @@ function renderCalendar(lookup, updatedAt) {
 
   const tbl = document.createElement('table');
   tbl.className = 'cal-table';
-  tbl.setAttribute('role', 'grid');
 
-  /* ── thead: month row + day row ── */
+  /* ── thead ── */
   const thead = document.createElement('thead');
 
   // Row 1: month spans
@@ -734,20 +632,17 @@ function renderCalendar(lookup, updatedAt) {
     const moKey = d.getFullYear() * 100 + d.getMonth();
     if (moKey !== curMoKey) {
       if (moTH) moTH.colSpan = moCount;
-      curMoKey = moKey;
-      moCount = 1;
+      curMoKey = moKey; moCount = 1;
       moTH = document.createElement('th');
       moTH.className = 'month-header' + (i > 0 ? ' month-boundary' : '');
       moTH.textContent = d.toLocaleString('en-US', { month: 'long' }) + ' ' + d.getFullYear();
       tr1.appendChild(moTH);
-    } else {
-      moCount++;
-    }
+    } else { moCount++; }
     if (i === dates.length - 1 && moTH) moTH.colSpan = moCount;
   });
   thead.appendChild(tr1);
 
-  // Row 2: individual day headers
+  // Row 2: day headers
   const tr2 = document.createElement('tr');
   const corner2 = document.createElement('th');
   corner2.className = 'cal-corner-day';
@@ -765,23 +660,27 @@ function renderCalendar(lookup, updatedAt) {
     if (moKey !== prevMoKey2 && prevMoKey2 !== null) th.classList.add('month-boundary');
     prevMoKey2 = moKey;
     th.dataset.date = ds;
-    th.innerHTML = `<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>`;
+    const dowLabel = ds === todayStr ? 'Today' : DOW[dow];
+    th.innerHTML = `<span class="dow">${dowLabel}</span><span class="dom">${d.getDate()}</span>`;
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
   tbl.appendChild(thead);
 
-  /* ── tbody: one row per property ── */
+  /* ── tbody ── */
   const tbody = document.createElement('tbody');
   PROPERTIES.forEach(prop => {
     const tr = document.createElement('tr');
 
-    // Sticky property label
+    // Property label with thumbnail
     const label = document.createElement('td');
     label.className = 'prop-label';
     label.innerHTML = `<div class="prop-label-inner">
-      <span class="prop-name">${prop.name}</span>
-      <span class="prop-addr-label">${prop.addr}</span>
+      <img src="${prop.img}" class="prop-thumb" alt="${prop.name}" loading="lazy">
+      <div class="prop-text">
+        <span class="prop-name">${prop.name}</span>
+        <span class="prop-addr-label">${prop.addr}</span>
+      </div>
     </div>`;
     tr.appendChild(label);
 
@@ -796,14 +695,12 @@ function renderCalendar(lookup, updatedAt) {
       td.className = 'day-cell';
 
       if (dow === 0 || dow === 6) td.classList.add('weekend');
-      if (ds === todayStr) td.classList.add('today-col');
       if (moKey !== prevMoKey3 && prevMoKey3 !== null) td.classList.add('month-boundary');
       prevMoKey3 = moKey;
 
       if (block) {
         td.classList.add('blocked', `blk-${block.type}`);
 
-        // Determine pill position (start / end / solo / mid)
         const prevBlock = propBlocks[toYMD(addDays(d, -1))];
         const nextBlock = propBlocks[toYMD(addDays(d,  1))];
         const sameGroupPrev = groupId(prevBlock) === groupId(block);
@@ -812,11 +709,9 @@ function renderCalendar(lookup, updatedAt) {
         if (!sameGroupPrev && !sameGroupNext) td.classList.add('bk-solo');
         else if (!sameGroupPrev)              td.classList.add('bk-start');
         else if (!sameGroupNext)              td.classList.add('bk-end');
-        // else: mid — no extra class, full-width fill
 
-        // Store data for tooltip
-        td.dataset.prop = prop.name;
-        td.dataset.type = block.type;
+        td.dataset.prop    = prop.name;
+        td.dataset.type    = block.type;
         if (block.bk) {
           td.dataset.guest   = block.bk.guest_name || '';
           td.dataset.payout  = block.bk.payout     || '';
@@ -835,17 +730,16 @@ function renderCalendar(lookup, updatedAt) {
   });
   tbl.appendChild(tbody);
 
-  // Inject table
   const container = document.getElementById('cal-container');
   container.innerHTML = '';
   container.appendChild(tbl);
 
-  // Scroll to position today ~1/4 from left edge
+  // Scroll to today
   requestAnimationFrame(() => {
     const wrap = document.getElementById('cal-scroll-wrap');
     const todayTH = tbl.querySelector('.today-head');
     if (todayTH && wrap) {
-      const propW = 186;
+      const propW = 224;
       const viewW = wrap.clientWidth - propW;
       wrap.scrollLeft = todayTH.offsetLeft - propW - Math.floor(viewW * 0.22);
     }
@@ -857,12 +751,11 @@ function renderCalendar(lookup, updatedAt) {
     const dt = new Date(updatedAt);
     const fmt = dt.toLocaleString('en-US', {
       month: 'short', day: 'numeric',
-      hour: 'numeric', minute: '2-digit',
-      timeZoneName: 'short'
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
     });
     utEl.textContent = `iCal synced ${fmt}`;
     document.getElementById('status-dot').className = 'status-dot';
-    document.getElementById('status-msg').textContent = 'Live — auto-refreshes every 2 hours via GitHub Action';
+    document.getElementById('status-msg').textContent = 'Live — auto-refreshes every 2 hours';
   } else {
     utEl.textContent = 'No availability data yet — run the GitHub Action to sync';
     document.getElementById('status-dot').className = 'status-dot stale';
@@ -874,7 +767,6 @@ function renderCalendar(lookup, updatedAt) {
    TOOLTIP
 ════════════════════════════════════════ */
 const tooltip = document.getElementById('cal-tooltip');
-
 const TYPE_LABELS = {
   airbnb_confirmed: 'Airbnb Booking',
   airbnb_block:     'Airbnb Blocked',
@@ -886,30 +778,24 @@ const TYPE_LABELS = {
 
 document.getElementById('cal-scroll-wrap').addEventListener('mousemove', e => {
   const cell = e.target.closest('.day-cell');
-  if (!cell) { tooltip.style.display = 'none'; return; }
-
-  if (!cell.classList.contains('blocked')) {
-    tooltip.style.display = 'none';
-    return;
+  if (!cell || !cell.classList.contains('blocked')) {
+    tooltip.style.display = 'none'; return;
   }
-
   const { prop, type, guest, payout, checkin, chkout, notetext } = cell.dataset;
   let html = `<div class="tt-prop">${prop}</div>`;
   html += `<div class="tt-type">${TYPE_LABELS[type] || type}</div>`;
-
   if (checkin && chkout) {
     const nights = nightsBetween(checkin, chkout);
     html += `<div class="tt-dates">${fmtShort(checkin)} – ${fmtShort(chkout)}`;
     if (nights > 0) html += ` &middot; ${nights} night${nights !== 1 ? 's' : ''}`;
     html += '</div>';
   }
-  if (guest)   html += `<div class="tt-row"><span class="tt-k">Guest</span><span class="tt-v">${guest}</span></div>`;
-  if (payout)  html += `<div class="tt-row"><span class="tt-k">Payout</span><span class="tt-v">$${Number(payout).toLocaleString('en-US', {maximumFractionDigits: 0})}</span></div>`;
+  if (guest)    html += `<div class="tt-row"><span class="tt-k">Guest</span><span class="tt-v">${guest}</span></div>`;
+  if (payout)   html += `<div class="tt-row"><span class="tt-k">Payout</span><span class="tt-v">$${Number(payout).toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>`;
   if (notetext) html += `<div class="tt-note">${notetext}</div>`;
 
   tooltip.innerHTML = html;
   tooltip.style.display = 'block';
-
   const x = e.clientX + 14, y = e.clientY - 10;
   const w = tooltip.offsetWidth || 210, h = tooltip.offsetHeight || 100;
   tooltip.style.left = (x + w > window.innerWidth  - 10 ? x - w - 22 : x) + 'px';
@@ -918,27 +804,6 @@ document.getElementById('cal-scroll-wrap').addEventListener('mousemove', e => {
 
 document.getElementById('cal-scroll-wrap').addEventListener('mouseleave', () => {
   tooltip.style.display = 'none';
-});
-
-/* ════════════════════════════════════════
-   RECORD BOOKING
-════════════════════════════════════════ */
-function toggleRecordMenu(e) {
-  e.stopPropagation();
-  document.getElementById('record-menu').classList.toggle('open');
-}
-function recordBooking(propName) {
-  document.getElementById('record-menu').classList.remove('open');
-  const subj = encodeURIComponent(`OCCUPANCY — ${propName}`);
-  const body = encodeURIComponent(
-    `Guest: \nDates: \nRate: $/night\nNotes: `
-  );
-  window.location.href = `mailto:nalbana@gmail.com?subject=${subj}&body=${body}`;
-}
-document.addEventListener('click', e => {
-  if (!e.target.closest('.record-wrap')) {
-    document.getElementById('record-menu').classList.remove('open');
-  }
 });
 
 /* ════════════════════════════════════════
