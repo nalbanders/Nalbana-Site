@@ -191,11 +191,6 @@
     .prop-thumb {
       width: 72px; height: 64px;
       object-fit: cover; flex-shrink: 0;
-      filter: brightness(0.42) saturate(0.55);
-      transition: filter 0.3s;
-    }
-    .prop-label:hover .prop-thumb {
-      filter: brightness(0.6) saturate(0.7);
     }
     .prop-text {
       display: flex; flex-direction: column;
@@ -244,12 +239,23 @@
     .day-cell.blocked:hover::before { filter: brightness(1.5); }
 
     /* Block type colors — visible against dark background */
-    .day-cell.blk-airbnb_confirmed { --blk-bg: #484440; }
-    .day-cell.blk-airbnb_block     { --blk-bg: #383430; }
-    .day-cell.blk-direct           { --blk-bg: #4a3828; }
-    .day-cell.blk-lease            { --blk-bg: #1e3848; }
-    .day-cell.blk-maintenance      { --blk-bg: #3a3a20; }
-    .day-cell.blk-hold             { --blk-bg: #3a2030; }
+    .day-cell.blk-airbnb_confirmed { --blk-bg: #4a7868; }
+    .day-cell.blk-airbnb_block     { --blk-bg: #2e2c2a; }
+    .day-cell.blk-direct           { --blk-bg: #6a4a2a; }
+    .day-cell.blk-lease            { --blk-bg: #2a4e68; }
+    .day-cell.blk-maintenance      { --blk-bg: #4a4a28; }
+    .day-cell.blk-hold             { --blk-bg: #502840; }
+
+    /* Diagonal stripe pattern for Airbnb blocks */
+    .day-cell.blk-airbnb_block::before {
+      background: repeating-linear-gradient(
+        -45deg,
+        #2e2c2a 0px,
+        #2e2c2a 5px,
+        #242220 5px,
+        #242220 9px
+      );
+    }
 
     /* Block pill positions */
     .day-cell.bk-start { --blk-il: 4px; --blk-rl: 5px; }
@@ -425,25 +431,25 @@
 <div class="cal-legend">
   <span class="legend-section-label">Airbnb</span>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#484440"></div>
+    <div class="legend-swatch" style="background:#4a7868"></div>
     <span class="legend-text">Confirmed Booking</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#383430"></div>
+    <div class="legend-swatch" style="background:repeating-linear-gradient(-45deg,#2e2c2a 0px,#2e2c2a 5px,#242220 5px,#242220 9px)"></div>
     <span class="legend-text">Blocked / Hold</span>
   </div>
   <div class="legend-div"></div>
   <span class="legend-section-label">Non-Airbnb</span>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#4a3828"></div>
+    <div class="legend-swatch" style="background:#6a4a2a"></div>
     <span class="legend-text">Direct Booking</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#1e3848"></div>
+    <div class="legend-swatch" style="background:#2a4e68"></div>
     <span class="legend-text">Lease</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#3a3a20"></div>
+    <div class="legend-swatch" style="background:#4a4a28"></div>
     <span class="legend-text">Maintenance</span>
   </div>
 </div>
