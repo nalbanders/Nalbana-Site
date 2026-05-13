@@ -396,6 +396,20 @@
     @media (max-width: 600px) {
       .nav-links { display: none; }
       .page-title { font-size: 30px; }
+
+      /* ── Mobile calendar: narrow label column ── */
+      .cal-corner-mo, .cal-corner-day,
+      .prop-label {
+        min-width: 96px; max-width: 96px; width: 96px;
+      }
+      .prop-thumb {
+        width: 44px; height: 64px;
+      }
+      .prop-addr-label { display: none; }
+      .prop-name { font-size: 9px; letter-spacing: 0.08em; }
+      .cal-legend { gap: 12px; }
+      .cal-status, .cal-legend { padding-left: 16px; padding-right: 16px; }
+      .page-header { padding: 90px 20px 28px; }
     }
   </style>
 </head>
