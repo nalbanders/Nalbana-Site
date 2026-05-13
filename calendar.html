@@ -166,12 +166,22 @@
     .day-header.month-boundary { border-left: 1px solid #2e2c28; }
 
     /* Today header — gold text + "TODAY" marker */
-    .day-header.today-head { background: #131210; }
+    .day-header.today-head {
+      background: #131210;
+      border-left: 2px solid rgba(168,144,112,0.5) !important;
+    }
     .day-header.today-head .dow {
       color: #a89070;
       font-size: 8px; letter-spacing: 0.08em;
     }
     .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
+
+    /* Today column — vertical gold line through all rows */
+    .day-cell.today-col {
+      background: rgba(168,144,112,0.03);
+      border-left: 2px solid rgba(168,144,112,0.35) !important;
+    }
+    .day-cell.today-col.weekend { background: rgba(168,144,112,0.04); }
 
     /* Property label cells */
     .prop-label {
@@ -722,6 +732,7 @@ function renderCalendar(lookup, updatedAt) {
       td.className = 'day-cell';
 
       if (dow === 0 || dow === 6) td.classList.add('weekend');
+      if (ds === todayStr) td.classList.add('today-col');
       if (moKey !== prevMoKey3 && prevMoKey3 !== null) td.classList.add('month-boundary');
       prevMoKey3 = moKey;
 
