@@ -127,6 +127,70 @@ document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='E
 
 ---
 
+## Calendar Page — `calendar.html` (COMPLETE)
+
+### Live URL
+`https://nalbanders.github.io/Nalbana-Site/calendar.html`
+
+### Overview
+Horizontal Gantt-style multi-property availability calendar. Password-protected (same `1986` / sessionStorage pattern). Fetches three data sources on load via `Promise.all`, merges them into a per-property/per-day lookup, renders a scrollable `<table>`.
+
+### Files
+| File | Purpose |
+|---|---|
+| `calendar.html` | The calendar page — all CSS/JS inline |
+| `availability.json` | Written by GitHub Action (iCal fetch). Source of truth for blocked dates. |
+| `occupancy_notes.json` | Manual non-Airbnb blocks (direct bookings, leases, maintenance). Currently `[]`. |
+| `fetch_availability.py` | Python script fetching 6 iCal feeds, parsing VEVENTs, writing `availability.json`. Stdlib only. |
+| `.github/workflows/fetch-availability.yml` | Runs `fetch_availability.py` every 2 hrs + on `workflow_dispatch`. Commits with `[skip ci]`. Requires `permissions: contents: write`. |
+
+### iCal secrets (in Nalbana-Site repo secrets, NOT Nalbana_FPA)
+`ICAL_10TH`, `ICAL_21ST`, `ICAL_22ND`, `ICAL_23RD`, `ICAL_13TH`, `ICAL_JEMEZ`
+
+### Data architecture (three layers)
+**Layer 1 — iCal (availability.json):** Sets all blocked dates as `airbnb_block`. Ground truth for future dates.
+
+**Layer 2 — bookings.json** (`https://nalbanders.github.io/Nalbana_FPA/bookings.json`):
+- **Past dates** (before today): iCal drops old events, so bookings.json is source of truth → writes `airbnb_confirmed` unconditionally.
+- **Future dates**: iCal is live truth. If day is in both → `airbnb_confirmed` (enriched). If in bookings.json only → `airbnb_conflict` (Airbnb likely modified/cancelled — shown in amber with outline).
+
+**Layer 3 — occupancy_notes.json:** Non-Airbnb blocks (direct, lease, maintenance, hold). Writes unconditionally on top of iCal.
+
+### Block type → CSS class → color
+| Type | Color | Visual |
+|---|---|---|
+| `airbnb_confirmed` | `#4a7868` | Solid teal-green pill |
+| `airbnb_block` | `#2e2c2a` | Diagonal stripe pattern |
+| `airbnb_conflict` | `#6a4a10` | Amber + orange outline — booking in DB but not in iCal |
+| `direct` | `#6a4a2a` | Warm brown |
+| `lease` | `#2a4e68` | Steel blue |
+| `maintenance` | `#4a4a28` | Olive |
+| `hold` | `#502840` | Plum |
+
+### Key JS config constants
+```js
+const DAYS_BEFORE = 60;   // days of history before today
+const DAYS_TOTAL  = 180;  // total days rendered
+```
+Page loads scrolled to today. Scroll left for history.
+
+### groupId() function
+Groups adjacent cells into pill shapes (solo/start/mid/end). For `airbnb_confirmed` uses confirmation code; for occupancy notes uses `start|end`; for raw blocks uses `type`.
+
+### Known gotchas
+- **Git stash conflicts:** The availability bot pushes `availability.json` to Nalbana-Site every 2 hrs. If bot commits between your local commits, push is rejected. Fix: `git pull --rebase origin main && git push origin main`. Do NOT use `git stash` — it causes the stash pop to re-apply old state and overwrite local edits. The bot only ever touches `availability.json` so there's never a real conflict with `calendar.html`.
+- **GitHub Pages CDN cache:** Changes can take 1–3 min after the `pages-build-deployment` Action goes green. Use incognito or DevTools → right-click reload → "Empty Cache and Hard Reload" if stuck.
+- **Temporal dead zone:** Auth check `if (sessionStorage.getItem(AUTH_KEY))` must be at the BOTTOM of the `<script>` block, after all `const` declarations.
+- **iCal secrets must be in Nalbana-Site repo**, not Nalbana_FPA.
+
+### Refreshing bookings data
+The calendar fetches bookings.json live on every page load. When a new booking is forwarded and processed through the FPA pipeline, just hard-refresh the calendar page — no action needed on the Nalbana-Site side.
+
+### FPA → Site nav link
+Added `Site ↗` link to `/Nalbana_FPA/docs/nav.js` (external, opens in new tab). Required adding `match: []` to avoid a crash in `isActive()` — external links have no match array.
+
+---
+
 ## Next Project: Global Availability Calendar
 
 ### Goal
