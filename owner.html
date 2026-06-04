@@ -251,28 +251,18 @@
     /* ── Rate Labels ── */
     .rate-label {
       position: absolute;
-      left: 0; right: 0; text-align: center;
-      font-size: 9px; font-weight: 500;
-      letter-spacing: 0.01em;
+      left: 0; right: 0;
+      top: 50%; transform: translateY(-50%);
+      text-align: center;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
       pointer-events: none;
       z-index: 2;
     }
-    /* Available date: rate sits in the 10px gap below the block area */
-    .rate-label-avail {
-      bottom: 2px; color: #7a6858;
-    }
-    /* Booked date: rate centered over the block */
-    .rate-label-booked {
-      top: 10px; bottom: 10px;
-      display: flex; align-items: center; justify-content: center;
-      color: rgba(255,255,255,0.60);
-      font-size: 8px;
-    }
-    /* Anomaly: orange tint signals pricing inversion */
-    .rate-label-anomaly {
-      bottom: 2px; color: #c87030;
-    }
+    .rate-label-avail   { color: #b0a090; }
+    .rate-label-booked  { color: rgba(255,255,255,0.85); font-size: 11px; }
+    .rate-label-anomaly { color: #e09040; }
 
     /* ── Heat shading (applied inline via JS) ── */
     /* Warm = above peers, Cool = below peers. Applied as rgba background. */
@@ -754,7 +744,7 @@ function fmtMoney(n, decimals = 0) {
 }
 function fmtRate(n) {
   if (n === null || n === undefined) return '';
-  return fmtMoney(Math.round(n));
+  return Math.round(n).toLocaleString('en-US');  // no $ — maximise space
 }
 
 /* ════════════════════════════════════════
@@ -826,13 +816,17 @@ function groupId(block) {
    RATE HELPERS
 ════════════════════════════════════════ */
 function getRateInfo(propKey, ds, block, rates) {
-  // Booked → payout / nights (locked, not from PriceLabs)
-  if (block && block.bk && block.bk.payout > 0 && block.bk.nights > 0) {
-    return { rate: block.bk.payout / block.bk.nights, isBooked: true };
-  }
-  // Available or unknown block → PriceLabs recommended price
+  const isBooked = !!(block && ['airbnb_confirmed','direct','lease'].includes(block.type));
+  // Always use PriceLabs per-night rate — same data source for booked and open dates.
+  // PriceLabs has the actual nightly rate that was set; payout/nights would average
+  // across the whole stay and may include cleaning fee.
   if (rates?.properties?.[propKey]?.[ds]?.price) {
-    return { rate: rates.properties[propKey][ds].price, isBooked: false };
+    return { rate: rates.properties[propKey][ds].price, isBooked };
+  }
+  // Fallback when pricelabs_rates.json hasn't been generated yet:
+  // approximate from booking payout for confirmed nights only.
+  if (isBooked && block.bk?.payout > 0 && block.bk?.nights > 0) {
+    return { rate: block.bk.payout / block.bk.nights, isBooked: true };
   }
   return null;
 }
@@ -1126,9 +1120,7 @@ document.getElementById('cal-scroll-wrap').addEventListener('mousemove', e => {
   if (payout)   html += `<div class="tt-row"><span class="tt-k">Payout</span><span class="tt-v">${fmtMoney(Number(payout))}</span></div>`;
   if (notetext) html += `<div class="tt-note">${notetext}</div>`;
   if (rate) {
-    const label = (type === 'airbnb_confirmed' || (type && type.includes('confirmed')))
-      ? 'Rate (payout ÷ nights)' : 'PriceLabs rate';
-    html += `<div class="tt-rate">${label}: <strong>${fmtMoney(Number(rate))}</strong>/night</div>`;
+    html += `<div class="tt-rate">Nightly rate: <strong>${fmtMoney(Number(rate))}</strong></div>`;
   }
   if (anomaly) {
     html += `<div class="tt-note" style="color:#c87030">⚠ Pricing inversion — this property is out of order relative to yield tier peers on this date.</div>`;
