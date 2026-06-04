@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner View — Nalbana Properties</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #0f0f0e;
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Password Wall ── */
+    #pw-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0f0f0e;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 24px;
+    }
+    #pw-overlay .pw-logo {
+      font-family: 'Georgia', serif;
+      font-size: 13px; letter-spacing: 0.25em;
+      text-transform: uppercase; color: #a89070;
+    }
+    #pw-overlay h2 {
+      font-size: 22px; font-weight: 400;
+      color: #f0ece6; letter-spacing: 0.04em;
+    }
+    #pw-overlay .pw-hint {
+      font-size: 11px; color: #4a4038;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    #pw-overlay input {
+      width: 280px; padding: 14px 18px;
+      background: transparent; border: 1px solid #3a3530;
+      color: #f0ece6; font-size: 15px;
+      letter-spacing: 0.08em; outline: none; text-align: center;
+    }
+    #pw-overlay input::placeholder { color: #5a5048; }
+    #pw-overlay input:focus { border-color: #a89070; }
+    #pw-overlay button {
+      width: 280px; padding: 14px;
+      background: #a89070; border: none;
+      color: #fff; font-family: 'Georgia', serif;
+      font-size: 13px; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s;
+    }
+    #pw-overlay button:hover { background: #8a7358; }
+    #pw-error { color: #c0604a; font-size: 13px; letter-spacing: 0.05em; min-height: 18px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(15,15,14,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo {
+      font-size: 12px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: #c8b89a;
+      font-family: 'Georgia', serif;
+    }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 12px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #7a6a58;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #c8b89a; }
+    .nav-links a.active { color: #a89070; }
+
+    /* ── Page Header ── */
+    .page-header {
+      padding: 110px 48px 36px;
+      background: #0f0f0e;
+      border-bottom: 1px solid #2a2826;
+      display: flex; align-items: flex-end;
+      justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .page-title {
+      font-size: 42px; font-weight: 400;
+      font-style: italic; color: #c8a878;
+      letter-spacing: 0.02em;
+      line-height: 1.1; margin-bottom: 6px;
+    }
+    .page-meta {
+      font-size: 11px; color: #6a5a48;
+      letter-spacing: 0.1em;
+    }
+    .header-offer-btn {
+      padding: 11px 22px;
+      background: transparent; border: 1px solid #4a3a28;
+      color: #a89070; font-family: 'Georgia', serif;
+      font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .header-offer-btn:hover { background: rgba(168,144,112,0.1); border-color: #a89070; }
+
+    /* ── Calendar Section ── */
+    .cal-section { background: #0f0f0e; }
+    .cal-scroll-wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+      user-select: none;
+    }
+    .cal-scroll-wrap:active { cursor: grabbing; }
+    .cal-scroll-wrap::-webkit-scrollbar { height: 4px; }
+    .cal-scroll-wrap::-webkit-scrollbar-track { background: #0a0a09; }
+    .cal-scroll-wrap::-webkit-scrollbar-thumb { background: #3a3530; border-radius: 2px; }
+    .cal-scroll-wrap::-webkit-scrollbar-thumb:hover { background: #a89070; }
+
+    /* ── Calendar Table ── */
+    .cal-table { border-collapse: collapse; min-width: max-content; }
+
+    .cal-corner-mo, .cal-corner-day {
+      position: sticky; left: 0; z-index: 22;
+      background: #0c0c0b;
+      min-width: 224px; max-width: 224px; width: 224px;
+      border-right: 1px solid #2e2c28;
+    }
+    .cal-corner-mo  { border-bottom: none; }
+    .cal-corner-day { border-bottom: 1px solid #2a2826; }
+
+    .month-header {
+      background: #0c0c0b; color: #a08060;
+      font-family: 'Georgia', serif;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      text-align: left; padding: 14px 10px 10px;
+      border-bottom: none; border-right: 1px solid #1e1c18;
+      white-space: nowrap; vertical-align: bottom;
+    }
+    .month-header.month-boundary { border-left: 1px solid #2e2c28; }
+
+    .day-header {
+      background: #0f0f0e; font-size: 10px; text-align: center;
+      padding: 5px 0 10px;
+      min-width: 38px; max-width: 38px; width: 38px;
+      border-bottom: 1px solid #2a2826;
+      border-right: 1px solid #1e1c18;
+      vertical-align: bottom;
+    }
+    .day-header .dow {
+      display: block; font-family: 'Georgia', serif;
+      font-size: 9px; letter-spacing: 0.04em;
+      text-transform: uppercase; color: #5a5048;
+    }
+    .day-header .dom {
+      display: block; font-size: 14px; color: #8a7a68;
+      margin-top: 3px; font-family: 'Georgia', serif;
+    }
+    .day-header.weekend .dom { color: #6a5a48; }
+    .day-header.month-boundary { border-left: 1px solid #2e2c28; }
+    .day-header.today-head { background: #131210; border-left: 2px solid rgba(168,144,112,0.5) !important; }
+    .day-header.today-head .dow { color: #a89070; font-size: 8px; letter-spacing: 0.08em; }
+    .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
+
+    /* Property label cells */
+    .prop-label {
+      position: sticky; left: 0; z-index: 10;
+      background: #0f0f0e;
+      min-width: 224px; max-width: 224px; width: 224px;
+      height: 64px;
+      border-right: 1px solid #2e2c28;
+      border-bottom: 1px solid #1e1c18;
+      padding: 0; vertical-align: middle; overflow: hidden;
+    }
+    .prop-label-inner { display: flex; align-items: stretch; height: 100%; }
+    .prop-thumb { width: 72px; height: 64px; object-fit: cover; flex-shrink: 0; }
+    .prop-text {
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 3px; padding: 0 14px;
+    }
+    .prop-name {
+      font-family: 'Georgia', serif;
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #c8b090;
+    }
+    .prop-addr-label { font-size: 10px; color: #7a6a58; letter-spacing: 0.05em; }
+    .prop-tier-label { font-size: 9px; color: #5a4a38; letter-spacing: 0.08em; }
+
+    /* Day cells */
+    .day-cell {
+      width: 38px; min-width: 38px; max-width: 38px;
+      height: 64px;
+      border-right: 1px solid #1a1816;
+      border-bottom: 1px solid #1e1c18;
+      position: relative; cursor: default;
+      --blk-bg:  #3a3835;
+      --blk-il:  0px; --blk-ir:  0px;
+      --blk-rl:  0px; --blk-rr:  0px;
+    }
+    .day-cell.weekend  { background: rgba(255,255,255,0.006); }
+    .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
+    .day-cell.today-col {
+      background: rgba(168,144,112,0.03);
+      border-left: 2px solid rgba(168,144,112,0.35) !important;
+    }
+    .day-cell.today-col.weekend { background: rgba(168,144,112,0.04); }
+
+    /* Blocked cell */
+    .day-cell.blocked { cursor: pointer; }
+    .day-cell.blocked::before {
+      content: '';
+      position: absolute;
+      top: 10px; bottom: 10px;
+      left: var(--blk-il); right: var(--blk-ir);
+      background: var(--blk-bg);
+      border-radius: var(--blk-rl) var(--blk-rr) var(--blk-rr) var(--blk-rl);
+      z-index: 1;
+      transition: filter 0.12s;
+    }
+    .day-cell.blocked:hover::before { filter: brightness(1.5); }
+
+    /* Block type colors */
+    .day-cell.blk-airbnb_confirmed { --blk-bg: #4a7868; }
+    .day-cell.blk-airbnb_block     { --blk-bg: #2e2c2a; }
+    .day-cell.blk-direct           { --blk-bg: #6a4a2a; }
+    .day-cell.blk-lease            { --blk-bg: #2a4e68; }
+    .day-cell.blk-maintenance      { --blk-bg: #4a4a28; }
+    .day-cell.blk-hold             { --blk-bg: #502840; }
+    .day-cell.blk-airbnb_conflict  { --blk-bg: #6a4a10; }
+    .day-cell.blk-airbnb_block::before {
+      background: repeating-linear-gradient(
+        -45deg, #2e2c2a 0px, #2e2c2a 5px, #242220 5px, #242220 9px
+      );
+    }
+    .day-cell.blk-airbnb_conflict::before {
+      outline: 1px solid #c87820; outline-offset: -2px;
+    }
+
+    /* Block pill rounding */
+    .day-cell.bk-start { --blk-il: 4px; --blk-rl: 5px; }
+    .day-cell.bk-end   { --blk-ir: 4px; --blk-rr: 5px; }
+    .day-cell.bk-solo  { --blk-il: 4px; --blk-ir: 4px; --blk-rl: 5px; --blk-rr: 5px; }
+
+    /* ── Rate Labels ── */
+    .rate-label {
+      position: absolute;
+      left: 0; right: 0; text-align: center;
+      font-size: 9px; font-weight: 500;
+      letter-spacing: 0.01em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      pointer-events: none;
+      z-index: 2;
+    }
+    /* Available date: rate sits in the 10px gap below the block area */
+    .rate-label-avail {
+      bottom: 2px; color: #7a6858;
+    }
+    /* Booked date: rate centered over the block */
+    .rate-label-booked {
+      top: 10px; bottom: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.60);
+      font-size: 8px;
+    }
+    /* Anomaly: orange tint signals pricing inversion */
+    .rate-label-anomaly {
+      bottom: 2px; color: #c87030;
+    }
+
+    /* ── Heat shading (applied inline via JS) ── */
+    /* Warm = above peers, Cool = below peers. Applied as rgba background. */
+
+    /* ── Anomaly dot ── */
+    .day-cell.anomaly-flag::after {
+      content: '';
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: #c87030;
+      z-index: 3;
+    }
+
+    /* ── Tooltip ── */
+    #cal-tooltip {
+      position: fixed; z-index: 900;
+      background: #161412;
+      border: 1px solid #3a3530;
+      padding: 14px 16px;
+      min-width: 200px; max-width: 260px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.75);
+      pointer-events: none;
+      display: none;
+    }
+    .tt-prop {
+      font-family: 'Georgia', serif; font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: #a89070;
+      margin-bottom: 5px;
+    }
+    .tt-type { font-size: 14px; color: #d0c8bc; margin-bottom: 8px; font-family: 'Georgia', serif; }
+    .tt-dates {
+      font-size: 11px; color: #8a7a68;
+      margin-bottom: 10px; padding-bottom: 10px;
+      border-bottom: 1px solid #2a2826;
+    }
+    .tt-row {
+      display: flex; justify-content: space-between;
+      gap: 12px; margin-bottom: 4px; font-size: 11px;
+    }
+    .tt-row .tt-k { color: #5a5048; letter-spacing: 0.05em; }
+    .tt-row .tt-v { color: #c0a880; text-align: right; }
+    .tt-note {
+      font-size: 11px; color: #7a6a58; font-style: italic;
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid #2a2826; line-height: 1.5;
+    }
+    .tt-rate {
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid #2a2826;
+      font-size: 11px; color: #a89070;
+    }
+
+    /* ── Legend ── */
+    .cal-legend {
+      padding: 16px 48px;
+      background: #0c0c0b;
+      border-top: 1px solid #2a2826;
+      display: flex; align-items: center;
+      gap: 22px; flex-wrap: wrap;
+    }
+    .legend-section-label {
+      font-size: 9px; color: #5a5048;
+      letter-spacing: 0.2em; text-transform: uppercase;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; }
+    .legend-swatch { width: 22px; height: 10px; border-radius: 3px; }
+    .legend-text { font-size: 10px; color: #7a6a58; letter-spacing: 0.08em; }
+    .legend-div { width: 1px; height: 14px; background: #2a2826; }
+
+    /* ── Status bar ── */
+    .cal-status {
+      padding: 11px 48px;
+      background: #0a0a09;
+      border-top: 1px solid #161412;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .status-left { display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4a6a4a; flex-shrink: 0; }
+    .status-dot.stale   { background: #7a4a2a; }
+    .status-dot.loading { background: #4a6a7a; }
+    .status-text { font-size: 10px; color: #5a5048; letter-spacing: 0.1em; }
+
+    /* ── Offer Generator Drawer ── */
+    #offer-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(0,0,0,0.5);
+    }
+    #offer-panel {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 380px; max-width: 100%;
+      background: #161412;
+      border-left: 1px solid #3a3530;
+      z-index: 801;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    #offer-panel.open { transform: translateX(0); }
+    .offer-header {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid #2a2826;
+      display: flex; align-items: flex-start; justify-content: space-between;
+    }
+    .offer-title {
+      font-family: 'Georgia', serif;
+      font-size: 16px; font-style: italic; color: #c8a878;
+      letter-spacing: 0.04em;
+    }
+    .offer-subtitle {
+      font-size: 10px; color: #5a5048;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px;
+    }
+    #offer-close {
+      background: none; border: none;
+      color: #5a5048; font-size: 20px;
+      cursor: pointer; line-height: 1; padding: 0;
+    }
+    #offer-close:hover { color: #a89070; }
+    .offer-body { padding: 20px 24px; flex: 1; }
+    .offer-field { margin-bottom: 16px; }
+    .offer-label {
+      font-size: 10px; color: #7a6a58;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      display: block; margin-bottom: 6px;
+    }
+    .offer-input, .offer-select {
+      width: 100%; padding: 10px 12px;
+      background: #0f0f0e; border: 1px solid #2e2c28;
+      color: #e0d8cc; font-size: 13px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .offer-input:focus, .offer-select:focus { border-color: #a89070; }
+    .offer-select { cursor: pointer; }
+    .offer-row { display: flex; gap: 12px; }
+    .offer-row .offer-field { flex: 1; }
+    .offer-calc-btn {
+      width: 100%; padding: 13px;
+      background: #a89070; border: none;
+      color: #fff; font-family: 'Georgia', serif;
+      font-size: 12px; letter-spacing: 0.18em;
+      text-transform: uppercase; cursor: pointer;
+      margin-top: 4px; transition: background 0.2s;
+    }
+    .offer-calc-btn:hover { background: #8a7358; }
+    .offer-results {
+      margin-top: 20px; padding-top: 20px;
+      border-top: 1px solid #2a2826;
+      display: none;
+    }
+    .offer-results.visible { display: block; }
+    .offer-result-row {
+      display: flex; justify-content: space-between;
+      align-items: baseline; padding: 8px 0;
+      border-bottom: 1px solid #1e1c18;
+    }
+    .offer-result-row:last-child { border-bottom: none; }
+    .offer-rk { font-size: 11px; color: #6a5a48; letter-spacing: 0.05em; }
+    .offer-rv { font-size: 13px; color: #c0a880; font-family: 'Georgia', serif; }
+    .offer-rv.positive { color: #4a9868; }
+    .offer-rv.negative { color: #c06040; }
+    .offer-rv.highlight { color: #e0c890; font-size: 16px; }
+    .offer-warning {
+      font-size: 10px; color: #c06040;
+      letter-spacing: 0.05em; line-height: 1.6;
+      padding: 8px 10px; border: 1px solid #4a2010;
+      background: rgba(100, 40, 10, 0.15);
+      margin-top: 12px;
+    }
+    .offer-result-sep {
+      margin: 10px 0 6px;
+      font-size: 9px; color: #4a3a28;
+      letter-spacing: 0.2em; text-transform: uppercase;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #0f0f0e; color: #4a4040; padding: 48px;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 24px;
+      border-top: 1px solid #2a2826;
+    }
+    .footer-logo { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #7a6a58; }
+    .footer-copy { font-size: 11px; letter-spacing: 0.1em; color: #4a3a30; }
+
+    /* ── Loading ── */
+    .cal-loading {
+      padding: 80px 48px; text-align: center;
+      color: #4a4038; font-size: 11px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { gap: 20px; }
+      .page-header { padding: 90px 24px 30px; }
+      .cal-legend, .cal-status { padding-left: 24px; padding-right: 24px; }
+      footer { padding: 36px 24px; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .page-title { font-size: 28px; }
+      .cal-corner-mo, .cal-corner-day, .prop-label {
+        min-width: 130px; max-width: 130px; width: 130px;
+      }
+      .prop-thumb { width: 44px; height: 64px; }
+      .prop-addr-label, .prop-tier-label { display: none; }
+      .prop-name { font-size: 9px; letter-spacing: 0.06em; }
+      .cal-legend { gap: 12px; }
+      .cal-status, .cal-legend { padding-left: 16px; padding-right: 16px; }
+      .page-header { padding: 90px 20px 24px; }
+      #offer-panel { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PASSWORD WALL
+══════════════════════════════════════ -->
+<div id="pw-overlay">
+  <div class="pw-logo">Nalbana Properties</div>
+  <h2>Owner Access</h2>
+  <div class="pw-hint">Rates &amp; Revenue View</div>
+  <input type="password" id="pw-input" placeholder="Enter password" autocomplete="off" />
+  <button onclick="checkPassword()">Enter</button>
+  <div id="pw-error"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav>
+  <span class="nav-logo">Nalbana Properties</span>
+  <ul class="nav-links">
+    <li><a href="index.html#properties">Properties</a></li>
+    <li><a href="calendar.html">Calendar</a></li>
+    <li><a href="owner.html" class="active">Owner View</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE HEADER
+══════════════════════════════════════ -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Owner View</h1>
+    <div class="page-meta" id="updated-time">Loading rate data…</div>
+  </div>
+  <button class="header-offer-btn" onclick="openOffer()">Offer Generator →</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     CALENDAR
+══════════════════════════════════════ -->
+<div class="cal-section">
+  <div class="cal-scroll-wrap" id="cal-scroll-wrap">
+    <div id="cal-container">
+      <div class="cal-loading">Loading calendar…</div>
+    </div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="cal-legend">
+  <span class="legend-section-label">Bookings</span>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:#4a7868"></div>
+    <span class="legend-text">Confirmed (rate = payout ÷ nights)</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:repeating-linear-gradient(-45deg,#2e2c2a 0px,#2e2c2a 5px,#242220 5px,#242220 9px)"></div>
+    <span class="legend-text">Blocked</span>
+  </div>
+  <div class="legend-div"></div>
+  <span class="legend-section-label">Pricing</span>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:rgba(200,120,30,0.25)"></div>
+    <span class="legend-text">Above peers today</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:rgba(60,120,200,0.2)"></div>
+    <span class="legend-text">Below peers today</span>
+  </div>
+  <div class="legend-div"></div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:#1a1818; outline:1px solid rgba(200,112,48,0.6); outline-offset:-1px"></div>
+    <span class="legend-text">⚠ Pricing inversion</span>
+  </div>
+</div>
+
+<!-- Status bar -->
+<div class="cal-status">
+  <div class="status-left">
+    <div class="status-dot loading" id="status-dot"></div>
+    <span class="status-text" id="status-msg">Connecting…</span>
+  </div>
+  <span class="status-text" id="rates-ts"></span>
+</div>
+
+<!-- ══════════════════════════════════════
+     TOOLTIP
+══════════════════════════════════════ -->
+<div id="cal-tooltip"></div>
+
+<!-- ══════════════════════════════════════
+     OFFER GENERATOR DRAWER
+══════════════════════════════════════ -->
+<div id="offer-overlay" onclick="closeOffer()"></div>
+<div id="offer-panel">
+  <div class="offer-header">
+    <div>
+      <div class="offer-title">Offer Generator</div>
+      <div class="offer-subtitle">Price a direct booking</div>
+    </div>
+    <button id="offer-close" onclick="closeOffer()">×</button>
+  </div>
+  <div class="offer-body">
+    <div class="offer-field">
+      <label class="offer-label" for="of-prop">Property</label>
+      <select class="offer-select" id="of-prop">
+        <option value="22nd">22nd Rd — Villa Armaza</option>
+        <option value="21st">21st Rd — Villa Nalbana</option>
+        <option value="23rd">23rd Rd — Villa Maganda</option>
+        <option value="10th">10th St — Villa Marqueza</option>
+        <option value="13th">13th St — Buko House</option>
+        <option value="jemez">Jemez — Four Winds Trail</option>
+      </select>
+    </div>
+    <div class="offer-row">
+      <div class="offer-field">
+        <label class="offer-label" for="of-checkin">Check-in</label>
+        <input class="offer-input" type="date" id="of-checkin" />
+      </div>
+      <div class="offer-field">
+        <label class="offer-label" for="of-checkout">Check-out</label>
+        <input class="offer-input" type="date" id="of-checkout" />
+      </div>
+    </div>
+    <div class="offer-row">
+      <div class="offer-field">
+        <label class="offer-label" for="of-discount">Discount vs Airbnb %</label>
+        <input class="offer-input" type="number" id="of-discount" value="0" min="0" max="50" placeholder="0" />
+      </div>
+      <div class="offer-field">
+        <label class="offer-label" for="of-commission">Commission $</label>
+        <input class="offer-input" type="number" id="of-commission" value="0" min="0" placeholder="0" />
+      </div>
+    </div>
+    <button class="offer-calc-btn" onclick="calcOffer()">Calculate</button>
+
+    <div class="offer-results" id="offer-results">
+      <div class="offer-result-row">
+        <span class="offer-rk">Nights</span>
+        <span class="offer-rv" id="or-nights">—</span>
+      </div>
+      <div class="offer-result-sep">Airbnb Baseline</div>
+      <div class="offer-result-row">
+        <span class="offer-rk">Airbnb payout baseline</span>
+        <span class="offer-rv" id="or-baseline">—</span>
+      </div>
+      <div class="offer-result-row">
+        <span class="offer-rk">Nightly avg (Airbnb)</span>
+        <span class="offer-rv" id="or-baseline-pn">—</span>
+      </div>
+      <div class="offer-result-sep">Direct Booking</div>
+      <div class="offer-result-row">
+        <span class="offer-rk">Quote to guest</span>
+        <span class="offer-rv highlight" id="or-quote">—</span>
+      </div>
+      <div class="offer-result-row">
+        <span class="offer-rk">Your net (after commission)</span>
+        <span class="offer-rv" id="or-net">—</span>
+      </div>
+      <div class="offer-result-row">
+        <span class="offer-rk">Per-night effective</span>
+        <span class="offer-rv" id="or-pn">—</span>
+      </div>
+      <div class="offer-result-row">
+        <span class="offer-rk">vs Airbnb baseline</span>
+        <span class="offer-rv" id="or-vs-airbnb">—</span>
+      </div>
+      <div id="or-warning"></div>
+      <div id="or-missing-rates"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-logo">Nalbana Properties</div>
+  <div class="footer-copy">Miami, FL · Yucca Valley, CA</div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════
+   AUTH — separate key from calendar.html
+════════════════════════════════════════ */
+const OWNER_PASSWORD    = '1986';
+const AUTH_KEY          = 'nalbana_owner_auth';
+const AUTH_EXPIRY_DAYS  = 30;    // re-prompt after this many days
+
+function isAuthenticated() {
+  const expiry = localStorage.getItem(AUTH_KEY);
+  if (!expiry) return false;
+  if (Date.now() > parseInt(expiry, 10)) {
+    localStorage.removeItem(AUTH_KEY);
+    return false;
+  }
+  return true;
+}
+
+function checkPassword() {
+  if (document.getElementById('pw-input').value === OWNER_PASSWORD) {
+    const expiry = Date.now() + AUTH_EXPIRY_DAYS * 86400 * 1000;
+    localStorage.setItem(AUTH_KEY, expiry.toString());
+    document.getElementById('pw-overlay').style.display = 'none';
+    init();
+  } else {
+    document.getElementById('pw-error').textContent = 'Incorrect password.';
+    document.getElementById('pw-input').value = '';
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+/* ════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════ */
+// Properties in yield-tier order (highest → lowest). Jemez is a separate market.
+const PROPERTIES = [
+  { key: '22nd',  name: 'Villa Armaza',     addr: '620 SW 22nd Rd',    img: '22nd Rd Listing/cover-2J9A4615.jpg',        tier: 1 },
+  { key: '21st',  name: 'Villa Nalbana',    addr: '341 SW 21st Rd',    img: '21st Rd Listing/airbnb-001-812cdfd6.jpg',    tier: 2 },
+  { key: '23rd',  name: 'Villa Maganda',    addr: 'SW 23rd Rd',        img: '23rd Rd Listing/airbnb-001-5ca57cc9.jpg',    tier: 3 },
+  { key: '10th',  name: 'Villa Marqueza',   addr: '1745 SW 10th St',   img: '10th St Listing/airbnb-001-9cf1da23.jpg',    tier: 4 },
+  { key: '13th',  name: 'Buko House',       addr: '1860 SW 13th St',   img: '13th St Listing/airbnb-001-81c30a40.jpg',    tier: 5 },
+  { key: 'jemez', name: 'Four Winds Trail', addr: 'Yucca Valley, CA',  img: 'Jemez Listing/airbnb-044-d34cd7c8.jpg',      tier: null },
+];
+
+const MIAMI_TIER = ['22nd', '21st', '23rd', '10th', '13th'];  // tier order, high→low
+
+const AVAILABILITY_URL = './availability.json';
+const BOOKINGS_URL     = 'https://nalbanders.github.io/Nalbana_FPA/bookings.json';
+const OCCUPANCY_URL    = './occupancy_notes.json';
+const RATES_URL        = 'https://nalbanders.github.io/Nalbana_FPA/pricelabs_rates.json';
+
+const DAYS_BEFORE = 14;
+const DAYS_TOTAL  = 14 + 95;   // 14 back + 95 forward (≥ 90-day PriceLabs window)
+
+/* ════════════════════════════════════════
+   DATE UTILITIES
+════════════════════════════════════════ */
+function toYMD(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+function fromYMD(s) {
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+function addDays(d, n) { const nd = new Date(d); nd.setDate(nd.getDate() + n); return nd; }
+function fmtShort(s) {
+  return fromYMD(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+function nightsBetween(a, b) {
+  return Math.round((fromYMD(b) - fromYMD(a)) / 86400000);
+}
+function fmtMoney(n, decimals = 0) {
+  return '$' + n.toLocaleString('en-US', {
+    minimumFractionDigits: decimals, maximumFractionDigits: decimals
+  });
+}
+function fmtRate(n) {
+  if (n === null || n === undefined) return '';
+  return fmtMoney(Math.round(n));
+}
+
+/* ════════════════════════════════════════
+   DATA LOADING
+════════════════════════════════════════ */
+async function loadData() {
+  const safe = p => p.then(r => r.ok ? r.json() : null).catch(() => null);
+  const [avail, bookings, occupancy, rates] = await Promise.all([
+    safe(fetch(AVAILABILITY_URL)),
+    safe(fetch(BOOKINGS_URL)),
+    safe(fetch(OCCUPANCY_URL)),
+    safe(fetch(RATES_URL)),
+  ]);
+  return { avail, bookings, occupancy, rates };
+}
+
+/* ════════════════════════════════════════
+   BLOCK LOOKUP  (same logic as calendar.html)
+════════════════════════════════════════ */
+function buildLookup(avail, bookings, occupancy) {
+  const lookup = {};
+  PROPERTIES.forEach(p => {
+    lookup[p.key] = {};
+
+    const ranges = avail?.properties?.[p.key] || [];
+    ranges.forEach(r => {
+      let d = fromYMD(r.start), end = fromYMD(r.end);
+      while (d < end) { lookup[p.key][toYMD(d)] = { type: 'airbnb_block' }; d = addDays(d, 1); }
+    });
+
+    if (bookings) {
+      const todayMidnight = new Date(); todayMidnight.setHours(0, 0, 0, 0);
+      Object.entries(bookings).forEach(([code, bk]) => {
+        if (bk.property !== p.key || bk.status !== 'confirmed') return;
+        let d = fromYMD(bk.check_in), end = fromYMD(bk.check_out);
+        while (d < end) {
+          const ds = toYMD(d);
+          const hasIcal = !!lookup[p.key][ds];
+          const isPast  = d < todayMidnight;
+          lookup[p.key][ds] = (isPast || hasIcal)
+            ? { type: 'airbnb_confirmed', code, bk }
+            : { type: 'airbnb_conflict',  code, bk };
+          d = addDays(d, 1);
+        }
+      });
+    }
+
+    if (Array.isArray(occupancy)) {
+      occupancy.filter(n => n.property === p.key).forEach(note => {
+        let d = fromYMD(note.start), end = fromYMD(note.end);
+        while (d < end) {
+          lookup[p.key][toYMD(d)] = { type: note.type || 'direct', note };
+          d = addDays(d, 1);
+        }
+      });
+    }
+  });
+  return lookup;
+}
+
+function groupId(block) {
+  if (!block) return null;
+  if (block.type === 'airbnb_confirmed' && block.code) return block.code;
+  if (block.note) return `${block.note.start}|${block.note.end}`;
+  return block.type;
+}
+
+/* ════════════════════════════════════════
+   RATE HELPERS
+════════════════════════════════════════ */
+function getRateInfo(propKey, ds, block, rates) {
+  // Booked → payout / nights (locked, not from PriceLabs)
+  if (block && block.bk && block.bk.payout > 0 && block.bk.nights > 0) {
+    return { rate: block.bk.payout / block.bk.nights, isBooked: true };
+  }
+  // Available or unknown block → PriceLabs recommended price
+  if (rates?.properties?.[propKey]?.[ds]?.price) {
+    return { rate: rates.properties[propKey][ds].price, isBooked: false };
+  }
+  return null;
+}
+
+/* Per-date heat map: 0 (coolest/cheapest) → 1 (warmest/priciest) across Miami props */
+function buildHeatMap(dates, rates) {
+  const heatMap = {};
+  dates.forEach(d => {
+    const ds = toYMD(d);
+    const prices = {};
+    MIAMI_TIER.forEach(key => {
+      const cell = rates?.properties?.[key]?.[ds];
+      if (cell && cell.price && cell.booking_status === 'available') {
+        prices[key] = cell.price;
+      }
+    });
+    const vals = Object.values(prices);
+    if (vals.length < 2) {
+      // Not enough comparables — mark as neutral
+      Object.keys(prices).forEach(k => { heatMap[`${k}_${ds}`] = 0.5; });
+      return;
+    }
+    const minP = Math.min(...vals), maxP = Math.max(...vals), range = maxP - minP;
+    Object.entries(prices).forEach(([k, price]) => {
+      heatMap[`${k}_${ds}`] = range > 0 ? (price - minP) / range : 0.5;
+    });
+  });
+  return heatMap;
+}
+
+/* Anomaly set: 'prop_date' strings where tier order is violated (>5% threshold) */
+function buildAnomalySet(dates, rates) {
+  const anomalies = new Set();
+  dates.forEach(d => {
+    const ds = toYMD(d);
+    const prices = {};
+    MIAMI_TIER.forEach(key => {
+      const cell = rates?.properties?.[key]?.[ds];
+      if (cell && cell.price && cell.booking_status === 'available') {
+        prices[key] = cell.price;
+      }
+    });
+    for (let i = 0; i < MIAMI_TIER.length; i++) {
+      for (let j = i + 1; j < MIAMI_TIER.length; j++) {
+        const hi = MIAMI_TIER[i], lo = MIAMI_TIER[j];
+        if (!prices[hi] || !prices[lo]) continue;
+        // Lower-tier (lo) priced more than 5% above higher-tier (hi) → inversion
+        if (prices[lo] > prices[hi] * 1.05) {
+          anomalies.add(`${hi}_${ds}`);
+          anomalies.add(`${lo}_${ds}`);
+        }
+      }
+    }
+  });
+  return anomalies;
+}
+
+/* ════════════════════════════════════════
+   CALENDAR RENDER
+════════════════════════════════════════ */
+function renderCalendar(lookup, rates, updatedAt, ratesAt) {
+  const today    = new Date(); today.setHours(0, 0, 0, 0);
+  const todayStr = toYMD(today);
+  const calStart = addDays(today, -DAYS_BEFORE);
+  const dates    = Array.from({ length: DAYS_TOTAL }, (_, i) => addDays(calStart, i));
+  const DOW      = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  const heatMap  = buildHeatMap(dates, rates);
+  const anomalySet = buildAnomalySet(dates, rates);
+
+  const tbl = document.createElement('table');
+  tbl.className = 'cal-table';
+
+  /* ── thead ── */
+  const thead = document.createElement('thead');
+
+  // Row 1: month spans
+  const tr1 = document.createElement('tr');
+  const corner1 = document.createElement('th');
+  corner1.className = 'cal-corner-mo';
+  tr1.appendChild(corner1);
+
+  let curMoKey = null, moTH = null, moCount = 0;
+  dates.forEach((d, i) => {
+    const moKey = d.getFullYear() * 100 + d.getMonth();
+    if (moKey !== curMoKey) {
+      if (moTH) moTH.colSpan = moCount;
+      curMoKey = moKey; moCount = 1;
+      moTH = document.createElement('th');
+      moTH.className = 'month-header' + (i > 0 ? ' month-boundary' : '');
+      moTH.textContent = d.toLocaleString('en-US', { month: 'long' }) + ' ' + d.getFullYear();
+      tr1.appendChild(moTH);
+    } else { moCount++; }
+    if (i === dates.length - 1 && moTH) moTH.colSpan = moCount;
+  });
+  thead.appendChild(tr1);
+
+  // Row 2: day headers
+  const tr2 = document.createElement('tr');
+  const corner2 = document.createElement('th');
+  corner2.className = 'cal-corner-day';
+  tr2.appendChild(corner2);
+
+  let prevMo2 = null;
+  dates.forEach(d => {
+    const ds = toYMD(d), dow = d.getDay();
+    const moKey = d.getFullYear() * 100 + d.getMonth();
+    const th = document.createElement('th');
+    th.className = 'day-header';
+    if (dow === 0 || dow === 6) th.classList.add('weekend');
+    if (ds === todayStr) th.classList.add('today-head');
+    if (moKey !== prevMo2 && prevMo2 !== null) th.classList.add('month-boundary');
+    prevMo2 = moKey;
+    const dowLabel = ds === todayStr ? 'Today' : DOW[dow];
+    th.innerHTML = `<span class="dow">${dowLabel}</span><span class="dom">${d.getDate()}</span>`;
+    tr2.appendChild(th);
+  });
+  thead.appendChild(tr2);
+  tbl.appendChild(thead);
+
+  /* ── tbody ── */
+  const tbody = document.createElement('tbody');
+  PROPERTIES.forEach(prop => {
+    const tr = document.createElement('tr');
+
+    // Property label with tier indicator
+    const label = document.createElement('td');
+    label.className = 'prop-label';
+    const tierText = prop.tier ? `Tier ${prop.tier}` : 'NM';
+    label.innerHTML = `<div class="prop-label-inner">
+      <img src="${prop.img}" class="prop-thumb" alt="${prop.name}" loading="lazy">
+      <div class="prop-text">
+        <span class="prop-name">${prop.name}</span>
+        <span class="prop-addr-label">${prop.addr}</span>
+        <span class="prop-tier-label">${tierText}</span>
+      </div>
+    </div>`;
+    tr.appendChild(label);
+
+    const propBlocks = lookup[prop.key] || {};
+    let prevMo3 = null;
+    dates.forEach(d => {
+      const ds = toYMD(d);
+      const block  = propBlocks[ds];
+      const dow    = d.getDay();
+      const moKey  = d.getFullYear() * 100 + d.getMonth();
+      const td     = document.createElement('td');
+      td.className = 'day-cell';
+
+      if (dow === 0 || dow === 6) td.classList.add('weekend');
+      if (ds === todayStr)          td.classList.add('today-col');
+      if (moKey !== prevMo3 && prevMo3 !== null) td.classList.add('month-boundary');
+      prevMo3 = moKey;
+
+      // ── Booking block rendering ──
+      if (block) {
+        td.classList.add('blocked', `blk-${block.type}`);
+
+        const prevBlock = propBlocks[toYMD(addDays(d, -1))];
+        const nextBlock = propBlocks[toYMD(addDays(d,  1))];
+        const sameGroupPrev = groupId(prevBlock) === groupId(block);
+        const sameGroupNext = groupId(nextBlock) === groupId(block);
+
+        if (!sameGroupPrev && !sameGroupNext) td.classList.add('bk-solo');
+        else if (!sameGroupPrev)             td.classList.add('bk-start');
+        else if (!sameGroupNext)             td.classList.add('bk-end');
+
+        td.dataset.prop   = prop.name;
+        td.dataset.type   = block.type;
+        if (block.bk) {
+          td.dataset.guest  = block.bk.guest_name || '';
+          td.dataset.payout = block.bk.payout     || '';
+          td.dataset.ci     = block.bk.check_in   || '';
+          td.dataset.co     = block.bk.check_out  || '';
+        }
+        if (block.note) {
+          td.dataset.notetext = block.note.note  || '';
+          td.dataset.ci       = block.note.start || '';
+          td.dataset.co       = block.note.end   || '';
+        }
+      }
+
+      // ── Rate label & heat shading ──
+      const rateInfo = getRateInfo(prop.key, ds, block, rates);
+      const anomalyKey = `${prop.key}_${ds}`;
+
+      if (rateInfo) {
+        const span = document.createElement('span');
+        span.className = 'rate-label';
+        span.textContent = fmtRate(rateInfo.rate);
+        td.dataset.rate = Math.round(rateInfo.rate);
+
+        if (rateInfo.isBooked) {
+          span.classList.add('rate-label-booked');
+        } else if (anomalySet.has(anomalyKey)) {
+          span.classList.add('rate-label-anomaly');
+          td.classList.add('anomaly-flag');
+          td.dataset.anomaly = '1';
+          // Subtle warm tint for anomaly cells
+          td.style.background = 'rgba(180, 80, 20, 0.12)';
+        } else {
+          span.classList.add('rate-label-avail');
+          // Heat shading
+          const heat = heatMap[anomalyKey];
+          if (heat !== undefined && heat !== 0.5) {
+            if (heat > 0.6) {
+              const a = ((heat - 0.6) / 0.4 * 0.22).toFixed(3);
+              td.style.background = `rgba(200,120,30,${a})`;
+            } else if (heat < 0.4) {
+              const a = ((0.4 - heat) / 0.4 * 0.18).toFixed(3);
+              td.style.background = `rgba(60,120,200,${a})`;
+            }
+          }
+        }
+        td.appendChild(span);
+      }
+
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+
+  const container = document.getElementById('cal-container');
+  container.innerHTML = '';
+  container.appendChild(tbl);
+
+  // Scroll to today
+  requestAnimationFrame(() => {
+    const wrap = document.getElementById('cal-scroll-wrap');
+    const todayTH = tbl.querySelector('.today-head');
+    if (todayTH && wrap) {
+      const propW = tbl.querySelector('.prop-label')?.offsetWidth || 224;
+      const viewW = wrap.clientWidth - propW;
+      wrap.scrollLeft = todayTH.offsetLeft - propW - Math.floor(viewW * 0.18);
+    }
+  });
+
+  // Status / timestamps
+  const utEl = document.getElementById('updated-time');
+  const fmt  = dt => new Date(dt).toLocaleString('en-US', {
+    month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+  });
+
+  if (updatedAt) {
+    utEl.textContent = `iCal synced ${fmt(updatedAt)}`;
+    document.getElementById('status-dot').className = 'status-dot';
+    document.getElementById('status-msg').textContent = 'Live — auto-refreshes daily';
+  } else {
+    utEl.textContent = 'No availability data — run the sync action first';
+    document.getElementById('status-dot').className = 'status-dot stale';
+    document.getElementById('status-msg').textContent = 'Awaiting first iCal sync';
+  }
+
+  if (ratesAt) {
+    document.getElementById('rates-ts').textContent = `Rates: ${fmt(ratesAt)}`;
+  } else {
+    document.getElementById('rates-ts').textContent = 'PriceLabs rates unavailable — run daily pipeline';
+  }
+}
+
+/* ════════════════════════════════════════
+   TOOLTIP
+════════════════════════════════════════ */
+const tooltip = document.getElementById('cal-tooltip');
+const TYPE_LABELS = {
+  airbnb_confirmed: 'Airbnb Booking',
+  airbnb_block:     'Airbnb Blocked',
+  airbnb_conflict:  '⚠ Possible Modification',
+  direct:           'Direct Booking',
+  lease:            'Lease',
+  maintenance:      'Maintenance',
+  hold:             'Hold',
+};
+
+document.getElementById('cal-scroll-wrap').addEventListener('mousemove', e => {
+  const cell = e.target.closest('.day-cell');
+  if (!cell) { tooltip.style.display = 'none'; return; }
+  const { prop, type, guest, payout, ci, co, notetext, rate, anomaly } = cell.dataset;
+
+  let html = '';
+  if (prop) html += `<div class="tt-prop">${prop}</div>`;
+  if (type) html += `<div class="tt-type">${TYPE_LABELS[type] || type}</div>`;
+  if (ci && co) {
+    const nights = nightsBetween(ci, co);
+    html += `<div class="tt-dates">${fmtShort(ci)} – ${fmtShort(co)}`;
+    if (nights > 0) html += ` · ${nights} night${nights !== 1 ? 's' : ''}`;
+    html += '</div>';
+  }
+  if (guest)    html += `<div class="tt-row"><span class="tt-k">Guest</span><span class="tt-v">${guest}</span></div>`;
+  if (payout)   html += `<div class="tt-row"><span class="tt-k">Payout</span><span class="tt-v">${fmtMoney(Number(payout))}</span></div>`;
+  if (notetext) html += `<div class="tt-note">${notetext}</div>`;
+  if (rate) {
+    const label = (type === 'airbnb_confirmed' || (type && type.includes('confirmed')))
+      ? 'Rate (payout ÷ nights)' : 'PriceLabs rate';
+    html += `<div class="tt-rate">${label}: <strong>${fmtMoney(Number(rate))}</strong>/night</div>`;
+  }
+  if (anomaly) {
+    html += `<div class="tt-note" style="color:#c87030">⚠ Pricing inversion — this property is out of order relative to yield tier peers on this date.</div>`;
+  }
+  if (!html) { tooltip.style.display = 'none'; return; }
+
+  tooltip.innerHTML = html;
+  tooltip.style.display = 'block';
+  const x = e.clientX + 14, y = e.clientY - 10;
+  const w = tooltip.offsetWidth || 220, h = tooltip.offsetHeight || 100;
+  tooltip.style.left = (x + w > window.innerWidth  - 10 ? x - w - 22 : x) + 'px';
+  tooltip.style.top  = (y + h > window.innerHeight - 10 ? y - h     : y) + 'px';
+});
+document.getElementById('cal-scroll-wrap').addEventListener('mouseleave', () => {
+  tooltip.style.display = 'none';
+});
+
+/* ════════════════════════════════════════
+   DRAG TO SCROLL
+════════════════════════════════════════ */
+const scrollWrap = document.getElementById('cal-scroll-wrap');
+let isDragging = false, dragStartX = 0, dragScrollL = 0;
+scrollWrap.addEventListener('mousedown', e => {
+  if (e.target.closest('.day-cell.blocked')) return;
+  isDragging = true;
+  dragStartX = e.pageX - scrollWrap.offsetLeft;
+  dragScrollL = scrollWrap.scrollLeft;
+});
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  scrollWrap.scrollLeft = dragScrollL - (e.pageX - scrollWrap.offsetLeft - dragStartX);
+});
+document.addEventListener('mouseup', () => { isDragging = false; });
+
+/* ════════════════════════════════════════
+   OFFER GENERATOR
+════════════════════════════════════════ */
+let _rates = null;  // set after load, used by calcOffer
+
+function openOffer() {
+  document.getElementById('offer-overlay').style.display = 'block';
+  document.getElementById('offer-panel').classList.add('open');
+  // Default check-in to tomorrow
+  const ci = document.getElementById('of-checkin');
+  if (!ci.value) {
+    const tomorrow = addDays(new Date(), 1);
+    ci.value = toYMD(tomorrow);
+    const checkout = addDays(tomorrow, 7);
+    document.getElementById('of-checkout').value = toYMD(checkout);
+  }
+}
+function closeOffer() {
+  document.getElementById('offer-overlay').style.display = 'none';
+  document.getElementById('offer-panel').classList.remove('open');
+}
+
+function calcOffer() {
+  const prop     = document.getElementById('of-prop').value;
+  const ci       = document.getElementById('of-checkin').value;
+  const co       = document.getElementById('of-checkout').value;
+  const discount = parseFloat(document.getElementById('of-discount').value) || 0;
+  const commission = parseFloat(document.getElementById('of-commission').value) || 0;
+
+  if (!ci || !co || co <= ci) {
+    alert('Please enter valid check-in and check-out dates.');
+    return;
+  }
+
+  const nights = nightsBetween(ci, co);
+  if (nights < 1 || nights > 365) {
+    alert('Date range looks off — please check the dates.');
+    return;
+  }
+
+  // Build nightly rate array
+  let baseline = 0, missingDates = 0;
+  const conflicts = [];
+
+  const ciDate = fromYMD(ci);
+  for (let i = 0; i < nights; i++) {
+    const d = addDays(ciDate, i);
+    const ds = toYMD(d);
+    const rateCell = _rates?.properties?.[prop]?.[ds];
+    if (rateCell?.price) {
+      baseline += rateCell.price;
+    } else {
+      missingDates++;
+    }
+  }
+
+  // Conflict detection — confirmed bookings in this window
+  // We need the lookup but it's not in global scope; re-derive from _bookingsCache
+  if (_bookingsCache) {
+    Object.entries(_bookingsCache).forEach(([code, bk]) => {
+      if (bk.property !== prop || bk.status !== 'confirmed') return;
+      // Check overlap: booking [check_in, check_out) overlaps [ci, co)
+      if (bk.check_in < co && bk.check_out > ci) {
+        conflicts.push(bk);
+      }
+    });
+  }
+
+  const quote  = baseline * (1 - discount / 100);
+  const net    = quote - commission;
+  const perNight = net / nights;
+  const vsAirbnb = net - baseline;
+
+  // Show results
+  document.getElementById('or-nights').textContent    = nights;
+  document.getElementById('or-baseline').textContent  = missingDates === nights ? 'No data' : fmtMoney(baseline);
+  document.getElementById('or-baseline-pn').textContent = missingDates === nights ? '—' : fmtMoney(baseline / nights) + '/night';
+  document.getElementById('or-quote').textContent     = fmtMoney(quote);
+  document.getElementById('or-net').textContent       = fmtMoney(net);
+  document.getElementById('or-pn').textContent        = fmtMoney(perNight) + '/night';
+
+  const vsEl = document.getElementById('or-vs-airbnb');
+  vsEl.textContent = (vsAirbnb >= 0 ? '+' : '') + fmtMoney(vsAirbnb);
+  vsEl.className = 'offer-rv ' + (vsAirbnb >= 0 ? 'positive' : 'negative');
+
+  const warningEl = document.getElementById('or-warning');
+  if (conflicts.length > 0) {
+    const names = conflicts.map(b => `${b.guest_name} (${b.check_in}–${b.check_out})`).join(', ');
+    warningEl.innerHTML = `<div class="offer-warning">⚠ Conflict: existing booking${conflicts.length > 1 ? 's' : ''} overlap this window — ${names}</div>`;
+  } else {
+    warningEl.innerHTML = '';
+  }
+
+  const missingEl = document.getElementById('or-missing-rates');
+  if (missingDates > 0 && missingDates < nights) {
+    missingEl.innerHTML = `<div class="offer-warning">Note: ${missingDates} night${missingDates !== 1 ? 's' : ''} outside PriceLabs data window — baseline is partial.</div>`;
+  } else if (missingDates === nights) {
+    missingEl.innerHTML = `<div class="offer-warning">No PriceLabs rate data for this window. Run the daily pipeline to refresh.</div>`;
+  } else {
+    missingEl.innerHTML = '';
+  }
+
+  document.getElementById('offer-results').classList.add('visible');
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+let _bookingsCache = null;
+
+async function init() {
+  document.getElementById('status-dot').className = 'status-dot loading';
+  document.getElementById('status-msg').textContent = 'Fetching data…';
+
+  const { avail, bookings, occupancy, rates } = await loadData();
+  _rates = rates;
+  _bookingsCache = bookings;
+
+  const lookup = buildLookup(avail, bookings, occupancy);
+  renderCalendar(lookup, rates, avail?.updated_at ?? null, rates?.generated_at ?? null);
+}
+
+// Auto-auth if remembered on this device (30-day rolling window)
+if (isAuthenticated()) {
+  document.getElementById('pw-overlay').style.display = 'none';
+  init();
+}
+</script>
+</body>
+</html>
