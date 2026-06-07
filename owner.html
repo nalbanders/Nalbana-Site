@@ -213,6 +213,8 @@
     }
     .day-cell.weekend  { background: rgba(255,255,255,0.006); }
     .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
+    .day-cell.fri-col  { border-left: 1px solid #3a3530 !important; }
+    .day-header.fri-head { border-left: 1px solid #3a3530 !important; }
     .day-cell.today-col {
       background: rgba(168,144,112,0.03);
       border-left: 2px solid rgba(168,144,112,0.35) !important;
@@ -957,6 +959,7 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
     const th = document.createElement('th');
     th.className = 'day-header';
     if (dow === 0 || dow === 6) th.classList.add('weekend');
+    if (dow === 5) th.classList.add('fri-head');
     if (ds === todayStr) th.classList.add('today-head');
     if (moKey !== prevMo2 && prevMo2 !== null) th.classList.add('month-boundary');
     prevMo2 = moKey;
@@ -995,7 +998,8 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       td.className = 'day-cell';
 
       if (dow === 0 || dow === 6) td.classList.add('weekend');
-      if (ds === todayStr)          td.classList.add('today-col');
+      if (dow === 5)              td.classList.add('fri-col');
+      if (ds === todayStr)        td.classList.add('today-col');
       if (moKey !== prevMo3 && prevMo3 !== null) td.classList.add('month-boundary');
       prevMo3 = moKey;
 
@@ -1034,7 +1038,7 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       if (plCell?.min_stay && !isOccupied) {
         const minSpan = document.createElement('span');
         minSpan.className = 'min-stay-label';
-        minSpan.textContent = plCell.min_stay + 'n';
+        minSpan.textContent = plCell.min_stay;
         td.appendChild(minSpan);
       }
 
