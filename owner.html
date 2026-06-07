@@ -980,7 +980,6 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       <img src="${prop.img}" class="prop-thumb" alt="${prop.name}" loading="lazy">
       <div class="prop-text">
         <span class="prop-name">${prop.name}</span>
-        <span class="prop-tier-label">${tierText}</span>
       </div>
     </div>`;
     tr.appendChild(label);
@@ -1031,7 +1030,8 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       // ── Rate label & heat shading ──
       // ── Min stay label — unoccupied cells only ──
       const plCell = rates?.properties?.[prop.key]?.[ds];
-      if (plCell?.min_stay && plCell?.booking_status === 'available') {
+      const isOccupied = block && ['airbnb_confirmed','direct','lease'].includes(block.type);
+      if (plCell?.min_stay && !isOccupied) {
         const minSpan = document.createElement('span');
         minSpan.className = 'min-stay-label';
         minSpan.textContent = plCell.min_stay + 'n';
