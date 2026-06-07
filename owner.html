@@ -274,14 +274,13 @@
     /* ── Min stay label ── */
     .min-stay-label {
       position: absolute;
-      bottom: 2px; right: 3px;
-      font-size: 7px; line-height: 1;
-      color: #5a5048;
+      bottom: 3px; right: 3px;
+      font-size: 9px; line-height: 1; font-weight: 700;
+      color: #9a8a72;
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
       pointer-events: none;
       z-index: 2;
     }
-    .day-cell.blocked .min-stay-label { color: rgba(255,255,255,0.30); }
 
     /* ── Heat shading (applied inline via JS) ── */
     /* Warm = above peers, Cool = below peers. Applied as rgba background. */
@@ -1030,9 +1029,9 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       }
 
       // ── Rate label & heat shading ──
-      // ── Min stay label ──
+      // ── Min stay label — unoccupied cells only ──
       const plCell = rates?.properties?.[prop.key]?.[ds];
-      if (plCell?.min_stay) {
+      if (plCell?.min_stay && plCell?.booking_status === 'available') {
         const minSpan = document.createElement('span');
         minSpan.className = 'min-stay-label';
         minSpan.textContent = plCell.min_stay + 'n';
