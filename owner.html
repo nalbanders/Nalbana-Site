@@ -88,11 +88,11 @@
 
     /* ── Page Header ── */
     .page-header {
-      padding: 110px 48px 36px;
+      padding: 76px 48px 14px;
       background: #0f0f0e;
       border-bottom: 1px solid #2a2826;
       display: flex; align-items: flex-end;
-      justify-content: space-between; flex-wrap: wrap; gap: 16px;
+      justify-content: space-between; flex-wrap: wrap; gap: 12px;
     }
     .page-title {
       font-size: 42px; font-weight: 400;
@@ -213,8 +213,8 @@
     }
     .day-cell.weekend  { background: rgba(255,255,255,0.006); }
     .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
-    .day-cell.fri-col  { border-left: 1px solid #3a3530 !important; }
-    .day-header.fri-head { border-left: 1px solid #3a3530 !important; }
+    .day-cell.fri-col  { border-left: 2px solid #4a4540 !important; }
+    .day-header.fri-head { border-left: 2px solid #4a4540 !important; }
     .day-cell.today-col {
       background: rgba(168,144,112,0.03);
       border-left: 2px solid rgba(168,144,112,0.35) !important;
@@ -1086,14 +1086,14 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
   container.innerHTML = '';
   container.appendChild(tbl);
 
-  // Scroll to today
+  // Scroll so yesterday is at the left edge
   requestAnimationFrame(() => {
     const wrap = document.getElementById('cal-scroll-wrap');
     const todayTH = tbl.querySelector('.today-head');
     if (todayTH && wrap) {
-      const propW = tbl.querySelector('.prop-label')?.offsetWidth || 224;
-      const viewW = wrap.clientWidth - propW;
-      wrap.scrollLeft = todayTH.offsetLeft - propW - Math.floor(viewW * 0.18);
+      const propW = tbl.querySelector('.prop-label')?.offsetWidth || 100;
+      const cellW = 38;
+      wrap.scrollLeft = todayTH.offsetLeft - propW - cellW; // one col left of today = yesterday
     }
   });
 
