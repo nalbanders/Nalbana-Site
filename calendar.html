@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portfolio Calendar — Nalbana Properties</title>
+  <!-- iOS home screen icon -->
+  <link rel="apple-touch-icon" href="icon-calendar.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Cal — Nalbana" />
   <style>
     /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -394,7 +399,8 @@
       footer { padding: 36px 24px; }
     }
     @media (max-width: 600px) {
-      .nav-links { display: none; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 10px; letter-spacing: 0.1em; }
       .page-title { font-size: 30px; }
 
       /* ── Mobile calendar: narrow label column ── */
