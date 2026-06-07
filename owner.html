@@ -269,6 +269,18 @@
     .rate-label-booked  { color: rgba(255,255,255,0.85); font-size: 11px; }
     .rate-label-anomaly { color: #e09040; }
 
+    /* ── Min stay label ── */
+    .min-stay-label {
+      position: absolute;
+      bottom: 2px; right: 3px;
+      font-size: 7px; line-height: 1;
+      color: #5a5048;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .day-cell.blocked .min-stay-label { color: rgba(255,255,255,0.30); }
+
     /* ── Heat shading (applied inline via JS) ── */
     /* Warm = above peers, Cool = below peers. Applied as rgba background. */
 
@@ -1016,6 +1028,15 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       }
 
       // ── Rate label & heat shading ──
+      // ── Min stay label ──
+      const plCell = rates?.properties?.[prop.key]?.[ds];
+      if (plCell?.min_stay) {
+        const minSpan = document.createElement('span');
+        minSpan.className = 'min-stay-label';
+        minSpan.textContent = plCell.min_stay + 'n';
+        td.appendChild(minSpan);
+      }
+
       const rateInfo = getRateInfo(prop.key, ds, block, rates);
       const anomalyKey = `${prop.key}_${ds}`;
 
