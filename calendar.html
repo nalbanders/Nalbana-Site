@@ -238,6 +238,8 @@
     }
     .day-cell.weekend  { background: rgba(255,255,255,0.006); }
     .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
+    .day-cell.fri-col    { border-left: 2px solid #4a4540 !important; }
+    .day-header.fri-head { border-left: 2px solid #4a4540 !important; }
 
     /* Blocked cell */
     .day-cell.blocked { cursor: pointer; }
@@ -552,12 +554,12 @@ document.getElementById('pw-input').addEventListener('keydown', e => {
    CONFIG
 ════════════════════════════════════════ */
 const PROPERTIES = [
-  { key: '10th',  name: 'Villa Marqueza',   addr: '1745 SW 10th St',   img: '10th St Listing/airbnb-001-9cf1da23.jpg' },
-  { key: '21st',  name: 'Villa Nalbana',    addr: '341 SW 21st Rd',    img: '21st Rd Listing/airbnb-001-812cdfd6.jpg' },
-  { key: '22nd',  name: 'Villa Armaza',     addr: '620 SW 22nd Rd',    img: '22nd Rd Listing/cover-2J9A4615.jpg' },
-  { key: '23rd',  name: 'Villa Maganda',    addr: 'SW 23rd Rd',        img: '23rd Rd Listing/airbnb-001-5ca57cc9.jpg' },
-  { key: '13th',  name: 'Buko House',       addr: '1860 SW 13th St',   img: '13th St Listing/airbnb-001-81c30a40.jpg' },
-  { key: 'jemez', name: 'Four Winds Trail', addr: 'Yucca Valley, CA',  img: 'Jemez Listing/airbnb-044-d34cd7c8.jpg' },
+  { key: '10th',  name: 'Villa Marqueza',   addr: '10th',  img: '10th St Listing/airbnb-001-9cf1da23.jpg' },
+  { key: '21st',  name: 'Villa Nalbana',    addr: '21st',  img: '21st Rd Listing/airbnb-001-812cdfd6.jpg' },
+  { key: '22nd',  name: 'Villa Armaza',     addr: '22nd',  img: '22nd Rd Listing/cover-2J9A4615.jpg' },
+  { key: '23rd',  name: 'Villa Maganda',    addr: '23rd',  img: '23rd Rd Listing/airbnb-001-5ca57cc9.jpg' },
+  { key: '13th',  name: 'Buko House',       addr: '13th',  img: '13th St Listing/airbnb-001-81c30a40.jpg' },
+  { key: 'jemez', name: 'Four Winds Trail', addr: 'Jemez', img: 'Jemez Listing/airbnb-044-d34cd7c8.jpg' },
 ];
 
 const AVAILABILITY_URL = './availability.json';
@@ -722,6 +724,7 @@ function renderCalendar(lookup, updatedAt) {
     const th = document.createElement('th');
     th.className = 'day-header';
     if (dow === 0 || dow === 6) th.classList.add('weekend');
+    if (dow === 5) th.classList.add('fri-head');
     if (ds === todayStr) th.classList.add('today-head');
     if (moKey !== prevMoKey2 && prevMoKey2 !== null) th.classList.add('month-boundary');
     prevMoKey2 = moKey;
@@ -761,7 +764,8 @@ function renderCalendar(lookup, updatedAt) {
       td.className = 'day-cell';
 
       if (dow === 0 || dow === 6) td.classList.add('weekend');
-      if (ds === todayStr) td.classList.add('today-col');
+      if (dow === 5)              td.classList.add('fri-col');
+      if (ds === todayStr)        td.classList.add('today-col');
       if (moKey !== prevMoKey3 && prevMoKey3 !== null) td.classList.add('month-boundary');
       prevMoKey3 = moKey;
 
@@ -807,8 +811,7 @@ function renderCalendar(lookup, updatedAt) {
     const todayTH = tbl.querySelector('.today-head');
     if (todayTH && wrap) {
       const propW = tbl.querySelector('.prop-label')?.offsetWidth || 224;
-      const viewW = wrap.clientWidth - propW;
-      wrap.scrollLeft = todayTH.offsetLeft - propW - Math.floor(viewW * 0.22);
+      wrap.scrollLeft = todayTH.offsetLeft - propW - 38; // yesterday at left edge
     }
   });
 
@@ -859,7 +862,6 @@ document.getElementById('cal-scroll-wrap').addEventListener('mousemove', e => {
     html += '</div>';
   }
   if (guest)    html += `<div class="tt-row"><span class="tt-k">Guest</span><span class="tt-v">${guest}</span></div>`;
-  if (payout)   html += `<div class="tt-row"><span class="tt-k">Payout</span><span class="tt-v">$${Number(payout).toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>`;
   if (notetext) html += `<div class="tt-note">${notetext}</div>`;
 
   tooltip.innerHTML = html;
