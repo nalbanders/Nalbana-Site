@@ -368,96 +368,110 @@
 
     /* ── Offer Generator Drawer ── */
     #offer-overlay {
-      display: none;
-      position: fixed; inset: 0; z-index: 800;
+      display: none; position: fixed; inset: 0; z-index: 800;
       background: rgba(0,0,0,0.5);
     }
     #offer-panel {
       position: fixed; top: 0; right: 0; bottom: 0;
-      width: 380px; max-width: 100%;
-      background: #161412;
-      border-left: 1px solid #3a3530;
-      z-index: 801;
-      transform: translateX(100%);
+      width: 420px; max-width: 100%;
+      background: #161412; border-left: 1px solid #3a3530;
+      z-index: 801; transform: translateX(100%);
       transition: transform 0.25s ease;
-      overflow-y: auto;
-      display: flex; flex-direction: column;
+      overflow-y: auto; display: flex; flex-direction: column;
     }
     #offer-panel.open { transform: translateX(0); }
     .offer-header {
-      padding: 24px 24px 16px;
-      border-bottom: 1px solid #2a2826;
+      padding: 20px 20px 0;
       display: flex; align-items: flex-start; justify-content: space-between;
     }
     .offer-title {
-      font-family: 'Georgia', serif;
-      font-size: 16px; font-style: italic; color: #c8a878;
-      letter-spacing: 0.04em;
-    }
-    .offer-subtitle {
-      font-size: 10px; color: #5a5048;
-      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px;
+      font-family: 'Georgia', serif; font-size: 16px;
+      font-style: italic; color: #c8a878; letter-spacing: 0.04em;
     }
     #offer-close {
-      background: none; border: none;
-      color: #5a5048; font-size: 20px;
-      cursor: pointer; line-height: 1; padding: 0;
+      background: none; border: none; color: #5a5048;
+      font-size: 20px; cursor: pointer; line-height: 1; padding: 0;
     }
     #offer-close:hover { color: #a89070; }
-    .offer-body { padding: 20px 24px; flex: 1; }
-    .offer-field { margin-bottom: 16px; }
+
+    /* ── Mode tabs ── */
+    .offer-tabs {
+      display: flex; margin: 14px 20px 0; gap: 0;
+      border-bottom: 1px solid #2a2826;
+    }
+    .offer-tab {
+      flex: 1; padding: 9px 0; text-align: center;
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: #5a5048; cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 0.15s;
+    }
+    .offer-tab.active { color: #a89070; border-bottom-color: #a89070; }
+    .offer-tab:hover:not(.active) { color: #8a7a68; }
+
+    .offer-body { padding: 16px 20px; flex: 1; }
+    .offer-field { margin-bottom: 14px; }
     .offer-label {
       font-size: 10px; color: #7a6a58;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      display: block; margin-bottom: 6px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      display: block; margin-bottom: 5px;
     }
     .offer-input, .offer-select {
-      width: 100%; padding: 10px 12px;
+      width: 100%; padding: 9px 11px;
       background: #0f0f0e; border: 1px solid #2e2c28;
       color: #e0d8cc; font-size: 13px; outline: none;
       transition: border-color 0.15s;
     }
     .offer-input:focus, .offer-select:focus { border-color: #a89070; }
     .offer-select { cursor: pointer; }
-    .offer-row { display: flex; gap: 12px; }
+    .offer-row { display: flex; gap: 10px; }
     .offer-row .offer-field { flex: 1; }
+    .offer-section-divider {
+      font-size: 9px; color: #4a3a28; letter-spacing: 0.22em;
+      text-transform: uppercase; margin: 16px 0 12px;
+      padding-bottom: 6px; border-bottom: 1px solid #2a2826;
+    }
     .offer-calc-btn {
-      width: 100%; padding: 13px;
-      background: #a89070; border: none;
+      width: 100%; padding: 12px; background: #a89070; border: none;
       color: #fff; font-family: 'Georgia', serif;
-      font-size: 12px; letter-spacing: 0.18em;
-      text-transform: uppercase; cursor: pointer;
-      margin-top: 4px; transition: background 0.2s;
+      font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+      cursor: pointer; margin-top: 6px; transition: background 0.2s;
     }
     .offer-calc-btn:hover { background: #8a7358; }
-    .offer-results {
-      margin-top: 20px; padding-top: 20px;
-      border-top: 1px solid #2a2826;
-      display: none;
+
+    /* ── Results ── */
+    #offer-results { margin-top: 18px; display: none; }
+    #offer-results.visible { display: block; }
+    .offer-res-section {
+      font-size: 9px; color: #5a4a38; letter-spacing: 0.22em;
+      text-transform: uppercase; padding: 10px 0 6px;
+      border-bottom: 1px solid #2a2826; margin-bottom: 4px;
     }
-    .offer-results.visible { display: block; }
-    .offer-result-row {
+    .offer-res-section:first-child { padding-top: 0; }
+    .offer-res-row {
       display: flex; justify-content: space-between;
-      align-items: baseline; padding: 8px 0;
-      border-bottom: 1px solid #1e1c18;
+      align-items: baseline; padding: 5px 0;
+      border-bottom: 1px solid #181614;
+      font-size: 11px;
     }
-    .offer-result-row:last-child { border-bottom: none; }
-    .offer-rk { font-size: 11px; color: #6a5a48; letter-spacing: 0.05em; }
-    .offer-rv { font-size: 13px; color: #c0a880; font-family: 'Georgia', serif; }
+    .offer-res-row:last-child { border-bottom: none; }
+    .offer-res-row.subtotal { border-bottom: 1px solid #2e2c28; padding-bottom: 7px; margin-bottom: 3px; }
+    .offer-res-row.ncp {
+      padding: 8px 0; border-top: 1px solid #3a3530;
+      border-bottom: 1px solid #3a3530; margin: 4px 0;
+    }
+    .offer-res-row.final { padding: 8px 0; }
+    .offer-rk { color: #6a5a48; }
+    .offer-rk.muted { color: #4a3a28; }
+    .offer-rv { color: #c0a880; font-family: 'Georgia', serif; font-size: 12px; }
+    .offer-rv.ncp-val { color: #d4b880; font-size: 15px; }
     .offer-rv.positive { color: #4a9868; }
     .offer-rv.negative { color: #c06040; }
-    .offer-rv.highlight { color: #e0c890; font-size: 16px; }
+    .offer-rv.muted { color: #5a5048; font-size: 11px; }
     .offer-warning {
-      font-size: 10px; color: #c06040;
-      letter-spacing: 0.05em; line-height: 1.6;
-      padding: 8px 10px; border: 1px solid #4a2010;
-      background: rgba(100, 40, 10, 0.15);
-      margin-top: 12px;
-    }
-    .offer-result-sep {
-      margin: 10px 0 6px;
-      font-size: 9px; color: #4a3a28;
-      letter-spacing: 0.2em; text-transform: uppercase;
+      font-size: 10px; color: #c06040; line-height: 1.6;
+      padding: 7px 10px; border: 1px solid #4a2010;
+      background: rgba(100,40,10,0.15); margin-bottom: 10px;
     }
 
     /* ── Footer ── */
@@ -599,80 +613,95 @@
 <div id="offer-overlay" onclick="closeOffer()"></div>
 <div id="offer-panel">
   <div class="offer-header">
-    <div>
-      <div class="offer-title">Offer Generator</div>
-      <div class="offer-subtitle">Price a direct booking</div>
-    </div>
+    <div class="offer-title">Offer Generator</div>
     <button id="offer-close" onclick="closeOffer()">×</button>
   </div>
+
+  <!-- Mode tabs -->
+  <div class="offer-tabs">
+    <button class="offer-tab active" id="tab-direct" onclick="switchTab('direct')">Direct Booking</button>
+    <button class="offer-tab" id="tab-lease" onclick="switchTab('lease')">Lease</button>
+  </div>
+
   <div class="offer-body">
+    <!-- ── Shared inputs ── -->
     <div class="offer-field">
-      <label class="offer-label" for="of-prop">Property</label>
+      <label class="offer-label">Property</label>
       <select class="offer-select" id="of-prop">
-        <option value="22nd">22nd Rd — Villa Armaza</option>
-        <option value="21st">21st Rd — Villa Nalbana</option>
-        <option value="23rd">23rd Rd — Villa Maganda</option>
-        <option value="10th">10th St — Villa Marqueza</option>
-        <option value="13th">13th St — Buko House</option>
-        <option value="jemez">Jemez — Four Winds Trail</option>
+        <option value="21st">21 — Villa Nalbana</option>
+        <option value="22nd">22 — Villa Armaza</option>
+        <option value="10th">10 — Villa Marqueza</option>
+        <option value="23rd">23 — Villa Maganda</option>
+        <option value="13th">13 — Buko House</option>
+        <option value="jemez">Jz — Four Winds Trail</option>
       </select>
     </div>
     <div class="offer-row">
       <div class="offer-field">
-        <label class="offer-label" for="of-checkin">Check-in</label>
+        <label class="offer-label">Check-in</label>
         <input class="offer-input" type="date" id="of-checkin" />
       </div>
       <div class="offer-field">
-        <label class="offer-label" for="of-checkout">Check-out</label>
+        <label class="offer-label">Check-out</label>
         <input class="offer-input" type="date" id="of-checkout" />
       </div>
     </div>
     <div class="offer-row">
       <div class="offer-field">
-        <label class="offer-label" for="of-discount">Discount vs Airbnb %</label>
-        <input class="offer-input" type="number" id="of-discount" value="0" min="0" max="50" placeholder="0" />
+        <label class="offer-label">Cleaning fee $</label>
+        <input class="offer-input" type="number" id="of-cleaning" min="0" placeholder="auto" />
       </div>
       <div class="offer-field">
-        <label class="offer-label" for="of-commission">Commission $</label>
-        <input class="offer-input" type="number" id="of-commission" value="0" min="0" placeholder="0" />
+        <label class="offer-label">Pet fee $</label>
+        <input class="offer-input" type="number" id="of-pet" value="0" min="0" />
       </div>
     </div>
-    <button class="offer-calc-btn" onclick="calcOffer()">Calculate</button>
 
-    <div class="offer-results" id="offer-results">
-      <div class="offer-result-row">
-        <span class="offer-rk">Nights</span>
-        <span class="offer-rv" id="or-nights">—</span>
+    <!-- ── Direct booking inputs ── -->
+    <div id="direct-inputs">
+      <div class="offer-section-divider">Your Terms</div>
+      <div class="offer-field">
+        <label class="offer-label">Discount off Airbnb guest price %</label>
+        <input class="offer-input" type="number" id="of-direct-discount" value="12.4" min="0" max="50" step="0.1" />
+        <div style="font-size:10px;color:#5a5048;margin-top:5px;letter-spacing:0.05em">
+          12.4% = equal win-win split (you gain same as guest saves)
+        </div>
       </div>
-      <div class="offer-result-sep">Airbnb Baseline</div>
-      <div class="offer-result-row">
-        <span class="offer-rk">Airbnb payout baseline</span>
-        <span class="offer-rv" id="or-baseline">—</span>
-      </div>
-      <div class="offer-result-row">
-        <span class="offer-rk">Nightly avg (Airbnb)</span>
-        <span class="offer-rv" id="or-baseline-pn">—</span>
-      </div>
-      <div class="offer-result-sep">Direct Booking</div>
-      <div class="offer-result-row">
-        <span class="offer-rk">Quote to guest</span>
-        <span class="offer-rv highlight" id="or-quote">—</span>
-      </div>
-      <div class="offer-result-row">
-        <span class="offer-rk">Your net (after commission)</span>
-        <span class="offer-rv" id="or-net">—</span>
-      </div>
-      <div class="offer-result-row">
-        <span class="offer-rk">Per-night effective</span>
-        <span class="offer-rv" id="or-pn">—</span>
-      </div>
-      <div class="offer-result-row">
-        <span class="offer-rk">vs Airbnb baseline</span>
-        <span class="offer-rv" id="or-vs-airbnb">—</span>
-      </div>
-      <div id="or-warning"></div>
-      <div id="or-missing-rates"></div>
     </div>
+
+    <!-- ── Lease inputs ── -->
+    <div id="lease-inputs" style="display:none">
+      <div class="offer-section-divider">Lease Terms</div>
+      <div class="offer-field">
+        <label class="offer-label">Commission</label>
+        <select class="offer-select" id="of-comm-rate">
+          <option value="0">No agent (0%)</option>
+          <option value="0.04">Buyer's agent only (4%)</option>
+          <option value="0.06">Listing agent only (6%)</option>
+          <option value="0.083">Both agents (8.3%)</option>
+        </select>
+      </div>
+      <div class="offer-field">
+        <label class="offer-label">Utilities</label>
+        <select class="offer-select" id="of-utilities">
+          <option value="excluded">Tenant pays (excluded)</option>
+          <option value="included">Landlord pays (included)</option>
+        </select>
+      </div>
+      <div class="offer-row">
+        <div class="offer-field">
+          <label class="offer-label">Rent $ (total stay)</label>
+          <input class="offer-input" type="number" id="of-rent" placeholder="or set discount →" />
+        </div>
+        <div class="offer-field">
+          <label class="offer-label">Discount vs NCP %</label>
+          <input class="offer-input" type="number" id="of-lease-discount" placeholder="or set rent ←" />
+        </div>
+      </div>
+    </div>
+
+    <button class="offer-calc-btn" onclick="calcOffer()">Calculate</button>
+    <div id="offer-results"></div>
   </div>
 </div>
 
@@ -1190,106 +1219,210 @@ document.addEventListener('mouseup', () => { isDragging = false; });
 /* ════════════════════════════════════════
    OFFER GENERATOR
 ════════════════════════════════════════ */
-let _rates = null;  // set after load, used by calcOffer
+let _rates = null;
+
+// ── Per-property constants ─────────────────────────────────────────────────
+const CLEANING_FEES = {
+  '21st': 160, '22nd': 170, '10th': 190,
+  '23rd': 170, '13th': 160, 'jemez': 120
+};
+const UTILITY_DAILY = {  // avg daily from YTD P&L (F. Utilities), STR months only
+  '21st': 15.89, '22nd': 18.08, '10th': 25.34,
+  '23rd': 26.00, '13th': 13.88, 'jemez': 20.84
+};
+const PM_FEE_RATE = { 'jemez': 0.10 }; // property manager commission on host payout
+
+// ── Airbnb fee structure ───────────────────────────────────────────────────
+const AIRBNB_HOST_FEE    = 0.15;    // host service fee on TBR
+const AIRBNB_COMBINED    = 0.2478;  // total Airbnb take as % of guest payment
+// Guest Payment = Host Payout / (1 - 0.2478)
+
+let _offerMode = 'direct'; // 'direct' | 'lease'
+
+function switchTab(mode) {
+  _offerMode = mode;
+  document.getElementById('tab-direct').classList.toggle('active', mode === 'direct');
+  document.getElementById('tab-lease').classList.toggle('active', mode === 'lease');
+  document.getElementById('direct-inputs').style.display = mode === 'direct' ? '' : 'none';
+  document.getElementById('lease-inputs').style.display  = mode === 'lease'  ? '' : 'none';
+  document.getElementById('offer-results').innerHTML = '';
+  document.getElementById('offer-results').classList.remove('visible');
+}
 
 function openOffer() {
   document.getElementById('offer-overlay').style.display = 'block';
   document.getElementById('offer-panel').classList.add('open');
-  // Default check-in to tomorrow
-  const ci = document.getElementById('of-checkin');
-  if (!ci.value) {
+  if (!document.getElementById('of-checkin').value) {
     const tomorrow = addDays(new Date(), 1);
-    ci.value = toYMD(tomorrow);
-    const checkout = addDays(tomorrow, 7);
-    document.getElementById('of-checkout').value = toYMD(checkout);
+    document.getElementById('of-checkin').value  = toYMD(tomorrow);
+    document.getElementById('of-checkout').value = toYMD(addDays(tomorrow, 7));
   }
+  // Pre-fill cleaning fee for selected property
+  _prefillCleaning();
 }
+
 function closeOffer() {
   document.getElementById('offer-overlay').style.display = 'none';
   document.getElementById('offer-panel').classList.remove('open');
 }
 
+function _prefillCleaning() {
+  const prop = document.getElementById('of-prop').value;
+  const el   = document.getElementById('of-cleaning');
+  if (!el.value) el.value = CLEANING_FEES[prop] || '';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('of-prop').addEventListener('change', _prefillCleaning);
+});
+
+function row(label, value, cls = '') {
+  return `<div class="offer-res-row${cls ? ' '+cls : ''}">
+    <span class="offer-rk${cls==='muted'?' muted':''}">${label}</span>
+    <span class="offer-rv${cls?' '+cls:''}">${value}</span>
+  </div>`;
+}
+function section(title) {
+  return `<div class="offer-res-section">${title}</div>`;
+}
+function warn(msg) {
+  return `<div class="offer-warning">${msg}</div>`;
+}
+
 function calcOffer() {
-  const prop     = document.getElementById('of-prop').value;
-  const ci       = document.getElementById('of-checkin').value;
-  const co       = document.getElementById('of-checkout').value;
-  const discount = parseFloat(document.getElementById('of-discount').value) || 0;
-  const commission = parseFloat(document.getElementById('of-commission').value) || 0;
+  const prop   = document.getElementById('of-prop').value;
+  const ci     = document.getElementById('of-checkin').value;
+  const co     = document.getElementById('of-checkout').value;
+  if (!ci || !co || co <= ci) { alert('Enter valid check-in and check-out dates.'); return; }
 
-  if (!ci || !co || co <= ci) {
-    alert('Please enter valid check-in and check-out dates.');
-    return;
-  }
+  const nights      = nightsBetween(ci, co);
+  if (nights < 1)   { alert('Check-out must be after check-in.'); return; }
 
-  const nights = nightsBetween(ci, co);
-  if (nights < 1 || nights > 365) {
-    alert('Date range looks off — please check the dates.');
-    return;
-  }
+  const cleaningFee = parseFloat(document.getElementById('of-cleaning').value) || CLEANING_FEES[prop] || 0;
+  const petFee      = parseFloat(document.getElementById('of-pet').value)      || 0;
+  const utilDaily   = UTILITY_DAILY[prop] || 0;
+  const utilityCost = utilDaily * nights;
 
-  // Build nightly rate array
-  let baseline = 0, missingDates = 0;
-  const conflicts = [];
-
+  // ── PriceLabs total ──────────────────────────────────────────────────────
+  let plTotal = 0, missingNights = 0;
   const ciDate = fromYMD(ci);
   for (let i = 0; i < nights; i++) {
-    const d = addDays(ciDate, i);
-    const ds = toYMD(d);
-    const rateCell = _rates?.properties?.[prop]?.[ds];
-    if (rateCell?.price) {
-      baseline += rateCell.price;
-    } else {
-      missingDates++;
-    }
+    const ds = toYMD(addDays(ciDate, i));
+    const cell = _rates?.properties?.[prop]?.[ds];
+    if (cell?.price) plTotal += cell.price;
+    else missingNights++;
   }
 
-  // Conflict detection — confirmed bookings in this window
-  // We need the lookup but it's not in global scope; re-derive from _bookingsCache
+  // ── Airbnb baseline ──────────────────────────────────────────────────────
+  const tbr          = plTotal + cleaningFee + petFee;
+  const platformFee  = tbr * AIRBNB_HOST_FEE;
+  const hostPayout   = tbr - platformFee;
+  const pmFee        = hostPayout * (PM_FEE_RATE[prop] || 0);
+  const adjPayout    = hostPayout - pmFee;
+  const guestPayment = adjPayout / (1 - AIRBNB_COMBINED);
+  const ncpSTR       = adjPayout - utilityCost;
+
+  // ── Conflict check ───────────────────────────────────────────────────────
+  const conflicts = [];
   if (_bookingsCache) {
-    Object.entries(_bookingsCache).forEach(([code, bk]) => {
+    Object.values(_bookingsCache).forEach(bk => {
       if (bk.property !== prop || bk.status !== 'confirmed') return;
-      // Check overlap: booking [check_in, check_out) overlaps [ci, co)
-      if (bk.check_in < co && bk.check_out > ci) {
-        conflicts.push(bk);
-      }
+      if (bk.check_in < co && bk.check_out > ci) conflicts.push(bk);
     });
   }
 
-  const quote  = baseline * (1 - discount / 100);
-  const net    = quote - commission;
-  const perNight = net / nights;
-  const vsAirbnb = net - baseline;
+  // ── Build result HTML ────────────────────────────────────────────────────
+  let html = '';
 
-  // Show results
-  document.getElementById('or-nights').textContent    = nights;
-  document.getElementById('or-baseline').textContent  = missingDates === nights ? 'No data' : fmtMoney(baseline);
-  document.getElementById('or-baseline-pn').textContent = missingDates === nights ? '—' : fmtMoney(baseline / nights) + '/night';
-  document.getElementById('or-quote').textContent     = fmtMoney(quote);
-  document.getElementById('or-net').textContent       = fmtMoney(net);
-  document.getElementById('or-pn').textContent        = fmtMoney(perNight) + '/night';
+  if (conflicts.length)
+    html += warn(`⚠ Conflict: ${conflicts.map(b=>`${b.guest_name} (${b.check_in}–${b.check_out})`).join(', ')}`);
+  if (missingNights === nights)
+    html += warn('No PriceLabs data for this window — run the daily pipeline first.');
+  else if (missingNights > 0)
+    html += warn(`${missingNights} night${missingNights>1?'s':''} outside PriceLabs window — baseline is partial.`);
 
-  const vsEl = document.getElementById('or-vs-airbnb');
-  vsEl.textContent = (vsAirbnb >= 0 ? '+' : '') + fmtMoney(vsAirbnb);
-  vsEl.className = 'offer-rv ' + (vsAirbnb >= 0 ? 'positive' : 'negative');
+  // Airbnb baseline (shown for both modes)
+  html += section('Airbnb Baseline');
+  html += row(`PriceLabs rent (${nights}n)`, fmtMoney(plTotal));
+  html += row('Cleaning fee', fmtMoney(cleaningFee));
+  if (petFee) html += row('Pet fee', fmtMoney(petFee));
+  html += row('Total Booking Revenue', fmtMoney(tbr), 'subtotal');
+  html += row('Platform fee (15%)', '−' + fmtMoney(platformFee));
+  html += row('Host Payout', fmtMoney(hostPayout));
+  if (PM_FEE_RATE[prop]) html += row(`PM fee (${(PM_FEE_RATE[prop]*100).toFixed(0)}%)`, '−' + fmtMoney(pmFee));
+  html += row('Adjusted Payout', fmtMoney(adjPayout));
+  html += row('Guest pays on Airbnb', fmtMoney(guestPayment), 'muted');
+  html += row(`Utilities (${nights}d × $${utilDaily.toFixed(2)}/d)`, '−' + fmtMoney(utilityCost));
+  html += `<div class="offer-res-row ncp"><span class="offer-rk">NCP — Airbnb</span><span class="offer-rv ncp-val">${fmtMoney(ncpSTR)}</span></div>`;
 
-  const warningEl = document.getElementById('or-warning');
-  if (conflicts.length > 0) {
-    const names = conflicts.map(b => `${b.guest_name} (${b.check_in}–${b.check_out})`).join(', ');
-    warningEl.innerHTML = `<div class="offer-warning">⚠ Conflict: existing booking${conflicts.length > 1 ? 's' : ''} overlap this window — ${names}</div>`;
+  if (_offerMode === 'direct') {
+    // ── Direct booking mode ────────────────────────────────────────────────
+    // Discount applies to Airbnb guest price — equal split at 12.39%
+    const discountPct  = parseFloat(document.getElementById('of-direct-discount').value) || 0;
+    const directQuote  = guestPayment * (1 - discountPct / 100); // what guest pays you directly
+    const ncpDirect    = directQuote - utilityCost;              // you keep all of it, no platform fee
+    const guestSaves   = guestPayment - directQuote;
+    const youGain      = ncpDirect - ncpSTR;
+    const equalSplit   = (AIRBNB_COMBINED / 2 * 100).toFixed(1); // ~12.4%
+
+    html += section('Direct Booking — Quote to Guest');
+    html += row('Airbnb guest would pay', fmtMoney(guestPayment));
+    html += row(`Your discount (${discountPct}% off Airbnb price)`, '−' + fmtMoney(guestSaves));
+    html += `<div class="offer-res-row ncp"><span class="offer-rk">Quote to guest</span><span class="offer-rv ncp-val">${fmtMoney(directQuote)}</span></div>`;
+    html += row('Guest saves vs Airbnb', `${fmtMoney(guestSaves)} (${discountPct.toFixed(1)}%)`, 'positive');
+
+    html += section('Your Economics');
+    html += row('You receive (no platform fee)', fmtMoney(directQuote));
+    html += row(`Utilities (${nights}d × $${utilDaily.toFixed(2)})`, '−' + fmtMoney(utilityCost));
+    html += `<div class="offer-res-row ncp"><span class="offer-rk">Your NCP — Direct</span><span class="offer-rv ncp-val">${fmtMoney(ncpDirect)}</span></div>`;
+
+    html += section('Comparison vs Airbnb');
+    html += `<div class="offer-res-row final"><span class="offer-rk">You gain vs Airbnb NCP</span><span class="offer-rv ${youGain>=0?'positive':'negative'}">${youGain>=0?'+':''}${fmtMoney(youGain)} ${youGain>=0?'▲':'▼'}</span></div>`;
+    if (Math.abs(discountPct - parseFloat(equalSplit)) > 0.2)
+      html += `<div style="font-size:10px;color:#5a5048;padding:6px 0">Equal win-win at ${equalSplit}% — both you and guest split Airbnb's cut evenly.</div>`;
+
   } else {
-    warningEl.innerHTML = '';
+    // ── Lease mode ─────────────────────────────────────────────────────────
+    const commRate      = parseFloat(document.getElementById('of-comm-rate').value);
+    const utilitiesIncl = document.getElementById('of-utilities').value === 'included';
+    const rentRaw       = document.getElementById('of-rent').value.trim();
+    const discRaw       = document.getElementById('of-lease-discount').value.trim();
+    const utilitiesLease = utilitiesIncl ? utilityCost : 0;
+
+    let rent, discountPct;
+    if (rentRaw !== '' && !isNaN(parseFloat(rentRaw))) {
+      rent = parseFloat(rentRaw);
+      const ncpLease = rent * (1 - commRate) - utilitiesLease;
+      discountPct = ncpSTR > 0 ? (ncpSTR - ncpLease) / ncpSTR * 100 : 0;
+      document.getElementById('of-lease-discount').value = discountPct.toFixed(1);
+    } else {
+      discountPct = discRaw !== '' ? parseFloat(discRaw) : 0;
+      const targetNCP = ncpSTR * (1 - discountPct / 100);
+      rent = (1 - commRate) > 0 ? (targetNCP + utilitiesLease) / (1 - commRate) : 0;
+      document.getElementById('of-rent').value = Math.round(rent);
+    }
+
+    const commAmt    = rent * commRate;
+    const ncpLease   = rent - commAmt - utilitiesLease;
+    const ncpDiff    = ncpLease - ncpSTR;
+
+    html += section('Lease Terms — Agent Quote');
+    html += `<div class="offer-res-row ncp"><span class="offer-rk">Rent to quote</span><span class="offer-rv ncp-val">${fmtMoney(rent)}</span></div>`;
+    html += row(`${fmtMoney(rent/nights, 0)}/night equivalent`, '', 'muted').replace('<span class="offer-rv muted"></span>', '<span class="offer-rk muted"> </span>');
+
+    html += section('Your Economics');
+    html += row('Rent received', fmtMoney(rent));
+    if (commRate > 0) html += row(`Commission (${(commRate*100).toFixed(1)}%)`, '−' + fmtMoney(commAmt));
+    html += row(`Utilities (${utilitiesIncl ? 'you pay' : 'tenant pays'})`, utilitiesIncl ? '−' + fmtMoney(utilitiesLease) : '$0');
+    html += `<div class="offer-res-row ncp"><span class="offer-rk">Your NCP — Lease</span><span class="offer-rv ncp-val">${fmtMoney(ncpLease)}</span></div>`;
+
+    html += section('Comparison');
+    html += row('Lease discount vs Airbnb NCP', discountPct.toFixed(1) + '%');
+    html += `<div class="offer-res-row final"><span class="offer-rk">NCP difference</span><span class="offer-rv ${ncpDiff>=0?'positive':'negative'}">${ncpDiff>=0?'+':''}${fmtMoney(ncpDiff)} ${ncpDiff>=0?'▲ lease wins':'▼ Airbnb wins'}</span></div>`;
   }
 
-  const missingEl = document.getElementById('or-missing-rates');
-  if (missingDates > 0 && missingDates < nights) {
-    missingEl.innerHTML = `<div class="offer-warning">Note: ${missingDates} night${missingDates !== 1 ? 's' : ''} outside PriceLabs data window — baseline is partial.</div>`;
-  } else if (missingDates === nights) {
-    missingEl.innerHTML = `<div class="offer-warning">No PriceLabs rate data for this window. Run the daily pipeline to refresh.</div>`;
-  } else {
-    missingEl.innerHTML = '';
-  }
-
-  document.getElementById('offer-results').classList.add('visible');
+  const el = document.getElementById('offer-results');
+  el.innerHTML = html;
+  el.classList.add('visible');
 }
 
 /* ════════════════════════════════════════
