@@ -497,15 +497,15 @@
     /* ── Cleaning diamond ──────────────────────────────────────── */
     .clean-diamond {
       position: absolute;
-      top: 50%; transform: translateY(-50%);
-      left: 8px;
+      top: 3px; right: 3px;
       z-index: 5;
-      font-size: 10px;
-      background: none; border: none; padding: 1px;
+      font-size: 13px;
+      background: none; border: none; padding: 0;
       cursor: pointer; line-height: 1;
-      transition: transform .12s;
+      transition: transform .12s, filter .12s;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.7));
     }
-    .clean-diamond:hover { transform: translateY(-50%) scale(1.45); }
+    .clean-diamond:hover { transform: scale(1.3); filter: drop-shadow(0 1px 4px rgba(0,0,0,.9)) brightness(1.3); }
 
     /* ── Cleaning detail panel ─────────────────────────────────── */
     #clean-panel {
@@ -966,7 +966,12 @@ function groupId(block) {
 function cleaningDiamond(bk) {
   const todayStr = toYMD(new Date());
   const c = bk?.cleaning;
-  if (bk.check_out > todayStr) return { color: '#3a3830', title: 'Upcoming checkout' };
+  // Upcoming (checkout in the future)
+  if (bk.check_out > todayStr) {
+    if (c?.src_request_email)
+      return { color: '#707870', title: 'Upcoming · cleaning scheduled' };
+    return { color: '#803020', title: 'Upcoming · cleaning NOT scheduled' };
+  }
   if (!c) return { color: '#4a4038', title: 'No cleaning data' };
   if (['needs_review', 'rate_outlier'].includes(c.status))
     return { color: '#b05030', title: `Needs review (${c.status})` };
@@ -1209,8 +1214,11 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
 
           const prevBlock = propBlocks[toYMD(addDays(d, -1))];
           const nextBlock = propBlocks[toYMD(addDays(d,  1))];
-          const sameGroupPrev = groupId(prevBlock) === groupId(block);
-          const sameGroupNext = groupId(nextBlock) === groupId(block);
+          const sameGroupPrev  = groupId(prevBlock) === groupId(block);
+          // If the next cell is this booking's checkout stub, treat as same group
+          // so the last-night cell has no right-rounding — strip flows into the stub
+          const nextIsThisStub = nextBlock?.type === 'co_stub' && nextBlock?.code === block.code;
+          const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
           if (!sameGroupPrev && !sameGroupNext) td.classList.add('bk-solo');
           else if (!sameGroupPrev)             td.classList.add('bk-start');
