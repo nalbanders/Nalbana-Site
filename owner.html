@@ -253,9 +253,11 @@
     }
 
     /* Block pill rounding */
-    .day-cell.bk-start { --blk-il: 4px; --blk-rl: 5px; }
-    .day-cell.bk-end   { --blk-ir: 4px; --blk-rr: 5px; }
-    .day-cell.bk-solo  { --blk-il: 4px; --blk-ir: 4px; --blk-rl: 5px; --blk-rr: 5px; }
+    .day-cell.bk-start      { --blk-il: 4px; --blk-rl: 5px; }
+    .day-cell.bk-end        { --blk-ir: 4px; --blk-rr: 5px; }
+    .day-cell.bk-solo       { --blk-il: 4px; --blk-ir: 4px; --blk-rl: 5px; --blk-rr: 5px; }
+    /* Back-to-back split: incoming booking fills right 2/3, no left rounding */
+    .day-cell.bk-start-half { --blk-il: 33.33%; --blk-rl: 0; }
 
     /* ── Rate Labels ── */
     .rate-label {
@@ -1215,13 +1217,16 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
           const prevBlock = propBlocks[toYMD(addDays(d, -1))];
           const nextBlock = propBlocks[toYMD(addDays(d,  1))];
           const sameGroupPrev  = groupId(prevBlock) === groupId(block);
-          // If the next cell is this booking's checkout stub, treat as same group
-          // so the last-night cell has no right-rounding — strip flows into the stub
-          const nextIsThisStub = nextBlock?.type === 'co_stub' && nextBlock?.code === block.code;
+          // Treat co_stub OR back-to-back cell that carries this booking's stub
+          // as "same group" so the last night has no right rounding
+          const nextIsThisStub =
+            (nextBlock?.type === 'co_stub' && nextBlock?.code === block.code) ||
+            (nextBlock?._co_stubs?.some(s => s.code === block.code));
           const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
+          const isBackToBack = block._co_stubs?.length > 0; // this cell is a back-to-back split
           if (!sameGroupPrev && !sameGroupNext) td.classList.add('bk-solo');
-          else if (!sameGroupPrev)             td.classList.add('bk-start');
+          else if (!sameGroupPrev) td.classList.add(isBackToBack ? 'bk-start-half' : 'bk-start');
           else if (!sameGroupNext)             td.classList.add('bk-end');
         }
 
@@ -1241,16 +1246,22 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
       }
 
       // ── Checkout stub + cleaning diamond ──
+      const isBackToBackCell = !!(block?._co_stubs?.length);
       const coStubs = block?.type === 'co_stub'
         ? [{ code: block.code, bk: block.bk }]
         : (block?._co_stubs || []);
       if (coStubs.length) {
         const { bk: sBk } = coStubs[0];
         const dm = cleaningDiamond(sBk);
-        const stubColor = '#4a7868'; // airbnb_confirmed (all confirmed bookings from bookings.json)
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
-        stubEl.style.background = stubColor;
+        stubEl.style.background = '#4a7868';
+        // Back-to-back: stub fills left 50% (paired with incoming booking's right 50%)
+        // Standalone: narrow 14px nub into otherwise-empty checkout cell
+        if (isBackToBackCell) {
+          stubEl.style.width = '33.33%';
+          stubEl.style.borderRadius = '0 3px 3px 0';
+        }
         td.appendChild(stubEl);
         const dmBtn = document.createElement('button');
         dmBtn.className = 'clean-diamond';
