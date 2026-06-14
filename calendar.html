@@ -282,8 +282,60 @@
     }
 
     /* Block pill positions */
-    .day-cell.bk-start { --blk-il: 4px; --blk-rl: 5px; }
-    .day-cell.bk-end   { --blk-ir: 4px; --blk-rr: 5px; }
+    .day-cell.bk-start      { --blk-il: 4px; --blk-rl: 5px; }
+    .day-cell.bk-end        { --blk-ir: 4px; --blk-rr: 5px; }
+    /* Back-to-back split: incoming booking fills right 2/3, no left rounding */
+    .day-cell.bk-start-half { --blk-il: 33.33%; --blk-rl: 0; }
+
+    /* ── Checkout stub ── */
+    .co-stub-bar {
+      position: absolute;
+      top: 10px; bottom: 10px;
+      left: 0; width: 14px;
+      border-radius: 0 3px 3px 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── Cleaning diamond ── */
+    .clean-diamond {
+      position: absolute;
+      top: 3px; left: 33%; transform: translateX(-50%);
+      z-index: 5;
+      font-size: 24px;
+      background: none; border: none; padding: 0;
+      cursor: pointer; line-height: 1;
+      transition: transform .12s, filter .12s;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.7));
+    }
+    .clean-diamond:hover { transform: translateX(-50%) scale(1.3); filter: drop-shadow(0 1px 4px rgba(0,0,0,.9)) brightness(1.3); }
+
+    /* ── Cleaning detail panel ── */
+    #clean-panel {
+      position: fixed; z-index: 1000;
+      background: #161412; border: 1px solid #3a3530;
+      width: 244px; box-shadow: 0 16px 48px rgba(0,0,0,.85);
+      display: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    }
+    .cp-hdr {
+      padding: 12px 14px 10px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      border-bottom: 1px solid #2a2826;
+    }
+    .cp-guest { font-size: 12px; color: #d0c0a0; font-weight: 600; }
+    .cp-prop  { font-size: 10px; color: #7a6a58; letter-spacing: .06em; margin-top: 2px; }
+    .cp-x { background: none; border: none; color: #4a3a28; font-size: 18px; cursor: pointer; line-height: 1; padding: 0; flex-shrink: 0; margin-left: 8px; }
+    .cp-x:hover { color: #a89070; }
+    .cp-status-bar { margin: 8px 14px; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; font-size: 10px; font-weight: 600; letter-spacing: .08em; }
+    .cp-body { padding: 2px 14px 14px; }
+    .cp-row { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1a1816; font-size: 11px; }
+    .cp-row:last-of-type { border-bottom: none; }
+    .cp-k { color: #5a5048; letter-spacing: .04em; }
+    .cp-v { color: #c0a880; text-align: right; font-weight: 500; }
+    .cp-src-row { display: flex; gap: 12px; padding-top: 10px; border-top: 1px solid #2a2826; margin-top: 6px; }
+    .cp-src-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #5a5048; letter-spacing: .04em; }
+    .cp-src-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .day-cell.bk-solo  { --blk-il: 4px; --blk-ir: 4px; --blk-rl: 5px; --blk-rr: 5px; }
 
     /* ── Tooltip ── */
@@ -662,6 +714,23 @@ function buildLookup(avail, bookings, occupancy) {
         }
       });
     }
+
+    // Checkout-stub pass — bleed booking strip one cell into checkout day
+    if (bookings) {
+      Object.entries(bookings).forEach(([code, bk]) => {
+        if (bk.property !== p.key || bk.status !== 'confirmed' || !bk.check_out) return;
+        const coDs  = bk.check_out;
+        const exist = lookup[p.key][coDs];
+        if (!exist) {
+          lookup[p.key][coDs] = { type: 'co_stub', code, bk };
+        } else if (exist.type === 'airbnb_confirmed' || exist.type === 'airbnb_conflict') {
+          if (!exist._co_stubs) exist._co_stubs = [];
+          exist._co_stubs.push({ code, bk });
+        } else if (exist.type === 'airbnb_block') {
+          lookup[p.key][coDs] = { type: 'co_stub', code, bk };
+        }
+      });
+    }
   });
   return lookup;
 }
@@ -671,6 +740,64 @@ function groupId(block) {
   if (block.type === 'airbnb_confirmed' && block.code) return block.code;
   if (block.note) return `${block.note.start}|${block.note.end}`;
   return block.type;
+}
+
+function cleaningDiamond(bk) {
+  const todayStr = toYMD(new Date());
+  const c = bk?.cleaning;
+  if (bk.check_out > todayStr) {
+    if (c?.src_request_email) return { color: '#707870', title: 'Upcoming · cleaning scheduled' };
+    return { color: '#803020', title: 'Upcoming · cleaning NOT scheduled' };
+  }
+  if (!c) return { color: '#4a4038', title: 'No cleaning data' };
+  if (['needs_review', 'rate_outlier'].includes(c.status))
+    return { color: '#b05030', title: `Needs review (${c.status})` };
+  if (c.status === 'jemez_bulk')
+    return { color: '#5a78a0', title: 'Jemez bulk — Teresa' };
+  if (c.src_tiller) {
+    const amt = c.amount != null ? ` · $${Number(c.amount).toFixed(2)}` : '';
+    return { color: '#4a9870', title: `Paid${amt}` };
+  }
+  if (c.src_request_email) return { color: '#b89030', title: 'Requested — awaiting payment' };
+  if (c.status === 'unpaid' || c.status === 'missing')
+    return { color: '#6a5a48', title: 'Unpaid — not requested' };
+  return { color: '#4a4038', title: c.status || 'No data' };
+}
+
+function showCleanPanel(e, bk, dm) {
+  const c = bk?.cleaning || {};
+  const propName = (PROPERTIES.find(p => p.key === bk.property) || {}).name || bk.property || '—';
+  document.getElementById('cp-guest').textContent = bk.guest_name || 'Guest';
+  document.getElementById('cp-prop').textContent  = `${propName} · checkout ${bk.check_out}`;
+  const st = document.getElementById('cp-status-bar');
+  st.textContent = `◆ ${dm.title}`;
+  st.style.color = dm.color;
+  st.style.border = `1px solid ${dm.color}55`;
+  st.style.background = `${dm.color}18`;
+  const rows = [];
+  if (c.request_id)   rows.push(['Memo / ID',  c.request_id]);
+  if (c.requested_at) {
+    const d = new Date(c.requested_at);
+    rows.push(['Requested', d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' })]);
+  }
+  if (c.payment_date) rows.push(['Date paid', c.payment_date]);
+  if (c.amount != null) rows.push(['Amount',  '$' + Number(c.amount).toFixed(2)]);
+  if (c.payee)        rows.push(['Payee',      c.payee]);
+  if (!rows.length)   rows.push(['Status',     c.status || 'none']);
+  const srcDot = (on, label) =>
+    `<div class="cp-src-item"><div class="cp-src-dot" style="background:${on ? dm.color : '#2a2826'}"></div>${label}</div>`;
+  document.getElementById('cp-body').innerHTML =
+    rows.map(([k,v]) => `<div class="cp-row"><span class="cp-k">${k}</span><span class="cp-v">${v}</span></div>`).join('') +
+    `<div class="cp-src-row">${srcDot(c.src_tiller,'Tiller')}${srcDot(c.src_request_email,'Request')}${srcDot(c.src_confirm_email,'Confirm')}</div>`;
+  const panel = document.getElementById('clean-panel');
+  panel.style.display = 'block';
+  const pw = 244, ph = panel.offsetHeight;
+  let x = e.clientX + 14, y = e.clientY - 20;
+  if (x + pw > window.innerWidth  - 8) x = e.clientX - pw - 14;
+  if (y + ph > window.innerHeight - 8) y = window.innerHeight - ph - 8;
+  if (y < 8) y = 8;
+  panel.style.left = x + 'px';
+  panel.style.top  = y + 'px';
 }
 
 /* ════════════════════════════════════════
@@ -770,16 +897,22 @@ function renderCalendar(lookup, updatedAt) {
       prevMoKey3 = moKey;
 
       if (block) {
-        td.classList.add('blocked', `blk-${block.type}`);
+        if (block.type !== 'co_stub') {
+          td.classList.add('blocked', `blk-${block.type}`);
 
-        const prevBlock = propBlocks[toYMD(addDays(d, -1))];
-        const nextBlock = propBlocks[toYMD(addDays(d,  1))];
-        const sameGroupPrev = groupId(prevBlock) === groupId(block);
-        const sameGroupNext = groupId(nextBlock) === groupId(block);
+          const prevBlock = propBlocks[toYMD(addDays(d, -1))];
+          const nextBlock = propBlocks[toYMD(addDays(d,  1))];
+          const sameGroupPrev  = groupId(prevBlock) === groupId(block);
+          const nextIsThisStub =
+            (nextBlock?.type === 'co_stub' && nextBlock?.code === block.code) ||
+            (nextBlock?._co_stubs?.some(s => s.code === block.code));
+          const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
-        if (!sameGroupPrev && !sameGroupNext) td.classList.add('bk-solo');
-        else if (!sameGroupPrev)              td.classList.add('bk-start');
-        else if (!sameGroupNext)              td.classList.add('bk-end');
+          const isBackToBack = block._co_stubs?.length > 0;
+          if (!sameGroupPrev && !sameGroupNext) td.classList.add('bk-solo');
+          else if (!sameGroupPrev) td.classList.add(isBackToBack ? 'bk-start-half' : 'bk-start');
+          else if (!sameGroupNext) td.classList.add('bk-end');
+        }
 
         td.dataset.prop    = prop.name;
         td.dataset.type    = block.type;
@@ -795,6 +928,30 @@ function renderCalendar(lookup, updatedAt) {
           td.dataset.chkout   = block.note.end   || '';
         }
       }
+
+      // ── Checkout stub + cleaning diamond ──
+      const isBackToBackCell = !!(block?._co_stubs?.length);
+      const coStubs = block?.type === 'co_stub'
+        ? [{ code: block.code, bk: block.bk }]
+        : (block?._co_stubs || []);
+      if (coStubs.length) {
+        const { bk: sBk } = coStubs[0];
+        const dm = cleaningDiamond(sBk);
+        const stubEl = document.createElement('div');
+        stubEl.className = 'co-stub-bar';
+        stubEl.style.background = '#4a7868';
+        if (isBackToBackCell) { stubEl.style.width = '33.33%'; stubEl.style.borderRadius = '0 3px 3px 0'; }
+        td.appendChild(stubEl);
+        const dmBtn = document.createElement('button');
+        dmBtn.className = 'clean-diamond';
+        dmBtn.textContent = '◆';
+        dmBtn.style.color = dm.color;
+        dmBtn.title = dm.title;
+        dmBtn.addEventListener('click', e => { e.stopPropagation(); showCleanPanel(e, sBk, dm); });
+        dmBtn.addEventListener('mouseenter', () => { tooltip.style.display = 'none'; });
+        td.appendChild(dmBtn);
+      }
+
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
@@ -849,7 +1006,7 @@ const TYPE_LABELS = {
 
 document.getElementById('cal-scroll-wrap').addEventListener('mousemove', e => {
   const cell = e.target.closest('.day-cell');
-  if (!cell || !cell.classList.contains('blocked')) {
+  if (!cell || cell.dataset.type === 'co_stub' || e.target.classList.contains('clean-diamond') || !cell.classList.contains('blocked')) {
     tooltip.style.display = 'none'; return;
   }
   const { prop, type, guest, payout, checkin, chkout, notetext } = cell.dataset;
@@ -899,6 +1056,13 @@ if (isAuthenticated()) {
   init();
 }
 
+// ── Clean-panel close (delegated) ──────────────────────────────────────────
+document.addEventListener('click', e => {
+  if (e.target.id === 'cp-x') { document.getElementById('clean-panel').style.display = 'none'; return; }
+  if (!e.target.closest('#clean-panel') && !e.target.classList.contains('clean-diamond'))
+    document.getElementById('clean-panel').style.display = 'none';
+});
+
 /* ════════════════════════════════════════
    INIT
 ════════════════════════════════════════ */
@@ -911,5 +1075,18 @@ async function init() {
   renderCalendar(lookup, avail?.updated_at ?? null);
 }
 </script>
+
+<!-- Cleaning detail panel -->
+<div id="clean-panel">
+  <div class="cp-hdr">
+    <div>
+      <div class="cp-guest" id="cp-guest"></div>
+      <div class="cp-prop"  id="cp-prop"></div>
+    </div>
+    <button class="cp-x" id="cp-x">×</button>
+  </div>
+  <div class="cp-status-bar" id="cp-status-bar"></div>
+  <div class="cp-body" id="cp-body"></div>
+</div>
 </body>
 </html>
