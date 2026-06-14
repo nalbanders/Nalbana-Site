@@ -973,7 +973,7 @@ function cleaningDiamond(bk) {
   if (bk.check_out > todayStr) {
     if (c?.src_request_email)
       return { color: '#707870', title: 'Upcoming · cleaning scheduled' };
-    return { color: '#803020', title: 'Upcoming · cleaning NOT scheduled' };
+    return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning NOT scheduled' };
   }
   if (!c) return { color: '#4a4038', title: 'No cleaning data' };
   if (['needs_review', 'rate_outlier'].includes(c.status))
@@ -1269,7 +1269,7 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
         td.appendChild(stubEl);
         const dmBtn = document.createElement('button');
         dmBtn.className = 'clean-diamond';
-        dmBtn.textContent = '◆';
+        dmBtn.textContent = dm.char || '◆';
         dmBtn.style.color = dm.color;
         dmBtn.title = dm.title;
         dmBtn.addEventListener('click', e => { e.stopPropagation(); showCleanPanel(e, sBk, dm); });
