@@ -1217,11 +1217,14 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
           const prevBlock = propBlocks[toYMD(addDays(d, -1))];
           const nextBlock = propBlocks[toYMD(addDays(d,  1))];
           const sameGroupPrev  = groupId(prevBlock) === groupId(block);
-          // Treat co_stub OR back-to-back cell that carries this booking's stub
-          // as "same group" so the last night has no right rounding
-          const nextIsThisStub =
-            (nextBlock?.type === 'co_stub' && nextBlock?.code === block.code) ||
-            (nextBlock?._co_stubs?.some(s => s.code === block.code));
+          // Remove right-rounding if the next cell is this booking's checkout stub.
+          // Match on checkout DATE (not code) to handle rebooked stays robustly.
+          const nextDs = toYMD(addDays(d, 1));
+          const nextIsThisStub = !!(
+            block.bk?.check_out === nextDs &&
+            nextBlock &&
+            (nextBlock.type === 'co_stub' || (nextBlock._co_stubs?.length > 0))
+          );
           const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
           const isBackToBack = block._co_stubs?.length > 0; // this cell is a back-to-back split

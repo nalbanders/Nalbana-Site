@@ -903,9 +903,12 @@ function renderCalendar(lookup, updatedAt) {
           const prevBlock = propBlocks[toYMD(addDays(d, -1))];
           const nextBlock = propBlocks[toYMD(addDays(d,  1))];
           const sameGroupPrev  = groupId(prevBlock) === groupId(block);
-          const nextIsThisStub =
-            (nextBlock?.type === 'co_stub' && nextBlock?.code === block.code) ||
-            (nextBlock?._co_stubs?.some(s => s.code === block.code));
+          const nextDs = toYMD(addDays(d, 1));
+          const nextIsThisStub = !!(
+            block.bk?.check_out === nextDs &&
+            nextBlock &&
+            (nextBlock.type === 'co_stub' || (nextBlock._co_stubs?.length > 0))
+          );
           const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
           const isBackToBack = block._co_stubs?.length > 0;
