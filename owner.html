@@ -256,8 +256,9 @@
     .day-cell.bk-start      { --blk-il: 4px; --blk-rl: 5px; }
     .day-cell.bk-end        { --blk-ir: 4px; --blk-rr: 5px; }
     .day-cell.bk-solo       { --blk-il: 4px; --blk-ir: 4px; --blk-rl: 5px; --blk-rr: 5px; }
-    /* Back-to-back split: incoming booking fills right 2/3, no left rounding */
-    .day-cell.bk-start-half { --blk-il: 33.33%; --blk-rl: 0; }
+    /* Back-to-back split: incoming booking fills right 2/3, rounded left edge.
+       +2px offset from stub end creates a visible dark break between the two strips. */
+    .day-cell.bk-start-half { --blk-il: calc(33.33% + 2px); --blk-rl: 5px; }
 
     /* ── Rate Labels ── */
     .rate-label {
@@ -1262,7 +1263,7 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
         // Back-to-back: stub fills left 50% (paired with incoming booking's right 50%)
         // Standalone: narrow 14px nub into otherwise-empty checkout cell
         if (isBackToBackCell) {
-          stubEl.style.width = '33.33%';
+          stubEl.style.width = 'calc(33.33% - 2px)';
           stubEl.style.borderRadius = '0 3px 3px 0';
         }
         td.appendChild(stubEl);

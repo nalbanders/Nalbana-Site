@@ -284,8 +284,9 @@
     /* Block pill positions */
     .day-cell.bk-start      { --blk-il: 4px; --blk-rl: 5px; }
     .day-cell.bk-end        { --blk-ir: 4px; --blk-rr: 5px; }
-    /* Back-to-back split: incoming booking fills right 2/3, no left rounding */
-    .day-cell.bk-start-half { --blk-il: 33.33%; --blk-rl: 0; }
+    /* Back-to-back split: incoming booking fills right 2/3, rounded left edge.
+       +2px offset from stub end creates a visible dark break between the two strips. */
+    .day-cell.bk-start-half { --blk-il: calc(33.33% + 2px); --blk-rl: 5px; }
 
     /* ── Checkout stub ── */
     .co-stub-bar {
@@ -943,7 +944,7 @@ function renderCalendar(lookup, updatedAt) {
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
         stubEl.style.background = '#4a7868';
-        if (isBackToBackCell) { stubEl.style.width = '33.33%'; stubEl.style.borderRadius = '0 3px 3px 0'; }
+        if (isBackToBackCell) { stubEl.style.width = 'calc(33.33% - 2px)'; stubEl.style.borderRadius = '0 3px 3px 0'; }
         td.appendChild(stubEl);
         const dmBtn = document.createElement('button');
         dmBtn.className = 'clean-diamond';
