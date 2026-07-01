@@ -258,7 +258,7 @@
     /* Block type colors — visible against dark background */
     .day-cell.blk-airbnb_confirmed { --blk-bg: #4a7868; }
     .day-cell.blk-airbnb_block     { --blk-bg: #2e2c2a; }
-    .day-cell.blk-direct           { --blk-bg: #6a4a2a; }
+    .day-cell.blk-direct           { --blk-bg: #2d5245; }
     .day-cell.blk-lease            { --blk-bg: #2a4e68; }
     .day-cell.blk-maintenance      { --blk-bg: #4a4a28; }
     .day-cell.blk-hold             { --blk-bg: #502840; }
@@ -534,7 +534,7 @@
   <div class="legend-div"></div>
   <span class="legend-section-label">Non-Airbnb</span>
   <div class="legend-item">
-    <div class="legend-swatch" style="background:#6a4a2a"></div>
+    <div class="legend-swatch" style="background:#2d5245"></div>
     <span class="legend-text">Direct Booking</span>
   </div>
   <div class="legend-item">
@@ -922,10 +922,12 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
           const nextIsThisStub = !!(
             block.bk?.check_out === nextDs &&
             nextBlock &&
-            // Only bleed into the next cell if it's the same visual type — different
-            // types (e.g. direct→airbnb) need a hard right edge so colors don't merge.
+            // True if OUR booking's checkout stub lives in the next cell —
+            // either as the cell's primary type or nested in _co_stubs.
+            // We check by code so cross-type back-to-backs (e.g. airbnb→direct)
+            // still suppress bk-end rounding and keep the strip visually continuous.
             (nextBlock.type === 'co_stub' ||
-             (nextBlock._co_stubs?.length > 0 && nextBlock.type === block.type))
+             nextBlock._co_stubs?.some(s => s.code === block.code))
           );
           const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
@@ -960,7 +962,7 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
         const cleaningKey = sBk?.property + '_' + sBk?.check_out;
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
-        const _stubColors = { airbnb: '#4a7868', direct: '#6a4a2a', vrbo: '#6a4a2a', lease: '#2a4e68', maintenance: '#4a4a28' };
+        const _stubColors = { airbnb: '#4a7868', direct: '#2d5245', vrbo: '#2d5245', lease: '#2a4e68', maintenance: '#4a4a28' };
         stubEl.style.background = _stubColors[sBk?.platform || 'airbnb'] || '#4a7868';
         if (isBackToBackCell) { stubEl.style.width = 'calc(33.33% - 2px)'; stubEl.style.borderRadius = '0 3px 3px 0'; }
         td.appendChild(stubEl);

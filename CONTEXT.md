@@ -150,7 +150,7 @@ Horizontal Gantt-style multi-property availability calendar. Password-protected 
 ### Data architecture (three layers)
 **Layer 1 — iCal (availability.json):** Sets all blocked dates as `airbnb_block`. Ground truth for future dates.
 
-**Layer 2 — bookings.json** (`https://nalbanders.github.io/Nalbana_FPA/bookings.json`):
+**Layer 2 — bookings.json** (`https://ops.nalbana.com/bookings.json`):
 - **Past dates** (before today): iCal drops old events, so bookings.json is source of truth → writes `airbnb_confirmed` unconditionally.
 - **Future dates**: iCal is live truth. If day is in both → `airbnb_confirmed` (enriched). If in bookings.json only → `airbnb_conflict` (Airbnb likely modified/cancelled — shown in amber with outline).
 
