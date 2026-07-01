@@ -618,6 +618,7 @@ const PROPERTIES = [
 const AVAILABILITY_URL = './availability.json';
 const BOOKINGS_URL     = 'https://ops.nalbana.com/bookings.json';
 const OCCUPANCY_URL    = './occupancy_notes.json';
+const CLEANING_URL     = 'https://ops.nalbana.com/cleaning_schedule.json';
 
 const DAYS_BEFORE = 60;
 const DAYS_TOTAL  = 180;
@@ -649,12 +650,13 @@ function nightsBetween(a, b) {
 ════════════════════════════════════════ */
 async function loadData() {
   const safe = p => p.then(r => r.ok ? r.json() : null).catch(() => null);
-  const [avail, bookings, occupancy] = await Promise.all([
+  const [avail, bookings, occupancy, cleaningSchedule] = await Promise.all([
     safe(fetch(AVAILABILITY_URL)),
     safe(fetch(BOOKINGS_URL)),
     safe(fetch(OCCUPANCY_URL)),
+    safe(fetch(CLEANING_URL)),
   ]);
-  return { avail, bookings, occupancy };
+  return { avail, bookings, occupancy, cleaningSchedule };
 }
 
 /* ════════════════════════════════════════
@@ -743,12 +745,16 @@ function groupId(block) {
   return block.type;
 }
 
-function cleaningDiamond(bk) {
+// cleaningScheduled: true = on Google Calendar, false = not found, null = data unavailable
+function cleaningDiamond(bk, cleaningScheduled = null) {
   const todayStr = toYMD(new Date());
   const c = bk?.cleaning;
   if (bk.check_out > todayStr) {
-    if (c?.src_request_email) return { color: '#707870', title: 'Upcoming · cleaning scheduled' };
-    return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning NOT scheduled' };
+    // Prefer live Google Calendar data; fall back to bookings.json cleaning field if present
+    const scheduled = cleaningScheduled != null ? cleaningScheduled : c?.src_request_email;
+    if (scheduled) return { color: '#707870', title: 'Upcoming · cleaning scheduled ✓' };
+    if (cleaningScheduled === false) return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning NOT scheduled' };
+    return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning status unknown' };
   }
   if (!c) return { color: '#4a4038', title: 'No cleaning data' };
   if (['needs_review', 'rate_outlier'].includes(c.status))
@@ -804,7 +810,7 @@ function showCleanPanel(e, bk, dm) {
 /* ════════════════════════════════════════
    CALENDAR RENDER
 ════════════════════════════════════════ */
-function renderCalendar(lookup, updatedAt) {
+function renderCalendar(lookup, updatedAt, cleaningSet) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const todayStr = toYMD(today);
   const calStart = addDays(today, -DAYS_BEFORE);
@@ -940,7 +946,9 @@ function renderCalendar(lookup, updatedAt) {
         : (block?._co_stubs || []);
       if (coStubs.length) {
         const { bk: sBk } = coStubs[0];
-        const dm = cleaningDiamond(sBk);
+        const cleaningKey = sBk?.property + '_' + sBk?.check_out;
+        const cleaningScheduled = cleaningSet ? (cleaningSet.has(cleaningKey) ? true : false) : null;
+        const dm = cleaningDiamond(sBk, cleaningScheduled);
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
         stubEl.style.background = '#4a7868';
@@ -1074,9 +1082,13 @@ async function init() {
   document.getElementById('status-dot').className = 'status-dot loading';
   document.getElementById('status-msg').textContent = 'Fetching availability data…';
 
-  const { avail, bookings, occupancy } = await loadData();
+  const { avail, bookings, occupancy, cleaningSchedule } = await loadData();
   const lookup = buildLookup(avail, bookings, occupancy);
-  renderCalendar(lookup, avail?.updated_at ?? null);
+  // Build Set of "prop_date" keys from cleaning schedule for O(1) lookup
+  const cleaningSet = cleaningSchedule?.events
+    ? new Set(cleaningSchedule.events.map(e => e.prop + '_' + e.date))
+    : null;
+  renderCalendar(lookup, avail?.updated_at ?? null, cleaningSet);
 }
 </script>
 
