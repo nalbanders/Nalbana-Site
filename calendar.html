@@ -735,7 +735,8 @@ function buildLookup(avail, bookings, occupancy) {
         const exist = lookup[p.key][coDs];
         if (!exist) {
           lookup[p.key][coDs] = { type: 'co_stub', code, bk };
-        } else if (exist.type === 'airbnb_confirmed' || exist.type === 'airbnb_conflict') {
+        } else if (exist.type === 'airbnb_confirmed' || exist.type === 'airbnb_conflict' || exist.type === 'direct') {
+          // Back-to-back: bleed checkout stub into the next booking's first cell
           if (!exist._co_stubs) exist._co_stubs = [];
           exist._co_stubs.push({ code, bk });
         } else if (exist.type === 'airbnb_block') {
@@ -923,7 +924,10 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
           const nextIsThisStub = !!(
             block.bk?.check_out === nextDs &&
             nextBlock &&
-            (nextBlock.type === 'co_stub' || (nextBlock._co_stubs?.length > 0))
+            // Only bleed into the next cell if it's the same visual type — different
+            // types (e.g. direct→airbnb) need a hard right edge so colors don't merge.
+            (nextBlock.type === 'co_stub' ||
+             (nextBlock._co_stubs?.length > 0 && nextBlock.type === block.type))
           );
           const sameGroupNext  = groupId(nextBlock) === groupId(block) || nextIsThisStub;
 
@@ -958,7 +962,8 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
         const cleaningKey = sBk?.property + '_' + sBk?.check_out;
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
-        stubEl.style.background = '#4a7868';
+        const _stubColors = { airbnb: '#4a7868', direct: '#6a4a2a', vrbo: '#6a4a2a', lease: '#2a4e68', maintenance: '#4a4a28' };
+        stubEl.style.background = _stubColors[sBk?.platform || 'airbnb'] || '#4a7868';
         if (isBackToBackCell) { stubEl.style.width = 'calc(33.33% - 2px)'; stubEl.style.borderRadius = '0 3px 3px 0'; }
         td.appendChild(stubEl);
         // Skip diamond for Jemez (Teresa manages cleaning independently)
