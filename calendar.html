@@ -619,7 +619,6 @@ const AVAILABILITY_URL    = './availability.json';
 const BOOKINGS_URL        = 'https://ops.nalbana.com/bookings.json';
 const OCCUPANCY_URL       = './occupancy_notes.json';
 const CLEANING_URL        = 'https://ops.nalbana.com/cleaning_schedule.json';
-const CLEANING_NOTES_URL  = 'https://ops.nalbana.com/cleaning_notes.json';
 
 const DAYS_BEFORE = 60;
 const DAYS_TOTAL  = 180;
@@ -651,14 +650,13 @@ function nightsBetween(a, b) {
 ════════════════════════════════════════ */
 async function loadData() {
   const safe = p => p.then(r => r.ok ? r.json() : null).catch(() => null);
-  const [avail, bookings, occupancy, cleaningSchedule, cleaningNotes] = await Promise.all([
+  const [avail, bookings, occupancy, cleaningSchedule] = await Promise.all([
     safe(fetch(AVAILABILITY_URL)),
     safe(fetch(BOOKINGS_URL)),
     safe(fetch(OCCUPANCY_URL)),
     safe(fetch(CLEANING_URL)),
-    safe(fetch(CLEANING_NOTES_URL)),
   ]);
-  return { avail, bookings, occupancy, cleaningSchedule, cleaningNotes };
+  return { avail, bookings, occupancy, cleaningSchedule };
 }
 
 /* ════════════════════════════════════════
@@ -968,7 +966,7 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
         td.appendChild(stubEl);
         // Skip diamond for Jemez (Teresa manages cleaning independently)
         // and if agent explicitly marked cleaning_needed=false for this date
-        const CLEANING_DIAMOND_PROPS = ['21st','22nd','23rd','13th','10th']; // exclude jemez; add back to re-enable
+        const CLEANING_DIAMOND_PROPS = ['21st','22nd','23rd','13th','10th'];
         if (CLEANING_DIAMOND_PROPS.includes(sBk?.property) && !suppressedSet.has(cleaningKey)) {
           const cleaningScheduled = cleaningSet ? (cleaningSet.has(cleaningKey) ? true : false) : null;
           const dm = cleaningDiamond(sBk, cleaningScheduled);
@@ -1101,18 +1099,14 @@ async function init() {
   document.getElementById('status-dot').className = 'status-dot loading';
   document.getElementById('status-msg').textContent = 'Fetching availability data…';
 
-  const { avail, bookings, occupancy, cleaningSchedule, cleaningNotes } = await loadData();
+  const { avail, bookings, occupancy, cleaningSchedule } = await loadData();
   const lookup = buildLookup(avail, bookings, occupancy);
   // Build Set of "prop_date" keys from cleaning schedule for O(1) lookup
   const cleaningSet = cleaningSchedule?.events
     ? new Set(cleaningSchedule.events.map(e => e.prop + '_' + e.date))
     : null;
-  // Build Set of keys where cleaning_needed === false (agent-suppressed diamonds)
-  const suppressedSet = cleaningNotes
-    ? new Set(Object.entries(cleaningNotes)
-        .filter(([, note]) => note.cleaning_needed === false)
-        .map(([key]) => key))
-    : new Set();
+  // Suppressed diamonds are baked into cleaning_schedule.json by the fetcher
+  const suppressedSet = new Set(cleaningSchedule?.suppressed || []);
   renderCalendar(lookup, avail?.updated_at ?? null, cleaningSet, suppressedSet);
 }
 </script>
