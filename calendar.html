@@ -954,8 +954,10 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
         stubEl.style.background = '#4a7868';
         if (isBackToBackCell) { stubEl.style.width = 'calc(33.33% - 2px)'; stubEl.style.borderRadius = '0 3px 3px 0'; }
         td.appendChild(stubEl);
-        // Skip diamond if agent explicitly marked cleaning_needed=false for this date
-        if (!suppressedSet.has(cleaningKey)) {
+        // Skip diamond for Jemez (Teresa manages cleaning independently)
+        // and if agent explicitly marked cleaning_needed=false for this date
+        const CLEANING_DIAMOND_PROPS = ['21st','22nd','23rd','13th','10th']; // exclude jemez; add back to re-enable
+        if (CLEANING_DIAMOND_PROPS.includes(sBk?.property) && !suppressedSet.has(cleaningKey)) {
           const cleaningScheduled = cleaningSet ? (cleaningSet.has(cleaningKey) ? true : false) : null;
           const dm = cleaningDiamond(sBk, cleaningScheduled);
           const dmBtn = document.createElement('button');
