@@ -574,6 +574,7 @@
   <div class="footer-copy">Miami, FL · Yucca Valley, CA</div>
 </footer>
 
+<script src="https://ops.nalbana.com/cleaning_classify.js"></script>
 <script>
 /* ════════════════════════════════════════
    AUTH
@@ -753,30 +754,28 @@ function groupId(block) {
   return block.type;
 }
 
+// Classification lives in the shared contract file
+// ops.nalbana.com/cleaning_classify.js (window.NalbanaCleaning) — identical
+// logic here, on nalbana.com/owner.html and on ops.nalbana.com/owner.html.
+// This wrapper only maps semantic status → this site's palette.
+const DIAMOND_COLORS = {
+  scheduled:     '#707870',
+  not_scheduled: '#c03020',
+  unknown:       '#c03020',
+  paid:          '#4a9870',
+  requested:     '#b89030',
+  unpaid:        '#6a5a48',
+  needs_review:  '#b05030',
+  jemez_bulk:    '#5a78a0',
+  no_data:       '#4a4038',
+};
+
 // cleaningScheduled: true = on Google Calendar, false = not found, null = data unavailable
 function cleaningDiamond(bk, cleaningScheduled = null) {
-  const todayStr = toYMD(new Date());
-  const c = bk?.cleaning;
-  if (bk.check_out > todayStr) {
-    // Prefer live Google Calendar data; fall back to bookings.json cleaning field if present
-    const scheduled = cleaningScheduled != null ? cleaningScheduled : c?.src_request_email;
-    if (scheduled) return { color: '#707870', title: 'Upcoming · cleaning scheduled ✓' };
-    if (cleaningScheduled === false) return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning NOT scheduled' };
-    return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning status unknown' };
-  }
-  if (!c) return { color: '#4a4038', title: 'No cleaning data' };
-  if (['needs_review', 'rate_outlier'].includes(c.status))
-    return { color: '#b05030', title: `Needs review (${c.status})` };
-  if (c.status === 'jemez_bulk')
-    return { color: '#5a78a0', title: 'Jemez bulk — Teresa' };
-  if (c.src_tiller) {
-    const amt = c.amount != null ? ` · $${Number(c.amount).toFixed(2)}` : '';
-    return { color: '#4a9870', title: `Paid${amt}` };
-  }
-  if (c.src_request_email) return { color: '#b89030', title: 'Requested — awaiting payment' };
-  if (c.status === 'unpaid' || c.status === 'missing')
-    return { color: '#6a5a48', title: 'Unpaid — not requested' };
-  return { color: '#4a4038', title: c.status || 'No data' };
+  const NC = window.NalbanaCleaning;
+  if (!NC) return null; // shared classifier failed to load — skip diamond
+  const dm = NC.classifyCleaning(bk, cleaningScheduled);
+  return dm ? { ...dm, color: DIAMOND_COLORS[dm.status] || '#4a4038' } : null;
 }
 
 function showCleanPanel(e, bk, dm) {
@@ -785,7 +784,7 @@ function showCleanPanel(e, bk, dm) {
   document.getElementById('cp-guest').textContent = bk.guest_name || 'Guest';
   document.getElementById('cp-prop').textContent  = `${propName} · checkout ${bk.check_out}`;
   const st = document.getElementById('cp-status-bar');
-  st.textContent = `◆ ${dm.title}`;
+  st.textContent = `${dm.char || '◆'} ${dm.title}`;
   st.style.color = dm.color;
   st.style.border = `1px solid ${dm.color}55`;
   st.style.background = `${dm.color}18`;
@@ -959,7 +958,9 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
         : (block?._co_stubs || []);
       if (coStubs.length) {
         const { bk: sBk } = coStubs[0];
-        const cleaningKey = sBk?.property + '_' + sBk?.check_out;
+        const cleaningKey = window.NalbanaCleaning
+          ? NalbanaCleaning.cleaningKey(sBk?.property, sBk?.check_out)
+          : sBk?.property + '_' + sBk?.check_out;
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
         const _stubColors = { airbnb: '#4a7868', direct: '#2d5245', vrbo: '#2d5245', lease: '#2a4e68', maintenance: '#4a4a28' };
@@ -968,18 +969,21 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
         td.appendChild(stubEl);
         // Skip diamond for Jemez (Teresa manages cleaning independently)
         // and if agent explicitly marked cleaning_needed=false for this date
-        const CLEANING_DIAMOND_PROPS = ['21st','22nd','23rd','13th','10th'];
-        if (CLEANING_DIAMOND_PROPS.includes(sBk?.property) && !suppressedSet.has(cleaningKey)) {
+        // (whitelist + key scheme come from the shared classifier contract)
+        const NC = window.NalbanaCleaning;
+        if (NC && NC.CLEANING_DIAMOND_PROPS.includes(sBk?.property) && !suppressedSet.has(cleaningKey)) {
           const cleaningScheduled = cleaningSet ? (cleaningSet.has(cleaningKey) ? true : false) : null;
           const dm = cleaningDiamond(sBk, cleaningScheduled);
-          const dmBtn = document.createElement('button');
-          dmBtn.className = 'clean-diamond';
-          dmBtn.textContent = dm.char || '◆';
-          dmBtn.style.color = dm.color;
-          dmBtn.title = dm.title;
-          dmBtn.addEventListener('click', e => { e.stopPropagation(); showCleanPanel(e, sBk, dm); });
-          dmBtn.addEventListener('mouseenter', () => { tooltip.style.display = 'none'; });
-          td.appendChild(dmBtn);
+          if (dm) {
+            const dmBtn = document.createElement('button');
+            dmBtn.className = 'clean-diamond';
+            dmBtn.textContent = dm.char || '◆';
+            dmBtn.style.color = dm.color;
+            dmBtn.title = dm.title;
+            dmBtn.addEventListener('click', e => { e.stopPropagation(); showCleanPanel(e, sBk, dm); });
+            dmBtn.addEventListener('mouseenter', () => { tooltip.style.display = 'none'; });
+            td.appendChild(dmBtn);
+          }
         }
       }
 
@@ -1103,12 +1107,11 @@ async function init() {
 
   const { avail, bookings, occupancy, cleaningSchedule } = await loadData();
   const lookup = buildLookup(avail, bookings, occupancy);
-  // Build Set of "prop_date" keys from cleaning schedule for O(1) lookup
-  const cleaningSet = cleaningSchedule?.events
-    ? new Set(cleaningSchedule.events.map(e => e.prop + '_' + e.date))
-    : null;
-  // Suppressed diamonds are baked into cleaning_schedule.json by the fetcher
-  const suppressedSet = new Set(cleaningSchedule?.suppressed || []);
+  // Build "prop_date" lookup sets via the shared contract lib.
+  // Suppressed diamonds are baked into cleaning_schedule.json by the fetcher.
+  const { cleaningSet, suppressedSet } = window.NalbanaCleaning
+    ? NalbanaCleaning.buildCleaningSets(cleaningSchedule)
+    : { cleaningSet: null, suppressedSet: new Set() };
   renderCalendar(lookup, avail?.updated_at ?? null, cleaningSet, suppressedSet);
 }
 </script>

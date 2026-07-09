@@ -796,6 +796,7 @@
   <div class="footer-copy">Miami, FL · Yucca Valley, CA</div>
 </footer>
 
+<script src="https://ops.nalbana.com/cleaning_classify.js"></script>
 <script>
 /* ════════════════════════════════════════
    AUTH — separate key from calendar.html
@@ -848,6 +849,7 @@ const AVAILABILITY_URL = './availability.json';
 const BOOKINGS_URL     = 'https://ops.nalbana.com/bookings.json';
 const OCCUPANCY_URL    = './occupancy_notes.json';
 const RATES_URL        = 'https://ops.nalbana.com/pricelabs_rates.json';
+const CLEANING_URL     = 'https://ops.nalbana.com/cleaning_schedule.json';
 
 const DAYS_BEFORE = 14;
 const DAYS_TOTAL  = 14 + 95;   // 14 back + 95 forward (≥ 90-day PriceLabs window)
@@ -886,13 +888,14 @@ function fmtRate(n) {
 ════════════════════════════════════════ */
 async function loadData() {
   const safe = p => p.then(r => r.ok ? r.json() : null).catch(() => null);
-  const [avail, bookings, occupancy, rates] = await Promise.all([
+  const [avail, bookings, occupancy, rates, cleaningSchedule] = await Promise.all([
     safe(fetch(AVAILABILITY_URL)),
     safe(fetch(BOOKINGS_URL)),
     safe(fetch(OCCUPANCY_URL)),
     safe(fetch(RATES_URL)),
+    safe(fetch(CLEANING_URL)),
   ]);
-  return { avail, bookings, occupancy, rates };
+  return { avail, bookings, occupancy, rates, cleaningSchedule };
 }
 
 /* ════════════════════════════════════════
@@ -966,29 +969,28 @@ function groupId(block) {
 }
 
 // ── Cleaning diamond color + tooltip ───────────────────────────────────────
-function cleaningDiamond(bk) {
-  const todayStr = toYMD(new Date());
-  const c = bk?.cleaning;
-  // Upcoming (checkout in the future)
-  if (bk.check_out > todayStr) {
-    if (c?.src_request_email)
-      return { color: '#707870', title: 'Upcoming · cleaning scheduled' };
-    return { color: '#c03020', char: '◇', title: 'Upcoming · cleaning NOT scheduled' };
-  }
-  if (!c) return { color: '#4a4038', title: 'No cleaning data' };
-  if (['needs_review', 'rate_outlier'].includes(c.status))
-    return { color: '#b05030', title: `Needs review (${c.status})` };
-  if (c.status === 'jemez_bulk')
-    return { color: '#5a78a0', title: 'Jemez bulk — Teresa' };
-  if (c.src_tiller) {
-    const amt = c.amount != null ? ` · $${Number(c.amount).toFixed(2)}` : '';
-    return { color: '#4a9870', title: `Paid${amt}` };
-  }
-  if (c.src_request_email)
-    return { color: '#b89030', title: 'Requested — awaiting payment' };
-  if (c.status === 'unpaid' || c.status === 'missing')
-    return { color: '#6a5a48', title: 'Unpaid — not requested' };
-  return { color: '#4a4038', title: c.status || 'No data' };
+// Classification lives in the shared contract file
+// ops.nalbana.com/cleaning_classify.js (window.NalbanaCleaning) — identical
+// logic here, on nalbana.com/calendar.html and on ops.nalbana.com/owner.html.
+// This wrapper only maps semantic status → this site's palette.
+const DIAMOND_COLORS = {
+  scheduled:     '#707870',
+  not_scheduled: '#c03020',
+  unknown:       '#c03020',
+  paid:          '#4a9870',
+  requested:     '#b89030',
+  unpaid:        '#6a5a48',
+  needs_review:  '#b05030',
+  jemez_bulk:    '#5a78a0',
+  no_data:       '#4a4038',
+};
+
+// cleaningScheduled: true = on Google Calendar, false = not found, null = data unavailable
+function cleaningDiamond(bk, cleaningScheduled = null) {
+  const NC = window.NalbanaCleaning;
+  if (!NC) return null; // shared classifier failed to load — skip diamond
+  const dm = NC.classifyCleaning(bk, cleaningScheduled);
+  return dm ? { ...dm, color: DIAMOND_COLORS[dm.status] || '#4a4038' } : null;
 }
 
 // ── Cleaning detail panel ──────────────────────────────────────────────────
@@ -1000,7 +1002,7 @@ function showCleanPanel(e, bk, dm) {
   document.getElementById('cp-prop').textContent  = `${propName} · checkout ${bk.check_out}`;
 
   const st = document.getElementById('cp-status-bar');
-  st.textContent  = `◆ ${dm.title}`;
+  st.textContent  = `${dm.char || '◆'} ${dm.title}`;
   st.style.color  = dm.color;
   st.style.border = `1px solid ${dm.color}55`;
   st.style.background = `${dm.color}18`;
@@ -1256,7 +1258,6 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
         : (block?._co_stubs || []);
       if (coStubs.length) {
         const { bk: sBk } = coStubs[0];
-        const dm = cleaningDiamond(sBk);
         const stubEl = document.createElement('div');
         stubEl.className = 'co-stub-bar';
         stubEl.style.background = '#4a7868';
@@ -1267,14 +1268,27 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
           stubEl.style.borderRadius = '0 3px 3px 0';
         }
         td.appendChild(stubEl);
-        const dmBtn = document.createElement('button');
-        dmBtn.className = 'clean-diamond';
-        dmBtn.textContent = dm.char || '◆';
-        dmBtn.style.color = dm.color;
-        dmBtn.title = dm.title;
-        dmBtn.addEventListener('click', e => { e.stopPropagation(); showCleanPanel(e, sBk, dm); });
-        dmBtn.addEventListener('mouseenter', () => { tooltip.style.display = 'none'; });
-        td.appendChild(dmBtn);
+        // Skip diamond for Jemez (Teresa manages cleaning independently)
+        // and if agent explicitly marked cleaning_needed=false for this date
+        // (whitelist + key scheme come from the shared classifier contract)
+        const NC = window.NalbanaCleaning;
+        if (NC && NC.CLEANING_DIAMOND_PROPS.includes(sBk?.property)) {
+          const cleaningKey = NC.cleaningKey(sBk?.property, sBk?.check_out);
+          if (!_suppressedSet.has(cleaningKey)) {
+            const cleaningScheduled = _cleaningSet ? (_cleaningSet.has(cleaningKey) ? true : false) : null;
+            const dm = cleaningDiamond(sBk, cleaningScheduled);
+            if (dm) {
+              const dmBtn = document.createElement('button');
+              dmBtn.className = 'clean-diamond';
+              dmBtn.textContent = dm.char || '◆';
+              dmBtn.style.color = dm.color;
+              dmBtn.title = dm.title;
+              dmBtn.addEventListener('click', e => { e.stopPropagation(); showCleanPanel(e, sBk, dm); });
+              dmBtn.addEventListener('mouseenter', () => { tooltip.style.display = 'none'; });
+              td.appendChild(dmBtn);
+            }
+          }
+        }
       }
 
       // ── Rate label & heat shading ──
@@ -1659,14 +1673,25 @@ function calcOffer() {
    INIT
 ════════════════════════════════════════ */
 let _bookingsCache = null;
+// "prop_YYYY-MM-DD" lookup sets from cleaning_schedule.json (shared contract).
+// _cleaningSet stays null when schedule data is unavailable → diamonds show
+// "status unknown" instead of a false "NOT scheduled".
+let _cleaningSet = null;
+let _suppressedSet = new Set();
 
 async function init() {
   document.getElementById('status-dot').className = 'status-dot loading';
   document.getElementById('status-msg').textContent = 'Fetching data…';
 
-  const { avail, bookings, occupancy, rates } = await loadData();
+  const { avail, bookings, occupancy, rates, cleaningSchedule } = await loadData();
   _rates = rates;
   _bookingsCache = bookings;
+
+  if (window.NalbanaCleaning) {
+    const sets = NalbanaCleaning.buildCleaningSets(cleaningSchedule);
+    _cleaningSet   = sets.cleaningSet;
+    _suppressedSet = sets.suppressedSet;
+  }
 
   const lookup = buildLookup(avail, bookings, occupancy);
   renderCalendar(lookup, rates, avail?.updated_at ?? null, rates?.generated_at ?? null);

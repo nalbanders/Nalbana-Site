@@ -6,7 +6,7 @@ The portfolio website at **nalbana.com** (repo `nalbanders/Nalbana-Site`, GitHub
 
 ## Data sources
 - `availability.json` — generated in-repo every 2h by `.github/workflows/fetch-availability.yml` → `fetch_availability.py` from 6 Airbnb iCal secrets (ICAL_* — duplicates of the FPA repo's copies).
-- **Cross-repo reads from ops.nalbana.com** (FPA pipeline outputs): `bookings.json`, `pricelabs_rates.json`, `cleaning_schedule.json` — consumed by `calendar.html` and `owner.html`. These URLs are a contract; see `Nalbana_FPA/docs_meta/README.md`.
+- **Cross-repo reads from ops.nalbana.com** (FPA pipeline outputs): `bookings.json`, `pricelabs_rates.json`, `cleaning_schedule.json`, plus the shared cleaning-diamond classifier `cleaning_classify.js` (loaded via `<script src>` by `calendar.html` and `owner.html`; pages fall back to no diamonds if it fails to load). These URLs are a contract; see `Nalbana_FPA/docs_meta/README.md`.
 - `occupancy_notes.json` — manual notes.
 
 ## Key files
