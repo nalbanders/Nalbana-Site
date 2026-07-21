@@ -170,11 +170,12 @@
     }
     .day-header.weekend .dom { color: #6a5a48; }
     .day-header.month-boundary { border-left: 1px solid #2e2c28; }
-    /* Today header — real date stays visible, small TODAY tag above it */
+    /* Today header — real date stays visible, small TODAY tag above it,
+       live ET clock below. Tint only, no side borders (they read as extra
+       bars next to the time indicator). */
     .day-header.today-head {
-      background: rgba(168,144,112,0.14);
-      border-left: 2px solid rgba(212,168,96,0.55) !important;
-      border-right: 2px solid rgba(212,168,96,0.55);
+      position: relative;
+      background: rgba(168,144,112,0.16);
     }
     .day-header .today-tag {
       display: block;
@@ -185,6 +186,12 @@
     }
     .day-header.today-head .dow { color: #a89070; }
     .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
+    .day-header .today-time {
+      display: block;
+      font-size: 7px; letter-spacing: 0.04em;
+      color: #d4a860; white-space: nowrap;
+      margin-top: 2px;
+    }
 
     /* Property label cells */
     .prop-label {
@@ -227,23 +234,18 @@
     .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
     .day-cell.fri-col  { border-left: 2px solid #4a4540 !important; }
     .day-header.fri-head { border-left: 2px solid #4a4540 !important; }
-    /* Today column — hard highlight across all rows */
-    .day-cell.today-col {
-      background: rgba(168,144,112,0.11);
-      border-left: 2px solid rgba(212,168,96,0.55) !important;
-      border-right: 2px solid rgba(212,168,96,0.55);
-    }
-    .day-cell.today-col.weekend { background: rgba(168,144,112,0.13); }
+    /* Today column — hard highlight across all rows (tint only, no borders) */
+    .day-cell.today-col { background: rgba(168,144,112,0.13); }
+    .day-cell.today-col.weekend { background: rgba(168,144,112,0.15); }
 
-    /* Intra-day ET time indicator — slides across the today column
-       pro-rata to the 24h ET clock (--et-frac set by updateEtClock) */
-    .day-cell.today-col::after {
-      content: '';
+    /* Intra-day ET time indicator — ONE continuous overlay line, positioned
+       by updateEtClock(); above cells + diamonds, below sticky labels. */
+    #et-time-line {
       position: absolute; top: 0; bottom: 0;
-      left: calc(var(--et-frac, 0) * 100%);
-      width: 2px; margin-left: -1px;
-      background: rgba(230,180,100,0.85);
-      z-index: 4; pointer-events: none;
+      width: 2px;
+      background: rgba(230,180,100,0.9);
+      z-index: 6; pointer-events: none;
+      display: none;
     }
 
     /* Blocked cell */
@@ -1200,9 +1202,10 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
     if (ds === todayStr) th.classList.add('today-head');
     if (moKey !== prevMo2 && prevMo2 !== null) th.classList.add('month-boundary');
     prevMo2 = moKey;
-    // Real day-of-week + date always visible; TODAY is a small tag above them
-    const todayTag = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
-    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>`;
+    // Real day-of-week + date always visible; TODAY tag above, live ET clock below
+    const todayTag  = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
+    const todayTime = ds === todayStr ? '<span class="today-time" id="today-time"></span>' : '';
+    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>${todayTime}`;
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
@@ -1374,7 +1377,14 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
 
   const container = document.getElementById('cal-container');
   container.innerHTML = '';
+  container.style.position = 'relative';
   container.appendChild(tbl);
+
+  // Continuous ET time-indicator line (positioned by updateEtClock)
+  const etLine = document.createElement('div');
+  etLine.id = 'et-time-line';
+  container.appendChild(etLine);
+  updateEtClock();
 
   // Scroll so yesterday is at the left edge
   requestAnimationFrame(() => {
@@ -1727,12 +1737,26 @@ async function init() {
   renderCalendar(lookup, rates, avail?.updated_at ?? null, rates?.generated_at ?? null);
 }
 
-/* ── ET clock — intra-day time indicator (slides the today-column bar) ── */
+/* ── ET clock — positions the overlay time line + fills the header clock ── */
 function updateEtClock() {
-  const frac = window.NalbanaET
-    ? NalbanaET.dayFraction()
-    : (() => { const d = new Date(); return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400; })();
-  document.documentElement.style.setProperty('--et-frac', String(frac));
+  const n = window.NalbanaET
+    ? NalbanaET.nowParts()
+    : (() => { const d = new Date(); return { hour: d.getHours(), minute: d.getMinutes(), second: d.getSeconds() }; })();
+  const frac = (n.hour * 3600 + n.minute * 60 + n.second) / 86400;
+
+  const line    = document.getElementById('et-time-line');
+  const todayTH = document.querySelector('.day-header.today-head');
+  if (line && todayTH) {
+    line.style.left = (todayTH.offsetLeft + frac * todayTH.offsetWidth - 1) + 'px';
+    line.style.display = 'block';
+  }
+
+  const timeEl = document.getElementById('today-time');
+  if (timeEl) {
+    const h12  = ((n.hour + 11) % 12) + 1;
+    const ampm = n.hour < 12 ? 'AM' : 'PM';
+    timeEl.textContent = `${h12}:${String(n.minute).padStart(2, '0')} ${ampm} ET`;
+  }
 }
 updateEtClock();
 setInterval(updateEtClock, 60000);

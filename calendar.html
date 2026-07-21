@@ -170,12 +170,12 @@
     .day-header.weekend .dom { color: #6a5a48; }
     .day-header.month-boundary { border-left: 1px solid #2e2c28; }
 
-    /* Today header — real date stays visible, small TODAY tag above it */
+    /* Today header — real date stays visible, small TODAY tag above it.
+       No side borders (they read as extra bars next to the time indicator);
+       the background tint alone marks the column. */
     .day-header.today-head {
       position: relative;
-      background: rgba(168,144,112,0.14);
-      border-left: 2px solid rgba(212,168,96,0.55) !important;
-      border-right: 2px solid rgba(212,168,96,0.55);
+      background: rgba(168,144,112,0.16);
     }
     .day-header .today-tag {
       display: block;
@@ -186,26 +186,52 @@
     }
     .day-header.today-head .dow { color: #a89070; }
     .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
-
-    /* Today column — hard highlight across all rows */
-    .day-cell.today-col {
-      background: rgba(168,144,112,0.11);
-      border-left: 2px solid rgba(212,168,96,0.55) !important;
-      border-right: 2px solid rgba(212,168,96,0.55);
+    .day-header .today-time {
+      display: block;
+      font-size: 7px; letter-spacing: 0.04em;
+      color: #d4a860; white-space: nowrap;
+      margin-top: 2px;
     }
-    .day-cell.today-col.weekend { background: rgba(168,144,112,0.13); }
 
-    /* Intra-day ET time indicator — a bar that slides across the today
-       column pro-rata to the 24h ET clock (18:00 ET → 75% across).
-       --et-frac is kept current by updateEtClock(). */
-    .day-cell.today-col::after {
-      content: '';
+    /* Today column — hard highlight across all rows (tint only, no borders) */
+    .day-cell.today-col { background: rgba(168,144,112,0.13); }
+    .day-cell.today-col.weekend { background: rgba(168,144,112,0.15); }
+
+    /* Intra-day ET time indicator — ONE continuous overlay line that slides
+       across the today column pro-rata to the 24h ET clock (18:00 ET → 75%).
+       Positioned by updateEtClock(). z-index: above cells + diamonds (5),
+       below the sticky property-label column (10) so it tucks under labels
+       when the grid scrolls. */
+    #et-time-line {
       position: absolute; top: 0; bottom: 0;
-      left: calc(var(--et-frac, 0) * 100%);
-      width: 2px; margin-left: -1px;
-      background: rgba(230,180,100,0.85);
-      z-index: 4; pointer-events: none;
+      width: 2px;
+      background: rgba(230,180,100,0.9);
+      z-index: 6; pointer-events: none;
+      display: none;
     }
+
+    /* Today's events — corner dead space, top-left */
+    .today-events {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 4px 10px; padding: 8px 10px 6px;
+    }
+    .te-label {
+      font-size: 8px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #5a5048;
+      font-family: 'Georgia', serif;
+    }
+    .te-item {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: #c8b090; letter-spacing: 0.06em;
+      font-family: 'Georgia', serif;
+    }
+    .te-chip {
+      font-size: 7px; font-weight: bold; letter-spacing: 0.1em;
+      padding: 2px 5px; border-radius: 3px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .te-chip.te-in  { color: #7cc4a0; border: 1px solid rgba(124,196,160,0.4); background: rgba(124,196,160,0.08); }
+    .te-chip.te-out { color: #d4a860; border: 1px solid rgba(212,168,96,0.4);  background: rgba(212,168,96,0.08); }
 
     /* Property label cells */
     .prop-label {
@@ -838,7 +864,7 @@ function showCleanPanel(e, bk, dm) {
 /* ════════════════════════════════════════
    CALENDAR RENDER
 ════════════════════════════════════════ */
-function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set()) {
+function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(), bookings = null) {
   // "Today" = ET calendar date from the shared helper (grid must not shift
   // with the viewer's device timezone; device time only as fallback).
   const todayStr = window.NalbanaET ? NalbanaET.todayYMD() : toYMD(new Date());
@@ -878,6 +904,30 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
   const tr2 = document.createElement('tr');
   const corner2 = document.createElement('th');
   corner2.className = 'cal-corner-day';
+
+  // ── Today's events — fill the corner dead space with check-ins/outs.
+  // Only properties with activity today are printed; chips carry the guest
+  // name in the hover title.
+  if (bookings) {
+    const items = [];
+    PROPERTIES.forEach(p => {
+      let inBk = null, outBk = null;
+      Object.values(bookings).forEach(bk => {
+        if (bk.property !== p.key || bk.status !== 'confirmed') return;
+        if (bk.check_in  === todayStr) inBk  = bk;
+        if (bk.check_out === todayStr) outBk = bk;
+      });
+      if (inBk || outBk) {
+        const chips =
+          (outBk ? `<span class="te-chip te-out" title="Out: ${(outBk.guest_name || 'Guest').replace(/"/g, '&quot;')}">OUT</span>` : '') +
+          (inBk  ? `<span class="te-chip te-in" title="In: ${(inBk.guest_name  || 'Guest').replace(/"/g, '&quot;')}">IN</span>`  : '');
+        items.push(`<span class="te-item">${p.addr}${chips}</span>`);
+      }
+    });
+    if (items.length) {
+      corner2.innerHTML = `<div class="today-events"><span class="te-label">Today</span>${items.join('')}</div>`;
+    }
+  }
   tr2.appendChild(corner2);
 
   let prevMoKey2 = null;
@@ -893,9 +943,11 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
     if (moKey !== prevMoKey2 && prevMoKey2 !== null) th.classList.add('month-boundary');
     prevMoKey2 = moKey;
     th.dataset.date = ds;
-    // Real day-of-week + date always visible; TODAY is a small tag above them
-    const todayTag = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
-    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>`;
+    // Real day-of-week + date always visible; TODAY is a small tag above them,
+    // live ET clock below them (filled in by updateEtClock).
+    const todayTag  = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
+    const todayTime = ds === todayStr ? '<span class="today-time" id="today-time"></span>' : '';
+    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>${todayTime}`;
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
@@ -1019,7 +1071,14 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
 
   const container = document.getElementById('cal-container');
   container.innerHTML = '';
+  container.style.position = 'relative';
   container.appendChild(tbl);
+
+  // Continuous ET time-indicator line (positioned by updateEtClock)
+  const etLine = document.createElement('div');
+  etLine.id = 'et-time-line';
+  container.appendChild(etLine);
+  updateEtClock();
 
   // Scroll to today
   requestAnimationFrame(() => {
@@ -1111,13 +1170,28 @@ document.addEventListener('mouseup', () => { isDragging = false; });
 
 /* ════════════════════════════════════════
    ET CLOCK — intra-day time indicator
-   Slides the today-column bar without re-rendering.
+   Positions the overlay line across the today column pro-rata to the 24h
+   ET clock, and fills the live time under the TODAY header. No re-render.
 ════════════════════════════════════════ */
 function updateEtClock() {
-  const frac = window.NalbanaET
-    ? NalbanaET.dayFraction()
-    : (() => { const d = new Date(); return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400; })();
-  document.documentElement.style.setProperty('--et-frac', String(frac));
+  const n = window.NalbanaET
+    ? NalbanaET.nowParts()
+    : (() => { const d = new Date(); return { hour: d.getHours(), minute: d.getMinutes(), second: d.getSeconds() }; })();
+  const frac = (n.hour * 3600 + n.minute * 60 + n.second) / 86400;
+
+  const line    = document.getElementById('et-time-line');
+  const todayTH = document.querySelector('.day-header.today-head');
+  if (line && todayTH) {
+    line.style.left = (todayTH.offsetLeft + frac * todayTH.offsetWidth - 1) + 'px';
+    line.style.display = 'block';
+  }
+
+  const timeEl = document.getElementById('today-time');
+  if (timeEl) {
+    const h12  = ((n.hour + 11) % 12) + 1;
+    const ampm = n.hour < 12 ? 'AM' : 'PM';
+    timeEl.textContent = `${h12}:${String(n.minute).padStart(2, '0')} ${ampm} ET`;
+  }
 }
 updateEtClock();
 setInterval(updateEtClock, 60000);
@@ -1149,7 +1223,7 @@ async function init() {
   const { cleaningSet, suppressedSet } = window.NalbanaCleaning
     ? NalbanaCleaning.buildCleaningSets(cleaningSchedule)
     : { cleaningSet: null, suppressedSet: new Set() };
-  renderCalendar(lookup, avail?.updated_at ?? null, cleaningSet, suppressedSet);
+  renderCalendar(lookup, avail?.updated_at ?? null, cleaningSet, suppressedSet, bookings);
 }
 </script>
 
