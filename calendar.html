@@ -170,23 +170,42 @@
     .day-header.weekend .dom { color: #6a5a48; }
     .day-header.month-boundary { border-left: 1px solid #2e2c28; }
 
-    /* Today header — gold text + "TODAY" marker */
+    /* Today header — real date stays visible, small TODAY tag above it */
     .day-header.today-head {
-      background: #131210;
-      border-left: 2px solid rgba(168,144,112,0.5) !important;
+      position: relative;
+      background: rgba(168,144,112,0.14);
+      border-left: 2px solid rgba(212,168,96,0.55) !important;
+      border-right: 2px solid rgba(212,168,96,0.55);
     }
-    .day-header.today-head .dow {
-      color: #a89070;
-      font-size: 8px; letter-spacing: 0.08em;
+    .day-header .today-tag {
+      display: block;
+      font-family: 'Georgia', serif;
+      font-size: 7px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #d4a860;
+      margin-bottom: 2px;
     }
+    .day-header.today-head .dow { color: #a89070; }
     .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
 
-    /* Today column — vertical gold line through all rows */
+    /* Today column — hard highlight across all rows */
     .day-cell.today-col {
-      background: rgba(168,144,112,0.03);
-      border-left: 2px solid rgba(168,144,112,0.35) !important;
+      background: rgba(168,144,112,0.11);
+      border-left: 2px solid rgba(212,168,96,0.55) !important;
+      border-right: 2px solid rgba(212,168,96,0.55);
     }
-    .day-cell.today-col.weekend { background: rgba(168,144,112,0.04); }
+    .day-cell.today-col.weekend { background: rgba(168,144,112,0.13); }
+
+    /* Intra-day ET time indicator — a bar that slides across the today
+       column pro-rata to the 24h ET clock (18:00 ET → 75% across).
+       --et-frac is kept current by updateEtClock(). */
+    .day-cell.today-col::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      left: calc(var(--et-frac, 0) * 100%);
+      width: 2px; margin-left: -1px;
+      background: rgba(230,180,100,0.85);
+      z-index: 4; pointer-events: none;
+    }
 
     /* Property label cells */
     .prop-label {
@@ -686,7 +705,9 @@ function buildLookup(avail, bookings, occupancy) {
     //   - In iCal only              → airbnb_block (unknown / not yet in DB)
     //   - In bookings.json only     → airbnb_conflict (likely modified/cancelled in Airbnb)
     if (bookings) {
-      const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+      // "Today" pinned to ET via the shared helper in cleaning_classify.js
+      // (NalbanaET) — device time only as fallback if the script failed to load.
+      const todayET = window.NalbanaET ? NalbanaET.todayYMD() : toYMD(new Date());
       Object.entries(bookings).forEach(([code, bk]) => {
         if (bk.property !== p.key || bk.status !== 'confirmed') return;
         const platform = bk.platform || 'airbnb';
@@ -700,7 +721,7 @@ function buildLookup(avail, bookings, occupancy) {
             lookup[p.key][ds] = { type: platform, code, bk };
           } else {
             const hasIcal = !!lookup[p.key][ds];
-            const isPast  = d < todayMidnight;
+            const isPast  = ds < todayET;
             if (isPast || hasIcal) {
               lookup[p.key][ds] = { type: 'airbnb_confirmed', code, bk };
             } else {
@@ -818,8 +839,10 @@ function showCleanPanel(e, bk, dm) {
    CALENDAR RENDER
 ════════════════════════════════════════ */
 function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set()) {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const todayStr = toYMD(today);
+  // "Today" = ET calendar date from the shared helper (grid must not shift
+  // with the viewer's device timezone; device time only as fallback).
+  const todayStr = window.NalbanaET ? NalbanaET.todayYMD() : toYMD(new Date());
+  const today = fromYMD(todayStr); // local-midnight Date for grid arithmetic only
   const calStart = addDays(today, -DAYS_BEFORE);
   const dates = Array.from({ length: DAYS_TOTAL }, (_, i) => addDays(calStart, i));
   const DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -870,8 +893,9 @@ function renderCalendar(lookup, updatedAt, cleaningSet, suppressedSet = new Set(
     if (moKey !== prevMoKey2 && prevMoKey2 !== null) th.classList.add('month-boundary');
     prevMoKey2 = moKey;
     th.dataset.date = ds;
-    const dowLabel = ds === todayStr ? 'Today' : DOW[dow];
-    th.innerHTML = `<span class="dow">${dowLabel}</span><span class="dom">${d.getDate()}</span>`;
+    // Real day-of-week + date always visible; TODAY is a small tag above them
+    const todayTag = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
+    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>`;
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
@@ -1084,6 +1108,19 @@ document.addEventListener('mousemove', e => {
   scrollWrap.scrollLeft = dragScrollL - (e.pageX - scrollWrap.offsetLeft - dragStartX);
 });
 document.addEventListener('mouseup', () => { isDragging = false; });
+
+/* ════════════════════════════════════════
+   ET CLOCK — intra-day time indicator
+   Slides the today-column bar without re-rendering.
+════════════════════════════════════════ */
+function updateEtClock() {
+  const frac = window.NalbanaET
+    ? NalbanaET.dayFraction()
+    : (() => { const d = new Date(); return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400; })();
+  document.documentElement.style.setProperty('--et-frac', String(frac));
+}
+updateEtClock();
+setInterval(updateEtClock, 60000);
 
 // Auth check — runs after all consts are declared
 if (isAuthenticated()) {

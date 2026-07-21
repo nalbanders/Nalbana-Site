@@ -170,8 +170,20 @@
     }
     .day-header.weekend .dom { color: #6a5a48; }
     .day-header.month-boundary { border-left: 1px solid #2e2c28; }
-    .day-header.today-head { background: #131210; border-left: 2px solid rgba(168,144,112,0.5) !important; }
-    .day-header.today-head .dow { color: #a89070; font-size: 8px; letter-spacing: 0.08em; }
+    /* Today header — real date stays visible, small TODAY tag above it */
+    .day-header.today-head {
+      background: rgba(168,144,112,0.14);
+      border-left: 2px solid rgba(212,168,96,0.55) !important;
+      border-right: 2px solid rgba(212,168,96,0.55);
+    }
+    .day-header .today-tag {
+      display: block;
+      font-family: 'Georgia', serif;
+      font-size: 7px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #d4a860;
+      margin-bottom: 2px;
+    }
+    .day-header.today-head .dow { color: #a89070; }
     .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
 
     /* Property label cells */
@@ -215,11 +227,24 @@
     .day-cell.month-boundary { border-left: 1px solid #2e2c28; }
     .day-cell.fri-col  { border-left: 2px solid #4a4540 !important; }
     .day-header.fri-head { border-left: 2px solid #4a4540 !important; }
+    /* Today column — hard highlight across all rows */
     .day-cell.today-col {
-      background: rgba(168,144,112,0.03);
-      border-left: 2px solid rgba(168,144,112,0.35) !important;
+      background: rgba(168,144,112,0.11);
+      border-left: 2px solid rgba(212,168,96,0.55) !important;
+      border-right: 2px solid rgba(212,168,96,0.55);
     }
-    .day-cell.today-col.weekend { background: rgba(168,144,112,0.04); }
+    .day-cell.today-col.weekend { background: rgba(168,144,112,0.13); }
+
+    /* Intra-day ET time indicator — slides across the today column
+       pro-rata to the 24h ET clock (--et-frac set by updateEtClock) */
+    .day-cell.today-col::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      left: calc(var(--et-frac, 0) * 100%);
+      width: 2px; margin-left: -1px;
+      background: rgba(230,180,100,0.85);
+      z-index: 4; pointer-events: none;
+    }
 
     /* Blocked cell */
     .day-cell.blocked { cursor: pointer; }
@@ -913,14 +938,16 @@ function buildLookup(avail, bookings, occupancy) {
     });
 
     if (bookings) {
-      const todayMidnight = new Date(); todayMidnight.setHours(0, 0, 0, 0);
+      // "Today" pinned to ET via the shared helper in cleaning_classify.js
+      // (NalbanaET) — device time only as fallback if the script failed to load.
+      const todayET = window.NalbanaET ? NalbanaET.todayYMD() : toYMD(new Date());
       Object.entries(bookings).forEach(([code, bk]) => {
         if (bk.property !== p.key || bk.status !== 'confirmed') return;
         let d = fromYMD(bk.check_in), end = fromYMD(bk.check_out);
         while (d < end) {
           const ds = toYMD(d);
           const hasIcal = !!lookup[p.key][ds];
-          const isPast  = d < todayMidnight;
+          const isPast  = ds < todayET;
           lookup[p.key][ds] = (isPast || hasIcal)
             ? { type: 'airbnb_confirmed', code, bk }
             : { type: 'airbnb_conflict',  code, bk };
@@ -1118,8 +1145,10 @@ function buildAnomalySet(dates, rates) {
    CALENDAR RENDER
 ════════════════════════════════════════ */
 function renderCalendar(lookup, rates, updatedAt, ratesAt) {
-  const today    = new Date(); today.setHours(0, 0, 0, 0);
-  const todayStr = toYMD(today);
+  // "Today" = ET calendar date from the shared helper (grid must not shift
+  // with the viewer's device timezone; device time only as fallback).
+  const todayStr = window.NalbanaET ? NalbanaET.todayYMD() : toYMD(new Date());
+  const today    = fromYMD(todayStr); // local-midnight Date for grid arithmetic only
   const calStart = addDays(today, -DAYS_BEFORE);
   const dates    = Array.from({ length: DAYS_TOTAL }, (_, i) => addDays(calStart, i));
   const DOW      = ['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -1171,8 +1200,9 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
     if (ds === todayStr) th.classList.add('today-head');
     if (moKey !== prevMo2 && prevMo2 !== null) th.classList.add('month-boundary');
     prevMo2 = moKey;
-    const dowLabel = ds === todayStr ? 'Today' : DOW[dow];
-    th.innerHTML = `<span class="dow">${dowLabel}</span><span class="dom">${d.getDate()}</span>`;
+    // Real day-of-week + date always visible; TODAY is a small tag above them
+    const todayTag = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
+    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>`;
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
@@ -1496,7 +1526,7 @@ function openOffer() {
   document.getElementById('offer-overlay').style.display = 'block';
   document.getElementById('offer-panel').classList.add('open');
   if (!document.getElementById('of-checkin').value) {
-    const tomorrow = addDays(new Date(), 1);
+    const tomorrow = addDays(window.NalbanaET ? fromYMD(NalbanaET.todayYMD()) : new Date(), 1);
     document.getElementById('of-checkin').value  = toYMD(tomorrow);
     document.getElementById('of-checkout').value = toYMD(addDays(tomorrow, 7));
   }
@@ -1696,6 +1726,16 @@ async function init() {
   const lookup = buildLookup(avail, bookings, occupancy);
   renderCalendar(lookup, rates, avail?.updated_at ?? null, rates?.generated_at ?? null);
 }
+
+/* ── ET clock — intra-day time indicator (slides the today-column bar) ── */
+function updateEtClock() {
+  const frac = window.NalbanaET
+    ? NalbanaET.dayFraction()
+    : (() => { const d = new Date(); return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400; })();
+  document.documentElement.style.setProperty('--et-frac', String(frac));
+}
+updateEtClock();
+setInterval(updateEtClock, 60000);
 
 // Auto-auth if remembered on this device (30-day rolling window)
 if (isAuthenticated()) {
