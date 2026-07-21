@@ -186,12 +186,41 @@
     }
     .day-header.today-head .dow { color: #a89070; }
     .day-header.today-head .dom { color: #d4a860; font-weight: bold; }
-    .day-header .today-time {
-      display: block;
-      font-size: 7px; letter-spacing: 0.04em;
+    /* Floating ET clock — top of the grid above the today column, spans
+       freely across column widths. Positioned by updateEtClock(). */
+    #et-time-label {
+      position: absolute; top: 12px;
+      transform: translateX(-50%);
+      font-family: 'Georgia', serif;
+      font-size: 13px; letter-spacing: 0.08em;
       color: #d4a860; white-space: nowrap;
-      margin-top: 2px;
+      z-index: 7; pointer-events: none;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      display: none;
     }
+
+    /* Today's events — corner dead space, top-left (compact: 100px corner) */
+    .today-events {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 3px 7px; padding: 6px 8px 4px;
+    }
+    .te-label {
+      font-size: 8px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #5a5048;
+      font-family: 'Georgia', serif;
+    }
+    .te-item {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 10px; color: #c8b090; letter-spacing: 0.06em;
+      font-family: 'Georgia', serif;
+    }
+    .te-chip {
+      font-size: 7px; font-weight: bold; letter-spacing: 0.1em;
+      padding: 2px 4px; border-radius: 3px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .te-chip.te-in  { color: #7cc4a0; border: 1px solid rgba(124,196,160,0.4); background: rgba(124,196,160,0.08); }
+    .te-chip.te-out { color: #d4a860; border: 1px solid rgba(212,168,96,0.4);  background: rgba(212,168,96,0.08); }
 
     /* Property label cells */
     .prop-label {
@@ -1189,6 +1218,29 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
   const tr2 = document.createElement('tr');
   const corner2 = document.createElement('th');
   corner2.className = 'cal-corner-day';
+
+  // ── Today's events — fill the corner dead space with check-ins/outs.
+  // Only properties with activity today; guest name on chip hover.
+  if (_bookingsCache) {
+    const items = [];
+    PROPERTIES.forEach(p => {
+      let inBk = null, outBk = null;
+      Object.values(_bookingsCache).forEach(bk => {
+        if (bk.property !== p.key || bk.status !== 'confirmed') return;
+        if (bk.check_in  === todayStr) inBk  = bk;
+        if (bk.check_out === todayStr) outBk = bk;
+      });
+      if (inBk || outBk) {
+        const chips =
+          (outBk ? `<span class="te-chip te-out" title="Out: ${(outBk.guest_name || 'Guest').replace(/"/g, '&quot;')}">OUT</span>` : '') +
+          (inBk  ? `<span class="te-chip te-in" title="In: ${(inBk.guest_name  || 'Guest').replace(/"/g, '&quot;')}">IN</span>`  : '');
+        items.push(`<span class="te-item">${p.name}${chips}</span>`);
+      }
+    });
+    if (items.length) {
+      corner2.innerHTML = `<div class="today-events"><span class="te-label">Today</span>${items.join('')}</div>`;
+    }
+  }
   tr2.appendChild(corner2);
 
   let prevMo2 = null;
@@ -1202,10 +1254,10 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
     if (ds === todayStr) th.classList.add('today-head');
     if (moKey !== prevMo2 && prevMo2 !== null) th.classList.add('month-boundary');
     prevMo2 = moKey;
-    // Real day-of-week + date always visible; TODAY tag above, live ET clock below
-    const todayTag  = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
-    const todayTime = ds === todayStr ? '<span class="today-time" id="today-time"></span>' : '';
-    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>${todayTime}`;
+    // Real day-of-week + date always visible; TODAY is a small tag above them.
+    // (The live ET clock floats at the top of the grid — see #et-time-label.)
+    const todayTag = ds === todayStr ? '<span class="today-tag">Today</span>' : '';
+    th.innerHTML = `${todayTag}<span class="dow">${DOW[dow]}</span><span class="dom">${d.getDate()}</span>`;
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
@@ -1380,10 +1432,14 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
   container.style.position = 'relative';
   container.appendChild(tbl);
 
-  // Continuous ET time-indicator line (positioned by updateEtClock)
+  // Continuous ET time-indicator line + floating clock label
+  // (both positioned by updateEtClock)
   const etLine = document.createElement('div');
   etLine.id = 'et-time-line';
   container.appendChild(etLine);
+  const etLabel = document.createElement('div');
+  etLabel.id = 'et-time-label';
+  container.appendChild(etLabel);
   updateEtClock();
 
   // Scroll so yesterday is at the left edge
@@ -1745,17 +1801,24 @@ function updateEtClock() {
   const frac = (n.hour * 3600 + n.minute * 60 + n.second) / 86400;
 
   const line    = document.getElementById('et-time-line');
+  const label   = document.getElementById('et-time-label');
   const todayTH = document.querySelector('.day-header.today-head');
-  if (line && todayTH) {
-    line.style.left = (todayTH.offsetLeft + frac * todayTH.offsetWidth - 1) + 'px';
-    line.style.display = 'block';
-  }
-
-  const timeEl = document.getElementById('today-time');
-  if (timeEl) {
-    const h12  = ((n.hour + 11) % 12) + 1;
-    const ampm = n.hour < 12 ? 'AM' : 'PM';
-    timeEl.textContent = `${h12}:${String(n.minute).padStart(2, '0')} ${ampm} ET`;
+  const thead   = document.querySelector('.cal-table thead');
+  if (todayTH) {
+    const x = todayTH.offsetLeft + frac * todayTH.offsetWidth;
+    if (line) {
+      line.style.left = (x - 1) + 'px';
+      // Start below the header rows so the line never covers TODAY/date text
+      line.style.top = (thead ? thead.offsetHeight : 0) + 'px';
+      line.style.display = 'block';
+    }
+    if (label) {
+      const h12  = ((n.hour + 11) % 12) + 1;
+      const ampm = n.hour < 12 ? 'AM' : 'PM';
+      label.textContent = `${h12}:${String(n.minute).padStart(2, '0')} ${ampm} ET`;
+      label.style.left = x + 'px';
+      label.style.display = 'block';
+    }
   }
 }
 updateEtClock();
