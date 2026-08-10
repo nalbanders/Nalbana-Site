@@ -22,6 +22,15 @@ on:
 permissions:
   contents: write              # Needed to commit availability.json back to the repo
 
+# Since 2026-08-09 the Nalbana email worker also dispatches this workflow on
+# every Airbnb confirmation / cancellation / alteration email, so the public
+# calendar refreshes in ~1 min instead of waiting for the 2-hour cron. Bursts
+# are possible (several emails at once); collapse them — the iCal feeds are the
+# same either way, and the commit step is already no-op when nothing changed.
+concurrency:
+  group: fetch-availability
+  cancel-in-progress: true
+
 jobs:
   fetch-availability:
     runs-on: ubuntu-latest
