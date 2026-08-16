@@ -113,6 +113,10 @@
       transition: all 0.2s; white-space: nowrap;
     }
     .header-offer-btn:hover { background: rgba(168,144,112,0.1); border-color: #a89070; }
+    .header-offer-btn:disabled { opacity: .55; cursor: default; }
+    .header-actions {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
 
     /* ── Calendar Section ── */
     .cal-section { background: #0f0f0e; }
@@ -236,6 +240,14 @@
       display: flex; align-items: stretch; height: 100%;
     }
     .prop-thumb { width: 48px; height: 64px; object-fit: cover; flex-shrink: 0; }
+    /* Thumbnail → Airbnb listing. line-height:0 keeps the anchor from adding a
+       descender gap inside the flex row; the hover tint is the only cue that
+       it's clickable, since a border or scale would shift the sticky column. */
+    .prop-thumb-link {
+      display: block; line-height: 0; flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .prop-thumb-link:hover { opacity: 0.72; }
     .prop-text {
       display: flex; flex-direction: column;
       justify-content: center; gap: 2px; padding: 0 8px;
@@ -644,6 +656,12 @@
       .cal-legend { gap: 12px; }
       .cal-status, .cal-legend { padding-left: 16px; padding-right: 16px; }
       .page-header { padding: 90px 20px 24px; }
+      /* Two header buttons must both stay reachable on a phone: tighten them
+         so they sit side by side at 390px rather than one wrapping alone. */
+      .header-offer-btn {
+        padding: 9px 13px; font-size: 10px; letter-spacing: 0.12em;
+      }
+      .header-actions { gap: 8px; }
       #offer-panel { width: 100%; }
     }
   </style>
@@ -682,7 +700,14 @@
     <h1 class="page-title">Owner View</h1>
     <div class="page-meta" id="updated-time">Loading rate data…</div>
   </div>
-  <button class="header-offer-btn" onclick="openOffer()">Offer Generator →</button>
+  <!-- Refresh mounts into #refresh-slot (left of the offer CTA) via
+       ops.nalbana.com/rerun.js — same cross-site script pattern as
+       cleaning_classify.js. Wrapped so the two buttons wrap together on a
+       phone instead of the second one being pushed off the header. -->
+  <div class="header-actions">
+    <span id="refresh-slot"></span>
+    <button class="header-offer-btn" onclick="openOffer()">Offer Generator →</button>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -853,6 +878,7 @@
 </footer>
 
 <script src="https://ops.nalbana.com/cleaning_classify.js"></script>
+<script src="https://ops.nalbana.com/rerun.js"></script>
 <script>
 /* ════════════════════════════════════════
    AUTH — separate key from calendar.html
@@ -890,13 +916,18 @@ document.getElementById('pw-input').addEventListener('keydown', e => {
    CONFIG
 ════════════════════════════════════════ */
 // Properties in yield-tier order (highest → lowest). Jemez is a separate market.
+// `airbnb` = the public listing URL behind each thumbnail (2026-08-16, Armen:
+// "best place for me to grab links to text/send on airbnb to people"). IDs are
+// permanent — cross-checked against the links already on this site's property
+// pages AND Nalbana_FPA/agents/fp-and-a/listing_map.json; both agree on all six.
+const AIRBNB = id => `https://www.airbnb.com/rooms/${id}`;
 const PROPERTIES = [
-  { key: '21st',  name: '21',  img: '21st Rd Listing/airbnb-001-812cdfd6.jpg',    tier: 2 },
-  { key: '22nd',  name: '22',  img: '22nd Rd Listing/cover-2J9A4615.jpg',         tier: 1 },
-  { key: '10th',  name: '10',  img: '10th St Listing/airbnb-001-9cf1da23.jpg',    tier: 4 },
-  { key: '23rd',  name: '23',  img: '23rd Rd Listing/airbnb-001-5ca57cc9.jpg',    tier: 3 },
-  { key: '13th',  name: '13',  img: '13th St Listing/airbnb-001-81c30a40.jpg',    tier: 5 },
-  { key: 'jemez', name: 'Jz',  img: 'Jemez Listing/airbnb-044-d34cd7c8.jpg',     tier: null },
+  { key: '21st',  name: '21',  img: '21st Rd Listing/airbnb-001-812cdfd6.jpg',    tier: 2,    airbnb: AIRBNB('51283421') },
+  { key: '22nd',  name: '22',  img: '22nd Rd Listing/cover-2J9A4615.jpg',         tier: 1,    airbnb: AIRBNB('587750272435957342') },
+  { key: '10th',  name: '10',  img: '10th St Listing/airbnb-001-9cf1da23.jpg',    tier: 4,    airbnb: AIRBNB('1371543678014557369') },
+  { key: '23rd',  name: '23',  img: '23rd Rd Listing/airbnb-001-5ca57cc9.jpg',    tier: 3,    airbnb: AIRBNB('1297056429185208299') },
+  { key: '13th',  name: '13',  img: '13th St Listing/airbnb-001-81c30a40.jpg',    tier: 5,    airbnb: AIRBNB('1376844965121549879') },
+  { key: 'jemez', name: 'Jz',  img: 'Jemez Listing/airbnb-044-d34cd7c8.jpg',     tier: null, airbnb: AIRBNB('52732943') },
 ];
 
 const MIAMI_TIER = ['22nd', '21st', '23rd', '10th', '13th'];  // tier order, high→low
@@ -1273,7 +1304,11 @@ function renderCalendar(lookup, rates, updatedAt, ratesAt) {
     label.className = 'prop-label';
     const tierText = prop.tier ? `Tier ${prop.tier}` : 'NM';
     label.innerHTML = `<div class="prop-label-inner">
-      <img src="${prop.img}" class="prop-thumb" alt="${prop.name}" loading="lazy">
+      <a class="prop-thumb-link" href="${prop.airbnb}" target="_blank"
+         rel="noopener noreferrer"
+         title="Open the Airbnb listing — right-click to copy the link">
+        <img src="${prop.img}" class="prop-thumb" alt="${prop.name}" loading="lazy">
+      </a>
       <div class="prop-text">
         <span class="prop-name">${prop.name}</span>
       </div>
@@ -1823,6 +1858,27 @@ function updateEtClock() {
 }
 updateEtClock();
 setInterval(updateEtClock, 60000);
+
+// ── ⟳ Refresh (2026-08-16) ────────────────────────────────────────────────
+// Dispatches Booking Refresh and reloads this page's data when it finishes, so
+// the calendar can be brought current without a trip to github.com. That
+// workflow re-pulls bookings + the cleaner calendar AND (since 2026-08-16) the
+// PriceLabs rates this page renders — previously rates only moved on the 9:00
+// ET daily pipeline, so the "Rates:" stamp could read a day old with no way to
+// force it. Guarded: rerun.js is served cross-site from ops.nalbana.com, and a
+// failed load must not take the calendar down with it.
+if (window.NalbanaRerun) {
+  NalbanaRerun.mount({
+    into:      "#refresh-slot",
+    workflow:  "booking_refresh.yml",
+    label:     "⟳ Refresh",
+    className: "header-offer-btn",
+    title:     "Re-pull bookings, the cleaner calendar and PriceLabs rates, then reload",
+    onDone:    init,
+  });
+} else {
+  console.warn("[owner] rerun.js unavailable — refresh button not mounted");
+}
 
 // Auto-auth if remembered on this device (30-day rolling window)
 if (isAuthenticated()) {
