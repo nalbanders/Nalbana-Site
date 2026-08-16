@@ -978,14 +978,23 @@ function fmtRate(n) {
 /* ════════════════════════════════════════
    DATA LOADING
 ════════════════════════════════════════ */
+// ops.nalbana.com sits behind a CDN, so a plain re-fetch of these JSONs can be
+// served from the edge cache — verified 2026-08-16: after a Booking Refresh run
+// wrote rates at 13:50Z, the same URL still returned the 08-15 snapshot while
+// `?cb=…` returned the new one. Without a unique query the ⟳ Refresh button
+// reloads to the SAME stale data, which defeats the entire point of it. A fresh
+// timestamp per load is a guaranteed cache miss; these files are 8–128 KB and
+// the page is opened a handful of times a day, so correctness beats caching.
+const fresh = url => url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+
 async function loadData() {
   const safe = p => p.then(r => r.ok ? r.json() : null).catch(() => null);
   const [avail, bookings, occupancy, rates, cleaningSchedule] = await Promise.all([
-    safe(fetch(AVAILABILITY_URL)),
-    safe(fetch(BOOKINGS_URL)),
-    safe(fetch(OCCUPANCY_URL)),
-    safe(fetch(RATES_URL)),
-    safe(fetch(CLEANING_URL)),
+    safe(fetch(fresh(AVAILABILITY_URL))),
+    safe(fetch(fresh(BOOKINGS_URL))),
+    safe(fetch(fresh(OCCUPANCY_URL))),
+    safe(fetch(fresh(RATES_URL))),
+    safe(fetch(fresh(CLEANING_URL))),
   ]);
   return { avail, bookings, occupancy, rates, cleaningSchedule };
 }
