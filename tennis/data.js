@@ -2,9 +2,9 @@ window.TENNIS_HQ_DATA = {
   updated: "2026-11-15",
   trackingStart: "2026-10-14",
   records: {
-    sets: { wins: 17, losses: 3 },
+    sets: { wins: 16, losses: 3 },
     superTiebreaks: { wins: 11, losses: 1 },
-    combined: { wins: 28, losses: 4 }
+    combined: { wins: 27, losses: 4 }
   },
   focuses: [
     { area: "Return", status: "Priority", detail: "Too many netted or short bunt returns get punished by stronger players. Bias toward compact, assertive neutralization—especially deep middle." },
@@ -95,12 +95,12 @@ window.TENNIS_HQ_DATA = {
       notes: "Los Angeles. Switched at 1-3 down; EZONE serve confidence and aggressive DTL backhand were major positives."
     },
     {
-      date: "Early Oct 2026", opponent: "Italian 4.5", era: "Historical", period: "Night",
+      date: "Early Oct 2026", opponent: "Alex Gelato", era: "Historical", period: "Night",
       racket: "Mixed", setup: "Set 1 EZONE 98 · TB Soft 17 50/48; Set 2 Gravity MP",
       score: "6-3; 4-3 unfinished second set", status: "Lights out",
       units: [{ type: "Set", result: "W", score: "6-3" }],
-      excluded: "4-3 second set excluded",
-      notes: "Started 5-0 with EZONE before opponent shifted heavily to junk balls, slice, lobs, drops, and underhand serves."
+      excluded: "Second set stopped at 4-3; excluded from formal set record.",
+      notes: "Alex Gelato (previously logged as Italian 4.5). Started 5-0 with EZONE before Alex shifted heavily to junk balls, slice, lobs, drops, and underhand serves."
     },
     {
       date: "2026-06-13 approx.", opponent: "Mike", era: "Historical", period: "Unknown",
@@ -152,20 +152,12 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Two-set win on the Aero/RPM Blast day."
     },
     {
-      date: "Prior", opponent: "Alex Gelato", era: "Historical", period: "Unknown",
+      date: "Next day, early Oct 2026", opponent: "Alex Gelato", era: "Historical", period: "Unknown",
       racket: "EZONE 98", setup: "EZONE 98",
-      score: "3-6", status: "Completed",
+      score: "3-6; second set tied when stopped (exact score unknown)", status: "Time expired",
       units: [{ type: "Set", result: "L", score: "3-6" }],
-      excluded: "",
-      notes: "Miami low-pace/pusher-style loss; forehand became erratic with short/net misses."
-    },
-    {
-      date: "Prior", opponent: "Alex Gelato", era: "Historical", period: "Unknown",
-      racket: "Unknown", setup: "Unknown",
-      score: "6-3", status: "Completed",
-      units: [{ type: "Set", result: "W", score: "6-3" }],
-      excluded: "",
-      notes: "Miami win."
+      excluded: "Second set was tied when play stopped; exact score not remembered, so it is excluded from game and set totals.",
+      notes: "Second consecutive day vs Alex. Low-pace / pusher-style match; forehand became erratic with short and net misses."
     },
     {
       date: "Prior", opponent: "Brother", era: "Historical", period: "Unknown",
