@@ -7,202 +7,207 @@
 <title>Tennis HQ</title>
 <style>
 :root{
-  --bg:#07110c; --bg2:#0b1710; --panel:#0e1c14; --panel2:#12241a; --line:#213c2c;
-  --text:#f3f8f4; --muted:#8fa496; --soft:#c9d7ce; --green:#8ee8a8; --green2:#4fbd72;
-  --red:#ff8f8f; --amber:#f3cb72; --blue:#8fb8ff; --white:#ffffff;
+  --bg:#07110c;--panel:#0d1a12;--panel2:#112219;--line:#213b2b;--line2:#2b4b37;
+  --text:#f3f8f4;--muted:#8fa496;--green:#8ee8a8;--green2:#4fbd72;--red:#ff9090;--amber:#f2cc76;--blue:#8fb8ff;
 }
 *{box-sizing:border-box}
-html{background:var(--bg);scroll-behavior:smooth}
+html{background:var(--bg)}
 body{margin:0;color:var(--text);background:
-  radial-gradient(1000px 600px at 12% -10%,rgba(76,155,96,.16),transparent 65%),
-  radial-gradient(700px 500px at 95% 8%,rgba(143,184,255,.08),transparent 60%),
-  var(--bg);
-  font:15px/1.5 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+radial-gradient(900px 520px at 10% -10%,rgba(75,150,93,.16),transparent 65%),
+var(--bg);font:14px/1.45 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button,input,select{font:inherit}
 button{color:inherit}
-.shell{max-width:1280px;margin:0 auto;padding:28px 22px 72px}
-.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.7fr);gap:18px;align-items:stretch}
-.hero-copy,.hero-record{border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(18,36,26,.95),rgba(11,23,16,.96))}
-.hero-copy{padding:28px 30px;position:relative;overflow:hidden}
-.hero-copy:after{content:"";position:absolute;right:-45px;bottom:-115px;width:300px;height:300px;border:1px solid rgba(142,232,168,.18);border-radius:50%}
-.kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--green);font-weight:800;margin-bottom:10px}
-h1{margin:0;font-size:44px;line-height:.96;letter-spacing:-.055em}
-.hero-sub{max-width:700px;color:var(--muted);font-size:15px;margin-top:14px}
-.hero-record{padding:24px;display:flex;flex-direction:column;justify-content:space-between}
-.record-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.big-record{font-size:62px;line-height:1;font-weight:850;letter-spacing:-.07em;margin:8px 0 2px}
-.big-record span{color:var(--muted);font-weight:500}
-.winrate{color:var(--green);font-weight:800}
-.record-note{font-size:12px;color:var(--muted);margin-top:8px}
-.updated{margin-top:18px;font-size:11px;color:#698273}
-.kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0 18px}
-.kpi{border:1px solid var(--line);border-radius:18px;padding:17px 18px;background:rgba(14,28,20,.9)}
-.kpi.primary{border-color:#315c41;background:linear-gradient(180deg,rgba(20,46,31,.95),rgba(13,30,20,.95))}
-.kpi-top{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.kpi-label{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.kpi-score{font-size:34px;font-weight:820;letter-spacing:-.045em;margin-top:5px}
-.kpi-pct{font-size:12px;color:var(--green);font-weight:750}
-.section{margin-top:28px}
-.section-head{display:flex;justify-content:space-between;gap:14px;align-items:end;margin-bottom:11px;flex-wrap:wrap}
-.section-title{font-size:19px;letter-spacing:-.025em;font-weight:800}
-.section-sub{font-size:12px;color:var(--muted)}
-.form-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
-.form-item{min-width:92px;border:1px solid var(--line);background:rgba(14,28,20,.9);border-radius:14px;padding:10px 11px}
-.form-item .r{font-weight:850;font-size:19px}
-.form-item .r.W{color:var(--green)} .form-item .r.L{color:var(--red)} .form-item .r.T{color:var(--amber)}
-.form-item .opp{font-size:12px;font-weight:750;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.form-item .date{font-size:10px;color:var(--muted);margin-top:3px}
-.tabs{display:flex;gap:7px;flex-wrap:wrap}
-.tab{cursor:pointer;border:1px solid var(--line);background:#0d1a12;padding:8px 12px;border-radius:999px;font-size:12px}
-.tab.active{background:var(--text);color:#07110c;border-color:var(--text);font-weight:800}
-.controls{display:grid;grid-template-columns:1.5fr repeat(4,minmax(130px,1fr));gap:8px;margin-top:10px}
-input,select{width:100%;min-width:0;color:var(--text);background:#0a160f;border:1px solid #274432;border-radius:11px;padding:10px 11px;outline:none}
+.shell{max-width:1320px;margin:0 auto;padding:28px 20px 64px}
+.top{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.kicker{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--green);font-weight:850}
+h1{font-size:36px;line-height:1;margin:5px 0 0;letter-spacing:-.045em}
+.sub{color:var(--muted);margin-top:8px;max-width:720px}
+.updated{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:6px 9px;border-radius:999px;background:#0d1912}
+
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:22px 0 18px}
+.metric{border:1px solid var(--line);background:linear-gradient(180deg,#112219,#0c1911);border-radius:16px;padding:15px;min-width:0}
+.metric.primary{border-color:#356348;background:linear-gradient(180deg,#163022,#102319)}
+.metric-label{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.metric-line{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-top:5px}
+.metric-score{font-size:30px;font-weight:850;letter-spacing:-.045em}
+.metric-pct{font-size:11px;color:var(--green);font-weight:750}
+.metric-parts{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.metric-part{appearance:none;border:1px solid #2a4835;background:#0a160f;border-radius:999px;padding:4px 7px;font-size:10px;cursor:pointer}
+.metric-part:hover{border-color:#52745f}
+.metric-part.w{color:var(--green)} .metric-part.l{color:var(--red)} .metric-part.t{color:var(--amber)}
+.metric-part.active{outline:1px solid currentColor;background:#142219}
+.metric-note{font-size:10px;color:var(--muted);margin-top:6px}
+
+.toolbar-wrap{border:1px solid var(--line);background:#0d1a12;border-radius:16px;padding:10px;margin-bottom:12px}
+.toolbar{display:grid;grid-template-columns:1.55fr repeat(5,minmax(120px,1fr));gap:8px}
+input,select{width:100%;min-width:0;background:#08130d;color:var(--text);border:1px solid #284432;border-radius:10px;padding:9px 10px;outline:none}
 input:focus,select:focus{border-color:var(--green2)}
-.grid-2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
-.panel{border:1px solid var(--line);border-radius:18px;background:rgba(14,28,20,.9);overflow:hidden}
-.panel-pad{padding:16px}
-.opponent-table{width:100%;border-collapse:collapse}
-.opponent-table th,.opponent-table td{padding:10px 12px;border-bottom:1px solid #1b3325;text-align:left}
-.opponent-table th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.opponent-table tr:last-child td{border-bottom:0}
-.opponent-name{font-weight:800}
-.record-mini{font-variant-numeric:tabular-nums;font-weight:800}
-.racket-list{display:grid;gap:8px}
-.racket-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 12px;border:1px solid #1d3627;border-radius:12px;background:#0b1710}
-.racket-name{font-weight:800}
-.racket-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.racket-record{font-weight:850;font-size:18px}
-.focus-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.focus{border:1px solid var(--line);background:rgba(14,28,20,.88);border-radius:16px;padding:14px}
-.focus.priority{border-color:#5d4a21}
-.focus .topline{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-.focus .area{font-weight:850}
-.focus .status{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--amber);font-weight:850}
-.focus .detail{font-size:12px;color:var(--muted);margin-top:7px}
-.session-list{display:grid;gap:9px}
-.session{border:1px solid var(--line);background:rgba(12,25,17,.94);border-radius:16px;overflow:hidden}
-.session-main{display:grid;grid-template-columns:74px 170px 1fr auto;gap:12px;align-items:center;padding:13px 14px}
-.result-badge{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:18px;border:1px solid var(--line)}
-.result-badge.W{color:var(--green);border-color:#2b6f43;background:#112d1c}
-.result-badge.L{color:var(--red);border-color:#6b3737;background:#291414}
-.result-badge.T{color:var(--amber);border-color:#6b592e;background:#271f10}
-.date-small{font-size:10px;color:var(--muted);margin-top:2px}
-.session-opp{font-weight:850;font-size:16px}
-.session-score{font-weight:750}
-.session-setup{font-size:11px;color:var(--muted);margin-top:3px}
-.units{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
-.pill{display:inline-flex;align-items:center;gap:4px;border:1px solid #304b39;border-radius:999px;padding:4px 7px;font-size:10px;color:#c6d5cc;white-space:nowrap}
-.pill.w{color:var(--green);border-color:#2e6b43}.pill.l{color:var(--red);border-color:#693737}
-details{border-top:1px solid #1c3325}
-summary{cursor:pointer;list-style:none;padding:9px 14px;color:var(--muted);font-size:11px}
-summary::-webkit-details-marker{display:none}
-.detail-body{padding:0 14px 13px;color:#b8c6bd;font-size:12px;max-width:960px}
-.excluded{margin-top:6px;color:#718577;font-style:italic}
-.empty{display:none;padding:34px;text-align:center;color:var(--muted)}
-.legend{font-size:11px;color:var(--muted);margin-top:10px}
-@media(max-width:950px){
- .hero{grid-template-columns:1fr}
- .grid-2{grid-template-columns:1fr}
- .focus-grid{grid-template-columns:1fr 1fr}
- .controls{grid-template-columns:1fr 1fr}
- .controls input{grid-column:1/-1}
- .session-main{grid-template-columns:60px 140px 1fr}
- .units{grid-column:2/-1;justify-content:flex-start}
+.filter-summary{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;color:var(--muted);font-size:11px}
+.clear{appearance:none;border:0;background:none;color:var(--green);cursor:pointer;padding:0}
+.clear[hidden]{display:none}
+
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:22px 0 9px;flex-wrap:wrap}
+.section-title{font-weight:850;font-size:17px;letter-spacing:-.02em}
+.section-sub{color:var(--muted);font-size:11px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{appearance:none;border:1px solid var(--line);background:#0d1a12;border-radius:999px;padding:7px 10px;cursor:pointer;font-size:11px}
+.tab.active{background:var(--text);color:#07110c;border-color:var(--text);font-weight:800}
+
+.table-shell{border:1px solid var(--line);border-radius:16px;overflow:auto;background:#0b1710}
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:1040px}
+col.result{width:58px} col.date{width:108px} col.opp{width:160px} col.session{width:auto} col.sets{width:135px} col.tbs{width:135px} col.games{width:95px} col.status{width:100px} col.expand{width:44px}
+th,td{padding:10px 11px;border-bottom:1px solid #1a3123;text-align:left;vertical-align:middle}
+th{position:sticky;top:0;background:#13251b;color:#9fb0a4;font-size:9px;letter-spacing:.09em;text-transform:uppercase;z-index:2;white-space:nowrap}
+tbody tr.data-row{cursor:pointer}
+tbody tr.data-row:hover td{background:rgba(255,255,255,.018)}
+td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result{font-weight:900}
+.result.W{color:var(--green)} .result.L{color:var(--red)} .result.T{color:var(--amber)}
+.date-cell{font-variant-numeric:tabular-nums;color:#c7d3cb}
+.opp-cell{font-weight:800}
+.session-score{font-weight:700}
+.unit-chip{display:inline-block;border:1px solid #2b4b37;border-radius:999px;padding:3px 6px;font-size:9px;margin-right:3px}
+.unit-chip.w{color:var(--green);border-color:#2d6a42}.unit-chip.l{color:var(--red);border-color:#6d3939}
+.games-cell{font-variant-numeric:tabular-nums}
+.status-chip{display:inline-block;border:1px solid #314a39;border-radius:999px;padding:3px 6px;font-size:9px;color:#b9c7be}
+.chev{font-size:17px;color:var(--muted);transition:transform .15s ease;display:inline-block}
+.data-row.open .chev{transform:rotate(90deg)}
+.detail-row{display:none}
+.detail-row.open{display:table-row}
+.detail-row td{white-space:normal;overflow:visible;text-overflow:clip;background:#09140e;padding:0}
+.detail-grid{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:18px;padding:14px 16px 15px;border-bottom:1px solid #203727}
+.detail-label{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:4px}
+.detail-value{color:#cbd8d0;font-size:12px}
+.excluded{margin-top:8px;color:#718576;font-style:italic}
+
+.empty{display:none;padding:36px;text-align:center;color:var(--muted)}
+.click-note{font-size:10px;color:var(--muted);margin-top:8px}
+
+@media(max-width:1000px){
+ .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .metric.primary{grid-column:span 2}
+ .toolbar{grid-template-columns:1fr 1fr 1fr}
+ .toolbar input{grid-column:1/-1}
 }
-@media(max-width:620px){
- .shell{padding:18px 13px 48px}
- h1{font-size:36px}
- .big-record{font-size:52px}
- .kpi-grid{grid-template-columns:1fr}
- .focus-grid{grid-template-columns:1fr}
- .controls{grid-template-columns:1fr}
- .controls input{grid-column:auto}
- .session-main{grid-template-columns:52px 1fr}
- .session-main>div:nth-child(3){grid-column:2}
- .units{grid-column:2}
+@media(max-width:650px){
+ .shell{padding:18px 12px 48px}
+ h1{font-size:31px}
+ .metrics{grid-template-columns:1fr}
+ .metric.primary{grid-column:auto}
+ .toolbar{grid-template-columns:1fr 1fr}
+ .toolbar input{grid-column:1/-1}
+ .detail-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 <div class="shell">
-  <section class="hero">
-    <div class="hero-copy">
-      <div class="kicker">Tennis HQ · Performance log</div>
-      <h1>Win the day.<br>Track the reasons.</h1>
-      <div class="hero-sub">Sessions are the primary result: who won the day. Sets and super tiebreaks stay separate so a 6–2 set and a 10-point breaker don't get flattened into the same thing.</div>
-      <div class="updated" id="updated"></div>
+  <header class="top">
+    <div>
+      <div class="kicker">Tennis HQ</div>
+      <h1>Performance dashboard</h1>
+      <div class="sub">Five distinct views of the same tennis: who won the session, full-set results, super-tiebreak results, combined competitive units, and cumulative games won.</div>
     </div>
-    <div class="hero-record">
-      <div>
-        <div class="record-label">Session record</div>
-        <div class="big-record" id="sessionRecord">—</div>
-        <div class="winrate" id="sessionPct">—</div>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <section class="metrics">
+    <article class="metric primary" data-metric="session">
+      <div class="metric-label">Sessions</div>
+      <div class="metric-line"><div class="metric-score" id="sessionScore"></div><div class="metric-pct" id="sessionPct"></div></div>
+      <div class="metric-parts">
+        <button class="metric-part w" data-drill="session-w"></button>
+        <button class="metric-part l" data-drill="session-l"></button>
+        <button class="metric-part t" data-drill="session-t"></button>
       </div>
-      <div class="record-note">Ties are kept separate. Session judgment prioritizes full-set results, then tiebreaks / overall day context.</div>
-    </div>
-  </section>
+      <div class="metric-note">Who won the day. Full sets get priority; ties use the total session context.</div>
+    </article>
 
-  <section class="kpi-grid">
-    <div class="kpi primary"><div class="kpi-top"><div class="kpi-label">Sessions</div><div class="kpi-pct" id="sessionPct2"></div></div><div class="kpi-score" id="sessionRecord2"></div></div>
-    <div class="kpi"><div class="kpi-top"><div class="kpi-label">Full sets</div><div class="kpi-pct" id="setPct"></div></div><div class="kpi-score" id="setRecord"></div></div>
-    <div class="kpi"><div class="kpi-top"><div class="kpi-label">Super tiebreaks</div><div class="kpi-pct" id="tbPct"></div></div><div class="kpi-score" id="tbRecord"></div></div>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <div><div class="section-title">Recent form</div><div class="section-sub">Session result, newest first</div></div>
-      <div class="tabs" aria-label="Era filter">
-        <button class="tab active" data-era="all">All history</button>
-        <button class="tab" data-era="Stabilized">Stabilized era</button>
-        <button class="tab" data-era="Historical">Historical</button>
+    <article class="metric" data-metric="sets">
+      <div class="metric-label">Sets</div>
+      <div class="metric-line"><div class="metric-score" id="setScore"></div><div class="metric-pct" id="setPct"></div></div>
+      <div class="metric-parts">
+        <button class="metric-part w" data-drill="set-w"></button>
+        <button class="metric-part l" data-drill="set-l"></button>
       </div>
-    </div>
-    <div class="form-strip" id="formStrip"></div>
-  </section>
+      <div class="metric-note">Completed full sets only.</div>
+    </article>
 
-  <section class="section">
-    <div class="section-head">
-      <div><div class="section-title">Performance slices</div><div class="section-sub">Who you beat, and with what</div></div>
-    </div>
-    <div class="grid-2">
-      <div class="panel">
-        <div class="panel-pad"><strong>By opponent</strong></div>
-        <table class="opponent-table">
-          <thead><tr><th>Opponent</th><th>Sessions</th><th>Sets</th><th>TBs</th></tr></thead>
-          <tbody id="opponentRows"></tbody>
-        </table>
+    <article class="metric" data-metric="tb">
+      <div class="metric-label">Tiebreaks</div>
+      <div class="metric-line"><div class="metric-score" id="tbScore"></div><div class="metric-pct" id="tbPct"></div></div>
+      <div class="metric-parts">
+        <button class="metric-part w" data-drill="tb-w"></button>
+        <button class="metric-part l" data-drill="tb-l"></button>
       </div>
-      <div class="panel">
-        <div class="panel-pad"><strong>By racket</strong><div class="section-sub">Session record on sessions primarily logged to that frame</div></div>
-        <div class="panel-pad" style="padding-top:0"><div class="racket-list" id="racketRows"></div></div>
+      <div class="metric-note">10-point / super tiebreaks.</div>
+    </article>
+
+    <article class="metric" data-metric="overall">
+      <div class="metric-label">Overall</div>
+      <div class="metric-line"><div class="metric-score" id="overallScore"></div><div class="metric-pct" id="overallPct"></div></div>
+      <div class="metric-parts">
+        <button class="metric-part w" data-drill="overall-w"></button>
+        <button class="metric-part l" data-drill="overall-l"></button>
       </div>
+      <div class="metric-note">Sets + tiebreaks, kept separate above but combined here.</div>
+    </article>
+
+    <article class="metric" data-metric="games">
+      <div class="metric-label">Games</div>
+      <div class="metric-line"><div class="metric-score" id="gameScore"></div><div class="metric-pct" id="gamePct"></div></div>
+      <div class="metric-parts">
+        <button class="metric-part" data-drill="games-all" id="gameTotal"></button>
+      </div>
+      <div class="metric-note">Includes known timed / mini / unfinished game scores; excludes TB points.</div>
+    </article>
+  </section>
+
+  <section class="section-head">
+    <div>
+      <div class="section-title">Session log</div>
+      <div class="section-sub">One line per session. Click a row to expand equipment + notes.</div>
+    </div>
+    <div class="tabs" aria-label="Era filter">
+      <button class="tab active" data-era="all">All history</button>
+      <button class="tab" data-era="Stabilized">Stabilized</button>
+      <button class="tab" data-era="Historical">Historical</button>
     </div>
   </section>
 
-  <section class="section">
-    <div class="section-head">
-      <div><div class="section-title">Current training priorities</div><div class="section-sub">What is actually limiting the next jump</div></div>
+  <section class="toolbar-wrap">
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Search opponent, score, racket, notes…">
+      <select id="resultFilter">
+        <option value="">Result: all</option>
+        <option value="W">Wins</option>
+        <option value="L">Losses</option>
+        <option value="T">Ties / unfinished</option>
+      </select>
+      <select id="opponent"><option value="">Opponent: all</option></select>
+      <select id="racket"><option value="">Racket: all</option></select>
+      <select id="period"><option value="">Day/night: all</option><option>Day</option><option>Night</option><option>Unknown</option></select>
+      <select id="status"><option value="">Status: all</option><option>Completed</option><option>Rainout</option><option>Lights out</option></select>
     </div>
-    <div class="focus-grid" id="focusGrid"></div>
+    <div class="filter-summary">
+      <div id="filterSummary">Showing all sessions</div>
+      <button class="clear" id="clearFilters" hidden>Clear filters</button>
+    </div>
   </section>
 
-  <section class="section">
-    <div class="section-head">
-      <div><div class="section-title">Session log</div><div class="section-sub">Compact by default; expand only when you want the notes</div></div>
-    </div>
-
-    <div class="controls">
-      <input id="search" type="search" placeholder="Search opponent, racket, score, notes…">
-      <select id="opponent"><option value="">All opponents</option></select>
-      <select id="racket"><option value="">All rackets</option></select>
-      <select id="period"><option value="">Day / night</option><option>Day</option><option>Night</option><option>Unknown</option></select>
-      <select id="status"><option value="">All statuses</option><option>Completed</option><option>Rainout</option><option>Lights out</option></select>
-    </div>
-
-    <div class="session-list" id="sessionList"></div>
+  <section class="table-shell">
+    <table>
+      <colgroup>
+        <col class="result"><col class="date"><col class="opp"><col class="session"><col class="sets"><col class="tbs"><col class="games"><col class="status"><col class="expand">
+      </colgroup>
+      <thead>
+        <tr><th>R</th><th>Date</th><th>Opponent</th><th>Session score</th><th>Sets</th><th>Tiebreaks</th><th>Games</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
     <div class="empty" id="empty">No sessions match those filters.</div>
-    <div class="legend">Formal set/TB records count only completed units. Timed sets, mini-sets, rainouts, and uncertain breaker counts remain visible but do not alter those W-L totals.</div>
   </section>
+  <div class="click-note">Tip: click any metric W/L number to drill the table directly into those results.</div>
 </div>
 
 <script src="./data.js"></script>
@@ -210,134 +215,183 @@ summary::-webkit-details-marker{display:none}
 (() => {
   const D = window.TENNIS_HQ_DATA;
   const $ = s => document.querySelector(s);
-  const esc = v => String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+  const $$ = s => [...document.querySelectorAll(s)];
+  const esc = v => String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
   let era = "all";
+  let drill = "";
 
   function sessionResult(s){
-    if (s.status === "Rainout") return "T";
-    const sets = s.units.filter(u => u.type === "Set");
-    const sw = sets.filter(u => u.result === "W").length;
-    const sl = sets.filter(u => u.result === "L").length;
-    if (sw !== sl) return sw > sl ? "W" : "L";
-    const tbs = s.units.filter(u => /TB/i.test(u.type));
-    const tw = tbs.filter(u => u.result === "W").length;
-    const tl = tbs.filter(u => u.result === "L").length;
-    if (tw !== tl) return tw > tl ? "W" : "L";
-    if (/^Won\b/i.test(s.score)) return "W";
-    if (/^Lost\b/i.test(s.score)) return "L";
+    if(s.status==="Rainout") return "T";
+    const sets=s.units.filter(u=>u.type==="Set");
+    const sw=sets.filter(u=>u.result==="W").length, sl=sets.filter(u=>u.result==="L").length;
+    if(sw!==sl) return sw>sl?"W":"L";
+    const tbs=s.units.filter(u=>/TB/i.test(u.type));
+    const tw=tbs.filter(u=>u.result==="W").length, tl=tbs.filter(u=>u.result==="L").length;
+    if(tw!==tl) return tw>tl?"W":"L";
+    if(/^Won\b/i.test(s.score)) return "W";
+    if(/^Lost\b/i.test(s.score)) return "L";
     return "T";
   }
 
-  function record(arr, type){
+  function gameSegments(s){
+    const seg=s.units.filter(u=>u.type==="Set").map(u=>{
+      const m=u.score.match(/(\d+)\s*[-–]\s*(\d+)/);
+      return m?[+m[1],+m[2]]:null;
+    }).filter(Boolean);
+    if(s.date==="2026-11-15" && s.opponent==="Dat") seg.push([4,0]);
+    if(s.date==="2026-11-13" && s.opponent==="Dat") seg.push([5,3]);
+    if(s.date==="2026-10-30" && s.opponent==="Charles") seg.push([4,4]);
+    if(/^Early Oct 2026/.test(s.date) && s.opponent==="Italian 4.5") seg.push([4,3]);
+    return seg;
+  }
+
+  function gameRecord(sessions){
+    let w=0,l=0;
+    sessions.forEach(s=>gameSegments(s).forEach(([a,b])=>{w+=a;l+=b;}));
+    return {w,l};
+  }
+  function unitRecord(sessions,type){
+    let w=0,l=0;
+    sessions.forEach(s=>s.units.filter(u=>type==="set"?u.type==="Set":/TB/i.test(u.type)).forEach(u=>u.result==="W"?w++:l++));
+    return {w,l};
+  }
+  function sessionRecord(sessions){
     let w=0,l=0,t=0;
-    if(type==="session"){
-      arr.forEach(s=>{const r=sessionResult(s); if(r==="W")w++; else if(r==="L")l++; else t++;});
-    } else {
-      arr.forEach(s=>s.units.filter(u=> type==="set" ? u.type==="Set" : /TB/i.test(u.type)).forEach(u=>u.result==="W"?w++:l++));
-    }
+    sessions.forEach(s=>{const r=sessionResult(s); if(r==="W")w++; else if(r==="L")l++; else t++;});
     return {w,l,t};
   }
-  function fmt(r, includeT=false){ return includeT ? r.w+"–"+r.l+"–"+r.t : r.w+"–"+r.l; }
-  function pct(r){ const d=r.w+r.l; return d ? ((100*r.w/d).toFixed(1)+"% win rate") : "—"; }
+  const pct=(w,l)=>w+l?((100*w/(w+l)).toFixed(1)+"%"):"—";
 
-  function eraSessions(){
-    return D.sessions.filter(s=>era==="all" || s.era===era);
+  function eraSessions(){return D.sessions.filter(s=>era==="all"||s.era===era);}
+
+  function renderMetrics(){
+    const ss=eraSessions(), sr=sessionRecord(ss), sets=unitRecord(ss,"set"), tb=unitRecord(ss,"tb");
+    const overall={w:sets.w+tb.w,l:sets.l+tb.l}, games=gameRecord(ss);
+
+    $("#sessionScore").textContent=sr.w+"–"+sr.l+"–"+sr.t;
+    $("#sessionPct").textContent=pct(sr.w,sr.l)+" decisive";
+    $("[data-drill='session-w']").textContent=sr.w+" wins";
+    $("[data-drill='session-l']").textContent=sr.l+" losses";
+    $("[data-drill='session-t']").textContent=sr.t+" ties";
+
+    $("#setScore").textContent=sets.w+"–"+sets.l;
+    $("#setPct").textContent=pct(sets.w,sets.l);
+    $("[data-drill='set-w']").textContent=sets.w+" wins";
+    $("[data-drill='set-l']").textContent=sets.l+" losses";
+
+    $("#tbScore").textContent=tb.w+"–"+tb.l;
+    $("#tbPct").textContent=pct(tb.w,tb.l);
+    $("[data-drill='tb-w']").textContent=tb.w+" wins";
+    $("[data-drill='tb-l']").textContent=tb.l+" losses";
+
+    $("#overallScore").textContent=overall.w+"–"+overall.l;
+    $("#overallPct").textContent=pct(overall.w,overall.l);
+    $("[data-drill='overall-w']").textContent=overall.w+" wins";
+    $("[data-drill='overall-l']").textContent=overall.l+" losses";
+
+    $("#gameScore").textContent=pct(games.w,games.l);
+    $("#gamePct").textContent=games.w+"–"+games.l+" games";
+    $("#gameTotal").textContent=(games.w+games.l)+" logged games";
   }
 
-  function drawTop(){
-    const ss=eraSessions(), sr=record(ss,"session"), setr=record(ss,"set"), tbr=record(ss,"tb");
-    $("#sessionRecord").textContent=fmt(sr,true);
-    $("#sessionRecord2").textContent=fmt(sr,true);
-    $("#sessionPct").textContent=pct(sr);
-    $("#sessionPct2").textContent=pct(sr);
-    $("#setRecord").textContent=fmt(setr);
-    $("#setPct").textContent=pct(setr);
-    $("#tbRecord").textContent=fmt(tbr);
-    $("#tbPct").textContent=pct(tbr);
+  function unitChips(s,type){
+    const units=s.units.filter(u=>type==="set"?u.type==="Set":/TB/i.test(u.type));
+    if(!units.length) return "—";
+    return units.map(u=>'<span class="unit-chip '+(u.result==="W"?"w":"l")+'">'+esc(u.result)+" "+esc(u.score)+'</span>').join("");
   }
 
-  function drawForm(){
-    const recent=eraSessions().slice(0,10);
-    $("#formStrip").innerHTML=recent.map(s=>{
-      const r=sessionResult(s);
-      return '<div class="form-item"><div class="r '+r+'">'+r+'</div><div class="opp">'+esc(s.opponent)+'</div><div class="date">'+esc(s.date)+'</div></div>';
+  function gamesForSession(s){
+    const seg=gameSegments(s);
+    if(!seg.length) return "—";
+    let w=0,l=0; seg.forEach(([a,b])=>{w+=a;l+=b;});
+    return w+"–"+l;
+  }
+
+  function passesDrill(s){
+    if(!drill) return true;
+    const r=sessionResult(s);
+    if(drill==="session-w") return r==="W";
+    if(drill==="session-l") return r==="L";
+    if(drill==="session-t") return r==="T";
+    if(drill==="set-w") return s.units.some(u=>u.type==="Set"&&u.result==="W");
+    if(drill==="set-l") return s.units.some(u=>u.type==="Set"&&u.result==="L");
+    if(drill==="tb-w") return s.units.some(u=>/TB/i.test(u.type)&&u.result==="W");
+    if(drill==="tb-l") return s.units.some(u=>/TB/i.test(u.type)&&u.result==="L");
+    if(drill==="overall-w") return s.units.some(u=>u.result==="W");
+    if(drill==="overall-l") return s.units.some(u=>u.result==="L");
+    if(drill==="games-all") return gameSegments(s).length>0;
+    return true;
+  }
+
+  function filteredSessions(){
+    const q=$("#search").value.toLowerCase().trim(), rf=$("#resultFilter").value, op=$("#opponent").value, rk=$("#racket").value, per=$("#period").value, st=$("#status").value;
+    return eraSessions().filter(s=>{
+      const hay=[s.opponent,s.racket,s.setup,s.score,s.notes,s.excluded,s.status].join(" ").toLowerCase();
+      return passesDrill(s)&&(!q||hay.includes(q))&&(!rf||sessionResult(s)===rf)&&(!op||s.opponent===op)&&(!rk||s.racket===rk)&&(!per||s.period===per)&&(!st||s.status===st);
+    });
+  }
+
+  function renderRows(){
+    const rows=filteredSessions();
+    $("#rows").innerHTML=rows.map((s,i)=>{
+      const r=sessionResult(s), id="d"+i;
+      return '<tr class="data-row" data-detail="'+id+'">'
+        +'<td class="result '+r+'">'+r+'</td>'
+        +'<td class="date-cell">'+esc(s.date)+'</td>'
+        +'<td class="opp-cell">'+esc(s.opponent)+'</td>'
+        +'<td class="session-score">'+esc(s.score)+'</td>'
+        +'<td>'+unitChips(s,"set")+'</td>'
+        +'<td>'+unitChips(s,"tb")+'</td>'
+        +'<td class="games-cell">'+gamesForSession(s)+'</td>'
+        +'<td><span class="status-chip">'+esc(s.status)+'</span></td>'
+        +'<td><span class="chev">›</span></td>'
+        +'</tr>'
+        +'<tr class="detail-row" id="'+id+'"><td colspan="9"><div class="detail-grid">'
+        +'<div><div class="detail-label">Equipment</div><div class="detail-value">'+esc(s.setup)+'</div><div class="detail-label" style="margin-top:10px">Day / night</div><div class="detail-value">'+esc(s.period)+'</div></div>'
+        +'<div><div class="detail-label">Notes</div><div class="detail-value">'+esc(s.notes)+(s.excluded?'<div class="excluded">'+esc(s.excluded)+'</div>':'')+'</div></div>'
+        +'</div></td></tr>';
     }).join("");
+
+    $$(".data-row").forEach(row=>row.addEventListener("click",()=>{
+      row.classList.toggle("open");
+      const d=$("#"+row.dataset.detail); d.classList.toggle("open");
+    }));
+    $("#empty").style.display=rows.length?"none":"block";
+
+    const active=[];
+    if(era!=="all") active.push(era);
+    if(drill) active.push(drill.replace(/-/g," "));
+    if($("#resultFilter").value) active.push("result "+$("#resultFilter").value);
+    if($("#opponent").value) active.push($("#opponent").value);
+    if($("#racket").value) active.push($("#racket").value);
+    if($("#period").value) active.push($("#period").value);
+    if($("#status").value) active.push($("#status").value);
+    if($("#search").value.trim()) active.push("search");
+    $("#filterSummary").textContent="Showing "+rows.length+" session"+(rows.length===1?"":"s")+(active.length?" · "+active.join(" · "):"");
+    $("#clearFilters").hidden=!active.length;
   }
 
-  function aggregateOpponent(){
-    const map=new Map();
-    eraSessions().forEach(s=>{
-      const names=s.opponent==="Dat + Taz" ? ["Dat","Taz"] : [s.opponent];
-      names.forEach(name=>{
-        if(!map.has(name)) map.set(name,{sessions:{w:0,l:0,t:0},sets:{w:0,l:0,t:0},tb:{w:0,l:0,t:0}});
-        const x=map.get(name), sr=sessionResult(s);
-        if(sr==="W")x.sessions.w++; else if(sr==="L")x.sessions.l++; else x.sessions.t++;
-        s.units.forEach(u=>{
-          const bucket=u.type==="Set"?x.sets:x.tb;
-          if(u.result==="W")bucket.w++; else bucket.l++;
-        });
-      });
-    });
-    return [...map.entries()].sort((a,b)=>(b[1].sessions.w-a[1].sessions.w) || a[0].localeCompare(b[0]));
-  }
+  function renderAll(){renderMetrics();renderRows();}
 
-  function drawOpponent(){
-    $("#opponentRows").innerHTML=aggregateOpponent().map(([name,x])=>
-      '<tr><td class="opponent-name">'+esc(name)+'</td><td class="record-mini">'+fmt(x.sessions,true)+'</td><td>'+fmt(x.sets)+'</td><td>'+fmt(x.tb)+'</td></tr>'
-    ).join("");
-  }
-
-  function drawRackets(){
-    const map=new Map();
-    eraSessions().forEach(s=>{
-      const key=s.racket||"Unknown";
-      if(!map.has(key)) map.set(key,{w:0,l:0,t:0,n:0});
-      const x=map.get(key), r=sessionResult(s); x.n++;
-      if(r==="W")x.w++; else if(r==="L")x.l++; else x.t++;
-    });
-    $("#racketRows").innerHTML=[...map.entries()].sort((a,b)=>b[1].n-a[1].n).map(([name,x])=>
-      '<div class="racket-row"><div><div class="racket-name">'+esc(name)+'</div><div class="racket-meta">'+x.n+' logged session'+(x.n===1?'':'s')+'</div></div><div class="racket-record">'+fmt(x,true)+'</div></div>'
-    ).join("");
-  }
-
-  $("#focusGrid").innerHTML=D.focuses.map(f=>
-    '<article class="focus '+(/priority/i.test(f.status)?'priority':'')+'"><div class="topline"><div class="area">'+esc(f.area)+'</div><div class="status">'+esc(f.status)+'</div></div><div class="detail">'+esc(f.detail)+'</div></article>'
-  ).join("");
-  $("#updated").textContent="Updated "+D.updated+" · stabilized-era baseline "+D.trackingStart;
-
+  $("#updated").textContent="Updated "+D.updated;
   [...new Set(D.sessions.map(s=>s.opponent))].sort().forEach(v=>$("#opponent").insertAdjacentHTML("beforeend",'<option>'+esc(v)+'</option>'));
   [...new Set(D.sessions.map(s=>s.racket))].sort().forEach(v=>$("#racket").insertAdjacentHTML("beforeend",'<option>'+esc(v)+'</option>'));
 
-  document.querySelectorAll("[data-era]").forEach(btn=>btn.addEventListener("click",()=>{
-    document.querySelectorAll("[data-era]").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active"); era=btn.dataset.era; renderAll();
+  $$("[data-era]").forEach(btn=>btn.addEventListener("click",()=>{
+    $$("[data-era]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); era=btn.dataset.era; drill=""; $$("[data-drill]").forEach(b=>b.classList.remove("active")); renderAll();
   }));
-  ["search","opponent","racket","period","status"].forEach(id=>$("#"+id).addEventListener(id==="search"?"input":"change",drawSessions));
+  $$("[data-drill]").forEach(btn=>btn.addEventListener("click",()=>{
+    const next=btn.dataset.drill; drill=drill===next?"":next;
+    $$("[data-drill]").forEach(b=>b.classList.toggle("active",b.dataset.drill===drill));
+    renderRows();
+    document.querySelector(".table-shell").scrollIntoView({behavior:"smooth",block:"start"});
+  }));
+  ["search","resultFilter","opponent","racket","period","status"].forEach(id=>$("#"+id).addEventListener(id==="search"?"input":"change",renderRows));
+  $("#clearFilters").addEventListener("click",()=>{
+    drill=""; $("#search").value=""; $("#resultFilter").value=""; $("#opponent").value=""; $("#racket").value=""; $("#period").value=""; $("#status").value="";
+    $$("[data-drill]").forEach(b=>b.classList.remove("active")); renderRows();
+  });
 
-  function filteredSessions(){
-    const q=$("#search").value.toLowerCase().trim(), op=$("#opponent").value, rk=$("#racket").value, per=$("#period").value, st=$("#status").value;
-    return eraSessions().filter(s=>{
-      const hay=[s.opponent,s.racket,s.setup,s.score,s.notes,s.excluded,s.status].join(" ").toLowerCase();
-      return (!q||hay.includes(q))&&(!op||s.opponent===op)&&(!rk||s.racket===rk)&&(!per||s.period===per)&&(!st||s.status===st);
-    });
-  }
-
-  function drawSessions(){
-    const rows=filteredSessions();
-    $("#sessionList").innerHTML=rows.map(s=>{
-      const r=sessionResult(s);
-      const units=s.units.length ? s.units.map(u=>'<span class="pill '+(u.result==="W"?'w':'l')+'">'+esc(u.type)+' '+esc(u.result)+' '+esc(u.score)+'</span>').join("") : '<span class="pill">No formal unit</span>';
-      return '<article class="session"><div class="session-main">'
-        +'<div><div class="result-badge '+r+'">'+r+'</div><div class="date-small">'+esc(s.date)+'</div></div>'
-        +'<div><div class="session-opp">'+esc(s.opponent)+'</div><div class="session-setup">'+esc(s.racket)+'</div></div>'
-        +'<div><div class="session-score">'+esc(s.score)+'</div><div class="session-setup">'+esc(s.setup)+'</div></div>'
-        +'<div class="units">'+units+'</div>'
-        +'</div><details><summary>Session notes</summary><div class="detail-body">'+esc(s.notes)+(s.excluded?'<div class="excluded">'+esc(s.excluded)+'</div>':'')+'</div></details></article>';
-    }).join("");
-    $("#empty").style.display=rows.length?"none":"block";
-  }
-
-  function renderAll(){ drawTop(); drawForm(); drawOpponent(); drawRackets(); drawSessions(); }
   renderAll();
 })();
 </script>
