@@ -38,6 +38,23 @@ h1{font-size:36px;line-height:1;margin:5px 0 0;letter-spacing:-.045em}
 .metric-part.active{outline:1px solid currentColor;background:#142219}
 .metric-note{font-size:10px;color:var(--muted);margin-top:6px}
 
+.chart-panel{border:1px solid var(--line);background:linear-gradient(180deg,#0f1e15,#0b1710);border-radius:16px;padding:15px 16px 12px;margin:0 0 20px}
+.chart-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.chart-title{font-weight:850;font-size:15px}
+.chart-sub{font-size:10px;color:var(--muted)}
+.bar-chart{height:230px;display:grid;grid-template-columns:38px 1fr;gap:10px}
+.yaxis{position:relative;color:var(--muted);font-size:9px}
+.ytick{position:absolute;right:0;transform:translateY(50%)}
+.y100{top:-2px;transform:none}.y75{top:25%}.y50{top:50%}.y25{top:75%}.y0{bottom:23px;transform:none}
+.plot{position:relative;border-left:1px solid #294433;border-bottom:1px solid #294433;padding:0 16px 23px}
+.gridline{position:absolute;left:0;right:0;border-top:1px dashed rgba(143,164,150,.16)}
+.g100{top:0}.g75{top:25%}.g50{top:50%}.g25{top:75%}
+.bars{position:absolute;inset:0 12px 23px 12px;display:grid;grid-template-columns:repeat(5,minmax(54px,1fr));gap:18px;align-items:end}
+.bar-wrap{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;min-width:0}
+.bar-value{text-align:center;font-size:11px;font-weight:850;color:var(--text);margin-bottom:5px}
+.bar{width:100%;max-width:92px;margin:0 auto;background:linear-gradient(180deg,var(--green),#3e9b5a);border:1px solid rgba(255,255,255,.08);border-radius:8px 8px 2px 2px;min-height:2px;transition:height .25s ease}
+.bar-label{text-align:center;font-size:10px;color:var(--muted);margin-top:6px;white-space:nowrap}
+.chart-foot{font-size:9px;color:#718576;margin-top:8px}
 .toolbar-wrap{border:1px solid var(--line);background:#0d1a12;border-radius:16px;padding:10px;margin-bottom:12px}
 .toolbar{display:grid;grid-template-columns:1.55fr repeat(5,minmax(120px,1fr));gap:8px}
 input,select{width:100%;min-width:0;background:#08130d;color:var(--text);border:1px solid #284432;border-radius:10px;padding:9px 10px;outline:none}
@@ -163,6 +180,29 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     </article>
   </section>
 
+  <section class="chart-panel">
+    <div class="chart-head">
+      <div>
+        <div class="chart-title">Win rate by metric</div>
+        <div class="chart-sub">Same era filter as the cards above · fixed 0–100% scale</div>
+      </div>
+    </div>
+    <div class="bar-chart" aria-label="Win rate by metric">
+      <div class="yaxis">
+        <span class="ytick y100">100%</span>
+        <span class="ytick y75">75</span>
+        <span class="ytick y50">50</span>
+        <span class="ytick y25">25</span>
+        <span class="ytick y0">0</span>
+      </div>
+      <div class="plot">
+        <div class="gridline g100"></div><div class="gridline g75"></div><div class="gridline g50"></div><div class="gridline g25"></div>
+        <div class="bars" id="metricBars"></div>
+      </div>
+    </div>
+    <div class="chart-foot">Session % excludes ties from the denominator. Overall = sets + super tiebreaks. Games = cumulative games won / total known games.</div>
+  </section>
+
   <section class="section-head">
     <div>
       <div class="section-title">Session log</div>
@@ -241,7 +281,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     if(s.date==="2026-11-15" && s.opponent==="Dat") seg.push([4,0]);
     if(s.date==="2026-11-13" && s.opponent==="Dat") seg.push([5,3]);
     if(s.date==="2026-10-30" && s.opponent==="Charles") seg.push([4,4]);
-    if(/^Early Oct 2026/.test(s.date) && s.opponent==="Italian 4.5") seg.push([4,3]);
+    if(/^Early Oct 2026/.test(s.date) && s.opponent==="Alex Gelato" && /4-3/.test(s.score)) seg.push([4,3]);
     return seg;
   }
 
@@ -292,6 +332,17 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     $("#gameScore").textContent=pct(games.w,games.l);
     $("#gamePct").textContent=games.w+"–"+games.l+" games";
     $("#gameTotal").textContent=(games.w+games.l)+" logged games";
+
+    const chartData=[
+      {label:"Sessions", value: sr.w+sr.l ? 100*sr.w/(sr.w+sr.l) : 0},
+      {label:"Sets", value: sets.w+sets.l ? 100*sets.w/(sets.w+sets.l) : 0},
+      {label:"Tiebreaks", value: tb.w+tb.l ? 100*tb.w/(tb.w+tb.l) : 0},
+      {label:"Overall", value: overall.w+overall.l ? 100*overall.w/(overall.w+overall.l) : 0},
+      {label:"Games", value: games.w+games.l ? 100*games.w/(games.w+games.l) : 0}
+    ];
+    $("#metricBars").innerHTML=chartData.map(d =>
+      '<div class="bar-wrap"><div class="bar-value">'+d.value.toFixed(1)+'%</div><div class="bar" style="height:'+Math.max(2,d.value)+'%"></div><div class="bar-label">'+d.label+'</div></div>'
+    ).join("");
   }
 
   function unitChips(s,type){
