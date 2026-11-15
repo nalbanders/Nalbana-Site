@@ -3,8 +3,8 @@ window.TENNIS_HQ_DATA = {
   trackingStart: "2026-10-14",
   records: {
     sets: { wins: 17, losses: 3 },
-    superTiebreaks: { wins: 12, losses: 1 },
-    combined: { wins: 29, losses: 4 }
+    superTiebreaks: { wins: 11, losses: 1 },
+    combined: { wins: 28, losses: 4 }
   },
   focuses: [
     { area: "Return", status: "Priority", detail: "Too many netted or short bunt returns get punished by stronger players. Bias toward compact, assertive neutralization—especially deep middle." },
@@ -95,17 +95,6 @@ window.TENNIS_HQ_DATA = {
       notes: "Los Angeles. Switched at 1-3 down; EZONE serve confidence and aggressive DTL backhand were major positives."
     },
     {
-      date: "Early Oct 2026", opponent: "Young SoCal player", era: "Historical", period: "Unknown",
-      racket: "EZONE 98", setup: "EZONE 98 · TB Soft 17 · 50/48",
-      score: "10-1, 10-2", status: "Completed",
-      units: [
-        { type: "Super TB", result: "W", score: "10-1" },
-        { type: "Super TB", result: "W", score: "10-2" }
-      ],
-      excluded: "",
-      notes: "Big serve and conventional strokes; EZONE return stability and groundstroke solidity stood out."
-    },
-    {
       date: "Early Oct 2026", opponent: "Italian 4.5", era: "Historical", period: "Night",
       racket: "Mixed", setup: "Set 1 EZONE 98 · TB Soft 17 50/48; Set 2 Gravity MP",
       score: "6-3; 4-3 unfinished second set", status: "Lights out",
@@ -141,12 +130,15 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Approximate remembered score."
     },
     {
-      date: "Prior", opponent: "Justin Nguyen", era: "Historical", period: "Unknown",
-      racket: "EZONE 98", setup: "EZONE 98",
-      score: "10-2 super tiebreak", status: "Completed",
-      units: [{ type: "Super TB", result: "W", score: "10-2" }],
+      date: "Early Oct 2026", opponent: "Justin Nguyen", era: "Historical", period: "Unknown",
+      racket: "EZONE 98", setup: "EZONE 98 · TB Soft 17 · 50/48",
+      score: "10-1, 10-2 super tiebreak wins", status: "Completed",
+      units: [
+        { type: "Super TB", result: "W", score: "10-1" },
+        { type: "Super TB", result: "W", score: "10-2" }
+      ],
       excluded: "",
-      notes: "Miami."
+      notes: "Merged duplicate records. Two super-tiebreak wins over Justin Nguyen. The separate young French player hit was informal played points only and is not part of the formal record."
     },
     {
       date: "Prior", opponent: "Jordan", era: "Historical", period: "Unknown",
