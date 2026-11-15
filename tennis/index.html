@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0f14">
+<title>Tennis HQ</title>
+<style>
+:root{--bg:#0b0f14;--panel:#121821;--panel2:#171f2a;--line:#26313d;--text:#f4f7fa;--muted:#95a3b2;--green:#7fe39b;--blue:#79a7ff;--red:#ff8a8a;--gold:#f5cf78}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--text);background:radial-gradient(900px 500px at 15% -10%,#182637 0%,transparent 70%),var(--bg);font:15px/1.5 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);font-weight:800;margin-bottom:7px}
+h1{margin:0;font-size:38px;line-height:1;letter-spacing:-.045em}
+.sub{color:var(--muted);margin-top:10px;max-width:760px}
+.updated{color:var(--muted);font-size:12px;border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:#111820}
+.records{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0}
+.record{border:1px solid var(--line);background:linear-gradient(180deg,#151c25,#11171e);border-radius:18px;padding:18px;min-width:0}
+.record .label{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:700}
+.record .score{font-size:38px;font-weight:800;letter-spacing:-.05em;margin:4px 0 1px}
+.record .pct{color:var(--green);font-weight:700;font-size:13px}
+.controls{display:grid;grid-template-columns:1.4fr repeat(4,minmax(125px,1fr));gap:9px;padding:11px;border:1px solid var(--line);background:#10161e;border-radius:16px;margin:18px 0 12px}
+input,select{width:100%;min-width:0;color:var(--text);background:#0b1118;border:1px solid #2c3845;border-radius:10px;padding:10px 11px;outline:none}
+input:focus,select:focus{border-color:var(--blue)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.tab{cursor:pointer;border:1px solid var(--line);background:#111820;color:var(--text);padding:8px 12px;border-radius:999px}
+.tab.active{background:var(--text);color:#11151b;border-color:var(--text);font-weight:700}
+.section-title{font-size:18px;margin:26px 0 10px;letter-spacing:-.02em}
+.focus-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.focus{border:1px solid var(--line);background:#111820;border-radius:14px;padding:14px}
+.focus .head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:7px}
+.focus .area{font-weight:800}
+.focus .status{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.focus .detail{color:var(--muted);font-size:13px}
+.table-wrap{border:1px solid var(--line);border-radius:16px;overflow:auto;background:#10161d}
+table{width:100%;border-collapse:collapse;min-width:1080px}
+th,td{padding:12px 13px;border-bottom:1px solid #202a35;text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:#17202a;color:#aab5c0;font-size:10px;letter-spacing:.08em;text-transform:uppercase;z-index:2}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:rgba(255,255,255,.018)}
+.opponent{font-weight:800}
+.score-cell{font-weight:700;white-space:nowrap}
+.note{color:#a9b4bf;max-width:390px}
+.pill{display:inline-block;font-size:10px;padding:3px 7px;border:1px solid #34414f;border-radius:999px;color:#c5ced7;white-space:nowrap}
+.pill.stab{border-color:#2b6d43;background:#12301d;color:#a6efba}
+.pill.w{border-color:#2b6d43;color:var(--green)}
+.pill.l{border-color:#753737;color:var(--red)}
+.unitline{display:flex;gap:5px;flex-wrap:wrap}
+.excluded{font-size:11px;color:#7f8c99;margin-top:5px}
+.empty{display:none;text-align:center;padding:40px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);margin-top:12px}
+@media(max-width:850px){
+  .records{grid-template-columns:1fr}
+  .focus-grid{grid-template-columns:1fr 1fr}
+  .controls{grid-template-columns:1fr 1fr}
+  .controls input{grid-column:1/-1}
+  h1{font-size:32px}
+}
+@media(max-width:520px){
+  .focus-grid{grid-template-columns:1fr}
+  .wrap{padding:24px 14px 50px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Tennis HQ</div>
+      <h1>Match dashboard</h1>
+      <div class="sub">Formal record separates completed full sets from super tiebreaks. Timed sets, mini-sets, rainouts and sessions with uncertain counts stay in the history without contaminating the W-L math.</div>
+    </div>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <section class="records">
+    <div class="record"><div class="label">Full sets</div><div class="score" id="setRecord">—</div><div class="pct" id="setPct">—</div></div>
+    <div class="record"><div class="label">Super tiebreaks</div><div class="score" id="tbRecord">—</div><div class="pct" id="tbPct">—</div></div>
+    <div class="record"><div class="label">Combined</div><div class="score" id="combinedRecord">—</div><div class="pct" id="combinedPct">—</div></div>
+  </section>
+
+  <div class="tabs" aria-label="Era filter">
+    <button class="tab active" data-era="all">All history</button>
+    <button class="tab" data-era="Stabilized">Stabilized era</button>
+    <button class="tab" data-era="Historical">Historical</button>
+  </div>
+
+  <section class="controls">
+    <input id="search" type="search" placeholder="Search opponent, racket, score, notes…">
+    <select id="opponent"><option value="">All opponents</option></select>
+    <select id="racket"><option value="">All rackets</option></select>
+    <select id="period"><option value="">Day / night</option><option>Day</option><option>Night</option><option>Unknown</option></select>
+    <select id="status"><option value="">All statuses</option><option>Completed</option><option>Rainout</option><option>Lights out</option></select>
+  </section>
+
+  <h2 class="section-title">Current development focus</h2>
+  <section class="focus-grid" id="focusGrid"></section>
+
+  <h2 class="section-title">Session history</h2>
+  <section class="table-wrap">
+    <table>
+      <thead><tr><th>Era</th><th>Date</th><th>Opponent</th><th>Score / session</th><th>Counted units</th><th>Setup</th><th>Day</th><th>Notes</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty">No sessions match those filters.</div>
+  </section>
+  <div class="foot">Stabilized-era tracking begins 2026-10-14. Approximate historical scores are preserved as approximate rather than silently normalized.</div>
+</div>
+<script src="./data.js"></script>
+<script>
+(() => {
+  const D = window.TENNIS_HQ_DATA;
+  const $ = s => document.querySelector(s);
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+  let era = "all";
+
+  const pct = r => {
+    const n = r.wins + r.losses;
+    return n ? ((r.wins / n) * 100).toFixed(1) + "% win rate" : "—";
+  };
+  const showRecord = (prefix, r) => {
+    $("#" + prefix + "Record").textContent = r.wins + "–" + r.losses;
+    $("#" + prefix + "Pct").textContent = pct(r);
+  };
+  showRecord("set", D.records.sets);
+  showRecord("tb", D.records.superTiebreaks);
+  showRecord("combined", D.records.combined);
+  $("#updated").textContent = "Updated " + D.updated;
+
+  $("#focusGrid").innerHTML = D.focuses.map(f =>
+    '<article class="focus"><div class="head"><div class="area">' + esc(f.area) + '</div><div class="status">' + esc(f.status) + '</div></div><div class="detail">' + esc(f.detail) + '</div></article>'
+  ).join("");
+
+  [...new Set(D.sessions.map(s => s.opponent))].sort().forEach(v => $("#opponent").insertAdjacentHTML("beforeend", '<option>' + esc(v) + '</option>'));
+  [...new Set(D.sessions.map(s => s.racket))].sort().forEach(v => $("#racket").insertAdjacentHTML("beforeend", '<option>' + esc(v) + '</option>'));
+
+  document.querySelectorAll("[data-era]").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-era]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    era = btn.dataset.era;
+    render();
+  }));
+  ["search","opponent","racket","period","status"].forEach(id => {
+    $("#" + id).addEventListener(id === "search" ? "input" : "change", render);
+  });
+
+  function filteredSessions() {
+    const q = $("#search").value.toLowerCase().trim();
+    const opponent = $("#opponent").value;
+    const racket = $("#racket").value;
+    const period = $("#period").value;
+    const status = $("#status").value;
+    return D.sessions.filter(s => {
+      const hay = [s.opponent,s.racket,s.setup,s.score,s.notes,s.excluded,s.status].join(" ").toLowerCase();
+      return (era === "all" || s.era === era)
+        && (!q || hay.includes(q))
+        && (!opponent || s.opponent === opponent)
+        && (!racket || s.racket === racket)
+        && (!period || s.period === period)
+        && (!status || s.status === status);
+    });
+  }
+
+  function render() {
+    const sessions = filteredSessions();
+    $("#rows").innerHTML = sessions.map(s => {
+      const units = s.units.length
+        ? '<div class="unitline">' + s.units.map(u => '<span class="pill ' + (u.result === "W" ? "w" : "l") + '">' + esc(u.type) + " " + esc(u.result) + " " + esc(u.score) + '</span>').join("") + '</div>'
+        : '<span class="pill">Not counted</span>';
+      return '<tr>'
+        + '<td><span class="pill ' + (s.era === "Stabilized" ? "stab" : "") + '">' + esc(s.era) + '</span></td>'
+        + '<td>' + esc(s.date) + '</td>'
+        + '<td class="opponent">' + esc(s.opponent) + '</td>'
+        + '<td class="score-cell">' + esc(s.score) + (s.excluded ? '<div class="excluded">' + esc(s.excluded) + '</div>' : '') + '</td>'
+        + '<td>' + units + '</td>'
+        + '<td>' + esc(s.setup) + '</td>'
+        + '<td>' + esc(s.period) + '</td>'
+        + '<td class="note">' + esc(s.notes) + '</td>'
+        + '</tr>';
+    }).join("");
+    $("#empty").style.display = sessions.length ? "none" : "block";
+  }
+  render();
+})();
+</script>
+</body>
+</html>
