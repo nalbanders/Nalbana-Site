@@ -2,9 +2,9 @@ window.TENNIS_HQ_DATA = {
   updated: "2026-11-15",
   trackingStart: "2026-10-14",
   records: {
-    sets: { wins: 16, losses: 3 },
+    sets: { wins: 17, losses: 3 },
     superTiebreaks: { wins: 11, losses: 1 },
-    combined: { wins: 27, losses: 4 }
+    combined: { wins: 28, losses: 4 }
   },
   focuses: [
     { area: "Return", status: "Priority", detail: "Too many netted or short bunt returns get punished by stronger players. Bias toward compact, assertive neutralization—especially deep middle." },
@@ -101,6 +101,14 @@ window.TENNIS_HQ_DATA = {
       units: [{ type: "Set", result: "W", score: "6-3" }],
       excluded: "Second set stopped at 4-3; excluded from formal set record.",
       notes: "Alex Gelato (previously logged as Italian 4.5). Started 5-0 with EZONE before Alex shifted heavily to junk balls, slice, lobs, drops, and underhand serves."
+    },
+    {
+      date: "Aug 2026", opponent: "Song", era: "Historical", period: "Unknown",
+      racket: "Pure Strike", setup: "Pure Strike · Tour Bite Soft · 50/48",
+      score: "6-0", status: "Completed",
+      units: [{ type: "Set", result: "W", score: "6-0" }],
+      excluded: "",
+      notes: "Korean opponent. Straight 6-0 set win."
     },
     {
       date: "2026-06-13 approx.", opponent: "Mike", era: "Historical", period: "Unknown",
