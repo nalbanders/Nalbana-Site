@@ -42,18 +42,14 @@ h1{font-size:36px;line-height:1;margin:5px 0 0;letter-spacing:-.045em}
 .chart-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px;flex-wrap:wrap}
 .chart-title{font-weight:850;font-size:15px}
 .chart-sub{font-size:10px;color:var(--muted)}
-.bar-chart{height:230px;display:grid;grid-template-columns:38px 1fr;gap:10px}
-.yaxis{position:relative;color:var(--muted);font-size:9px}
-.ytick{position:absolute;right:0;transform:translateY(50%)}
-.y100{top:-2px;transform:none}.y75{top:25%}.y50{top:50%}.y25{top:75%}.y0{bottom:23px;transform:none}
-.plot{position:relative;border-left:1px solid #294433;border-bottom:1px solid #294433;padding:0 16px 23px}
-.gridline{position:absolute;left:0;right:0;border-top:1px dashed rgba(143,164,150,.16)}
-.g100{top:0}.g75{top:25%}.g50{top:50%}.g25{top:75%}
-.bars{position:absolute;inset:0 12px 23px 12px;display:grid;grid-template-columns:repeat(5,minmax(54px,1fr));gap:18px;align-items:end}
-.bar-wrap{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;min-width:0}
-.bar-value{text-align:center;font-size:11px;font-weight:850;color:var(--text);margin-bottom:5px}
-.bar{width:100%;max-width:92px;margin:0 auto;background:linear-gradient(180deg,var(--green),#3e9b5a);border:1px solid rgba(255,255,255,.08);border-radius:8px 8px 2px 2px;min-height:2px;transition:height .25s ease}
-.bar-label{text-align:center;font-size:10px;color:var(--muted);margin-top:6px;white-space:nowrap}
+.bar-chart{height:250px}
+.metric-chart{display:block;width:100%;height:250px;overflow:visible}
+.chart-grid{stroke:rgba(143,164,150,.18);stroke-width:1;stroke-dasharray:4 5}
+.chart-axis{stroke:#294433;stroke-width:1}
+.chart-y{fill:var(--muted);font-size:10px;text-anchor:end}
+.chart-x{fill:var(--muted);font-size:11px;text-anchor:middle}
+.chart-v{fill:var(--text);font-size:11px;font-weight:800;text-anchor:middle}
+.chart-bar{fill:var(--green)}
 .chart-foot{font-size:9px;color:#718576;margin-top:8px}
 .toolbar-wrap{border:1px solid var(--line);background:#0d1a12;border-radius:16px;padding:10px;margin-bottom:12px}
 .toolbar{display:grid;grid-template-columns:1.55fr repeat(5,minmax(120px,1fr));gap:8px}
@@ -188,17 +184,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       </div>
     </div>
     <div class="bar-chart" aria-label="Win rate by metric">
-      <div class="yaxis">
-        <span class="ytick y100">100%</span>
-        <span class="ytick y75">75</span>
-        <span class="ytick y50">50</span>
-        <span class="ytick y25">25</span>
-        <span class="ytick y0">0</span>
-      </div>
-      <div class="plot">
-        <div class="gridline g100"></div><div class="gridline g75"></div><div class="gridline g50"></div><div class="gridline g25"></div>
-        <div class="bars" id="metricBars"></div>
-      </div>
+      <svg id="metricChart" class="metric-chart" viewBox="0 0 900 250" role="img" aria-label="Win rate by metric, fixed from 0 to 100 percent"></svg>
     </div>
     <div class="chart-foot">Session % excludes ties from the denominator. Overall = sets + super tiebreaks. Games = cumulative games won / total known games.</div>
   </section>
@@ -340,9 +326,27 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       {label:"Overall", value: overall.w+overall.l ? 100*overall.w/(overall.w+overall.l) : 0},
       {label:"Games", value: games.w+games.l ? 100*games.w/(games.w+games.l) : 0}
     ];
-    $("#metricBars").innerHTML=chartData.map(d =>
-      '<div class="bar-wrap"><div class="bar-value">'+d.value.toFixed(1)+'%</div><div class="bar" style="height:'+Math.max(2,d.value)+'%"></div><div class="bar-label">'+d.label+'</div></div>'
-    ).join("");
+    const svg=$("#metricChart");
+    const W=900,H=250,left=54,right=18,top=16,bottom=34;
+    const pw=W-left-right, ph=H-top-bottom;
+    const y=v=>top+ph-(Math.max(0,Math.min(100,v))/100)*ph;
+    const ticks=[0,25,50,75,100];
+    let parts=[];
+    ticks.forEach(t=>{
+      const yy=y(t);
+      parts.push('<line class="chart-grid" x1="'+left+'" y1="'+yy+'" x2="'+(W-right)+'" y2="'+yy+'"></line>');
+      parts.push('<text class="chart-y" x="'+(left-8)+'" y="'+(yy+3)+'">'+t+'%</text>');
+    });
+    parts.push('<line class="chart-axis" x1="'+left+'" y1="'+top+'" x2="'+left+'" y2="'+(top+ph)+'"></line>');
+    parts.push('<line class="chart-axis" x1="'+left+'" y1="'+(top+ph)+'" x2="'+(W-right)+'" y2="'+(top+ph)+'"></line>');
+    const band=pw/chartData.length, bw=Math.min(90,band*.5);
+    chartData.forEach((d,i)=>{
+      const cx=left+band*(i+.5), yy=y(d.value), bh=(top+ph)-yy;
+      parts.push('<text class="chart-v" x="'+cx+'" y="'+Math.max(12,yy-7)+'">'+d.value.toFixed(1)+'%</text>');
+      parts.push('<rect class="chart-bar" x="'+(cx-bw/2)+'" y="'+yy+'" width="'+bw+'" height="'+Math.max(1,bh)+'" rx="6"></rect>');
+      parts.push('<text class="chart-x" x="'+cx+'" y="'+(H-10)+'">'+d.label+'</text>');
+    });
+    svg.innerHTML=parts.join("");
   }
 
   function unitChips(s,type){
