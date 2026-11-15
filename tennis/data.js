@@ -108,7 +108,7 @@ window.TENNIS_HQ_DATA = {
       score: "6-0", status: "Completed",
       units: [{ type: "Set", result: "W", score: "6-0" }],
       excluded: "",
-      notes: "Korean opponent. Straight 6-0 set win."
+      notes: "Korean opponent. Older player with a good rally ball and solid consistency, but limited serve and movement made it difficult for him to seriously compete over a full set. Straight 6-0 win."
     },
     {
       date: "2026-06-13 approx.", opponent: "Mike", era: "Historical", period: "Unknown",
