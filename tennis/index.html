@@ -213,7 +213,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       <select id="opponent"><option value="">Opponent: all</option></select>
       <select id="racket"><option value="">Racket: all</option></select>
       <select id="period"><option value="">Day/night: all</option><option>Day</option><option>Night</option><option>Unknown</option></select>
-      <select id="status"><option value="">Status: all</option><option>Completed</option><option>Rainout</option><option>Lights out</option><option>Time expired</option></select>
+      <select id="status"><option value="">Status: all</option><option>Completed</option><option>Rainout</option><option>Lights out</option><option>Time expired</option><option>Stopped early</option></select>
     </div>
     <div class="filter-summary">
       <div id="filterSummary">Showing all sessions</div>
@@ -247,6 +247,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   let drill = "";
 
   function sessionResult(s){
+    if(s.sessionResult) return s.sessionResult;
     if(s.status==="Rainout") return "T";
     const sets=s.units.filter(u=>u.type==="Set");
     const sw=sets.filter(u=>u.result==="W").length, sl=sets.filter(u=>u.result==="L").length;
@@ -264,6 +265,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       const m=u.score.match(/(\d+)\s*[-–]\s*(\d+)/);
       return m?[+m[1],+m[2]]:null;
     }).filter(Boolean);
+    if(s.date==="2026-11-17" && s.opponent==="Dat") seg.push([4,1]);
     if(s.date==="2026-11-15" && s.opponent==="Dat") seg.push([4,0]);
     if(s.date==="2026-11-13" && s.opponent==="Dat") seg.push([5,3]);
     if(s.date==="2026-10-30" && s.opponent==="Charles") seg.push([4,4]);
