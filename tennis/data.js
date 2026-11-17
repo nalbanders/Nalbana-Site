@@ -1,5 +1,5 @@
 window.TENNIS_HQ_DATA = {
-  updated: "2026-11-15",
+  updated: "2026-11-17",
   trackingStart: "2026-10-14",
   records: {
     sets: { wins: 17, losses: 3 },
@@ -13,6 +13,15 @@ window.TENNIS_HQ_DATA = {
     { area: "Closing games", status: "Priority", detail: "Recent leakage from 30-0 / 40-0 leads. Keep first-strike intent without overplaying scoreboard situations." }
   ],
   sessions: [
+    {
+      date: "2026-11-17", opponent: "Dat", era: "Stabilized", period: "Day",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "4-1 when stopped early", status: "Stopped early",
+      sessionResult: "W",
+      units: [],
+      excluded: "No completed set; counts as a session win and contributes 4-1 to game totals.",
+      notes: "Tested sickness by playing after initially planning only to rally. Felt very dizzy and winded and stopped early while leading 4-1. Despite that, played unusually well—calm and intentional. Forehand focus came from watching Alcaraz: looked for open-stance opportunities, increased shoulder-hip separation, then uncoiled hard; forehand felt like a true weapon. Strategy was to pound Dat's backhand corner until an attackable ball appeared. Backhand was very solid with only one forced error and a couple of DTL passing shots."
+    },
     {
       date: "2026-11-15", opponent: "Dat", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
