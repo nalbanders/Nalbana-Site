@@ -1,10 +1,10 @@
 window.TENNIS_HQ_DATA = {
-  updated: "2026-11-17",
+  updated: "2026-11-19",
   trackingStart: "2026-10-14",
   records: {
     sets: { wins: 17, losses: 3 },
-    superTiebreaks: { wins: 11, losses: 1 },
-    combined: { wins: 28, losses: 4 }
+    superTiebreaks: { wins: 15, losses: 1 },
+    combined: { wins: 32, losses: 4 }
   },
   focuses: [
     { area: "Return", status: "Priority", detail: "Too many netted or short bunt returns get punished by stronger players. Bias toward compact, assertive neutralization—especially deep middle." },
@@ -13,6 +13,28 @@ window.TENNIS_HQ_DATA = {
     { area: "Closing games", status: "Priority", detail: "Recent leakage from 30-0 / 40-0 leads. Keep first-strike intent without overplaying scoreboard situations." }
   ],
   sessions: [
+    {
+      date: "2026-11-19", opponent: "Dat & Charles", era: "Stabilized", period: "Afternoon",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 grip with thinned replacement and tightly stretched tacky overgrip, ridges aligned, wrapped to throat split",
+      score: "Won 4 super tiebreaks: Dat 10-~4, 10-1; Charles 10-~5, 10-6",
+      status: "Completed", sessionResult: "W",
+      units: [
+        { type: "Super TB", result: "W", score: "10-~4" },
+        { type: "Super TB", result: "W", score: "10-1" },
+        { type: "Super TB", result: "W", score: "10-~5" },
+        { type: "Super TB", result: "W", score: "10-6" }
+      ],
+      excluded: "Losing scores ~4 vs Dat and ~5 vs Charles are approximate; all four wins confirmed.",
+      notes: "Second session of the day. Both opponents played well and reportedly traded head-to-head results with each other, but user was dominant across four match tiebreaks. Forehand was deadly, serve very good; low errors while swinging out confidently. Charles' floating high balls and kick serves to the backhand exposed the main defensive-loop challenge, but user managed it well. One notable short-ball putaway miss came from guiding a soft roll and losing racket-head speed. Still recovering from illness. Strong confirmation that refined tacky grip and racket setup no longer inhibit aggressive swings."
+    },
+    {
+      date: "2026-11-19", opponent: "Bao", era: "Stabilized", period: "Morning",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 thinned replacement grip and tacky tightly stretched overgrip, overlaps aligned, extended to throat split for spaced 2HBH hands",
+      score: "Groundstroke/crosscourt drills; split 2 informal games 1-1",
+      status: "Practice", sessionResult: "T", units: [],
+      excluded: "Two informal games split 1-1 are practice observations only; exclude from match results and competitive game totals.",
+      notes: "High-level groundstroke rally and crosscourt drills on both sides; seemingly even with Bao. Both practice games close. Warmup error counts appeared similar; any fitness or consistency edge remains undetermined. Strong forehand winners and serves; began swinging aggressively without questioning equipment. Still sick. Grip breakthrough: modified #3 feels approximately like conventional #2, with overgrip ridges aligned to replacement grip for one set of ridges and less bulk under forehand fingers; tightly stretched tacky overgrip continues up to throat split to make room for separated hands on two-handed backhand. Grip-size concern now feels resolved."
+    },
     {
       date: "2026-11-17", opponent: "Dat", era: "Stabilized", period: "Day",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
