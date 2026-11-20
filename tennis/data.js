@@ -14,6 +14,24 @@ window.TENNIS_HQ_DATA = {
   ],
   sessions: [
     {
+      date: "2026-11-20", opponent: "Junior coach", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "Won super tiebreak 10-8", status: "Completed",
+      sessionResult: "W",
+      units: [{ type: "Super TB", result: "W", score: "10-8" }],
+      excluded: "",
+      notes: "Lesson / point-play session. Junior coach described as the best junior coach. User won the breaker 10-8. Main technical work: approach to the backhand and +1 volley—stay patient, stay put through contact, keep the racket face slightly open, and let the racket do the work rather than forcing the volley."
+    },
+    {
+      date: "2026-11-20", opponent: "Trang", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "Lost super tiebreak 8-10", status: "Completed",
+      sessionResult: "L",
+      units: [{ type: "Super TB", result: "L", score: "8-10" }],
+      excluded: "",
+      notes: "Senior coach Mr. Trang, former top junior in Vietnam. User lost a close breaker 8-10 and felt proud of the level. Forehand was deadly, backhand solid, serve generally good but first-serve percentage too low. Tactical discussion: use wider serves on deuce court with lower pace, hit with more margin over the net and farther from the lines into the opponent's backhand while still swinging relatively fast, stay patient and relaxed, avoid overextending energy, and use more spin / less over-aggression on first serves. Volley cue from lesson: patience, stay put on contact, slightly open face, let the racket do the work."
+    },
+    {
       date: "2026-11-19", opponent: "Dat & Charles", era: "Stabilized", period: "Afternoon",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 grip with thinned replacement and tightly stretched tacky overgrip, ridges aligned, wrapped to throat split",
       score: "Won 4 super tiebreaks: Dat 10-~4, 10-1; Charles 10-~5, 10-6",
