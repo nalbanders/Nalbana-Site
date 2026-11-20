@@ -29,7 +29,7 @@ window.TENNIS_HQ_DATA = {
       sessionResult: "L",
       units: [{ type: "Super TB", result: "L", score: "8-10" }],
       excluded: "",
-      notes: "Senior coach Mr. Trang, former top junior in Vietnam. User lost a close breaker 8-10 and felt proud of the level. Forehand was deadly, backhand solid, serve generally good but first-serve percentage too low. Tactical discussion: use wider serves on deuce court with lower pace, hit with more margin over the net and farther from the lines into the opponent's backhand while still swinging relatively fast, stay patient and relaxed, avoid overextending energy, and use more spin / less over-aggression on first serves. Volley cue from lesson: patience, stay put on contact, slightly open face, let the racket do the work."
+      notes: "Senior coach Mr. Trang, former top junior in Vietnam. User lost a close breaker 8-10 and felt proud of the level. Forehand was deadly, backhand solid, serve generally good but first-serve percentage too low; the misses were predominantly long. Tactical discussion: use wider serves on deuce court with lower pace, hit with more margin over the net and farther from the lines into the opponent's backhand while still swinging relatively fast, stay patient and relaxed, avoid overextending energy, and use more spin / less over-aggression on first serves. Volley cue from lesson: patience, stay put on contact, slightly open face, let the racket do the work."
     },
     {
       date: "2026-11-19", opponent: "Dat & Charles", era: "Stabilized", period: "Afternoon",
