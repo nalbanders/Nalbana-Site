@@ -20,7 +20,7 @@ window.TENNIS_HQ_DATA = {
       sessionResult: "W",
       units: [{ type: "Set", result: "W", score: "6-1" }],
       excluded: "",
-      notes: "CEEC tournament round robin 1. Started hot; limited resistance."
+      notes: "CEEC tournament round robin 1. Started hot; limited resistance. Return game felt very strong throughout the day."
     },
     {
       date: "2026-11-21", opponent: "CEEC RR2", era: "Stabilized", period: "Unknown",
@@ -29,7 +29,7 @@ window.TENNIS_HQ_DATA = {
       sessionResult: "W",
       units: [{ type: "Set", result: "W", score: "6-0" }],
       excluded: "",
-      notes: "CEEC tournament round robin 2. Dominant win; limited resistance."
+      notes: "CEEC tournament round robin 2. Dominant win; limited resistance. Return game felt very strong throughout the day."
     },
     {
       date: "2026-11-21", opponent: "CEEC Semifinal", era: "Stabilized", period: "Unknown",
@@ -38,7 +38,7 @@ window.TENNIS_HQ_DATA = {
       sessionResult: "W",
       units: [{ type: "Set", result: "W", score: "6-3" }],
       excluded: "",
-      notes: "CEEC semifinal. Won 6-3."
+      notes: "CEEC semifinal. Won 6-3. Return game felt very strong throughout the day."
     },
     {
       date: "2026-11-21", opponent: "CEEC Final", era: "Stabilized", period: "Unknown",
@@ -49,7 +49,7 @@ window.TENNIS_HQ_DATA = {
         { type: "Set", result: "W", score: "5-5 (7-3)" }
       ],
       excluded: "",
-      notes: "CEEC final. First serious competition of the day. User was up 2-1 40-15 but dumped that game, missed additional break-point chances, then fell behind 4-5 before forcing the tiebreak and winning it 7-3. Forehand was somewhat off and opponent used slice to blunt pace. Opponent was chop-slicing returns, so user adjusted serve pattern to heavy spin into the body and barely missed first serves with that pattern. Serve adaptation carried the match while ground game was less clean; strings also felt somewhat dead. Backhand passing shots were a major positive, including several clutch passes and scramble-point wins in the tiebreak under crowd pressure. A notable heavy crosscourt forehand winner and the repeated passing shots likely had an intimidation effect, making the opponent less comfortable attacking forward or leaving balls short. User also overcame a highly consequential blown umpire call late in the match; even the opponent's friend reportedly said the ball was in. The bad call did not derail composure or the eventual close."
+      notes: "CEEC final. First serious competition of the day. User was up 2-1 40-15 but dumped that game, missed additional break-point chances, then fell behind 4-5 before forcing the tiebreak and winning it 7-3. Forehand was somewhat off and opponent used slice to blunt pace. Opponent was chop-slicing returns, so user adjusted serve pattern to heavy spin into the body and barely missed first serves with that pattern. Serve adaptation carried the match while ground game was less clean; strings also felt somewhat dead. Backhand passing shots were a major positive, including several clutch passes and scramble-point wins in the tiebreak under crowd pressure. A notable heavy crosscourt forehand winner and the repeated passing shots likely had an intimidation effect, making the opponent less comfortable attacking forward or leaving balls short. User also overcame a highly consequential blown umpire call late in the match; even the opponent's friend reportedly said the ball was in. The bad call did not derail composure or the eventual close. Return game felt very strong in the tournament overall, a notable improvement from the recently identified return weakness."
     },
     {
       date: "2026-11-20", opponent: "Junior coach", era: "Stabilized", period: "Unknown",
