@@ -49,7 +49,7 @@ window.TENNIS_HQ_DATA = {
         { type: "Set", result: "W", score: "5-5 (7-3)" }
       ],
       excluded: "",
-      notes: "CEEC final. First serious competition of the day. User was up 2-1 40-15 but dumped that game, missed additional break-point chances, then fell behind 4-5 before forcing the tiebreak and winning it 7-3. Forehand was somewhat off and opponent used slice to blunt pace. Opponent was chop-slicing returns, so user adjusted serve pattern to heavy spin into the body and barely missed first serves with that pattern. Serve adaptation carried the match while ground game was less clean; strings also felt somewhat dead. Backhand passing shots were a major positive, including several clutch passes and scramble-point wins in the tiebreak under crowd pressure."
+      notes: "CEEC final. First serious competition of the day. User was up 2-1 40-15 but dumped that game, missed additional break-point chances, then fell behind 4-5 before forcing the tiebreak and winning it 7-3. Forehand was somewhat off and opponent used slice to blunt pace. Opponent was chop-slicing returns, so user adjusted serve pattern to heavy spin into the body and barely missed first serves with that pattern. Serve adaptation carried the match while ground game was less clean; strings also felt somewhat dead. Backhand passing shots were a major positive, including several clutch passes and scramble-point wins in the tiebreak under crowd pressure. A notable heavy crosscourt forehand winner and the repeated passing shots likely had an intimidation effect, making the opponent less comfortable attacking forward or leaving balls short."
     },
     {
       date: "2026-11-20", opponent: "Junior coach", era: "Stabilized", period: "Unknown",
