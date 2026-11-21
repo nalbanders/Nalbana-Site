@@ -2,7 +2,7 @@ window.TENNIS_HQ_DATA = {
   updated: "2026-11-19",
   trackingStart: "2026-10-14",
   records: {
-    sets: { wins: 17, losses: 3 },
+    sets: { wins: 21, losses: 3 },
     superTiebreaks: { wins: 15, losses: 1 },
     combined: { wins: 32, losses: 4 }
   },
@@ -13,6 +13,44 @@ window.TENNIS_HQ_DATA = {
     { area: "Closing games", status: "Priority", detail: "Recent leakage from 30-0 / 40-0 leads. Keep first-strike intent without overplaying scoreboard situations." }
   ],
   sessions: [
+    {
+      date: "2026-11-21", opponent: "CEEC RR1", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "6-1", status: "Completed",
+      sessionResult: "W",
+      units: [{ type: "Set", result: "W", score: "6-1" }],
+      excluded: "",
+      notes: "CEEC tournament round robin 1. Started hot; limited resistance."
+    },
+    {
+      date: "2026-11-21", opponent: "CEEC RR2", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "6-0", status: "Completed",
+      sessionResult: "W",
+      units: [{ type: "Set", result: "W", score: "6-0" }],
+      excluded: "",
+      notes: "CEEC tournament round robin 2. Dominant win; limited resistance."
+    },
+    {
+      date: "2026-11-21", opponent: "CEEC Semifinal", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "6-3", status: "Completed",
+      sessionResult: "W",
+      units: [{ type: "Set", result: "W", score: "6-3" }],
+      excluded: "",
+      notes: "CEEC semifinal. Won 6-3."
+    },
+    {
+      date: "2026-11-21", opponent: "CEEC Final", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
+      score: "5-5; won tiebreak 7-3", status: "Completed",
+      sessionResult: "W",
+      units: [
+        { type: "Set", result: "W", score: "5-5 (7-3)" }
+      ],
+      excluded: "",
+      notes: "CEEC final. First serious competition of the day. User was up 2-1 40-15 but dumped that game, missed additional break-point chances, then fell behind 4-5 before forcing the tiebreak and winning it 7-3. Forehand was somewhat off and opponent used slice to blunt pace. Opponent was chop-slicing returns, so user adjusted serve pattern to heavy spin into the body and barely missed first serves with that pattern. Serve adaptation carried the match while ground game was less clean; strings also felt somewhat dead. Backhand passing shots were a major positive, including several clutch passes and scramble-point wins in the tiebreak under crowd pressure."
+    },
     {
       date: "2026-11-20", opponent: "Junior coach", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
