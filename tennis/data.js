@@ -41,7 +41,7 @@ window.TENNIS_HQ_DATA = {
       notes: "CEEC semifinal. Won 6-3. Return game felt very strong throughout the day."
     },
     {
-      date: "2026-11-21", opponent: "CEEC Final", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
+      date: "2026-11-21", opponent: "Andrew", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "5-5; won tiebreak 7-3", status: "Completed",
       sessionResult: "W",
@@ -122,7 +122,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second session of the day after an earlier grinder. Much higher level than the morning: forehand lights out, ripping winners, serve power good. Still leaked games from 30-0 and 40-0. Finished the breaker with an ace exactly where aimed. Serve cue: loose arm + hit up at the ball."
     },
     {
-      date: "2026-11-13", opponent: "Kien", level: "Advanced / Similar", era: "Stabilized", period: "Day",
+      date: "2026-11-13", opponent: "Kien", level: "Pro / Very High", era: "Stabilized", period: "Day",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "4-6", status: "Completed",
       units: [{ type: "Set", result: "L", score: "4-6" }],
@@ -217,7 +217,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Two-set win on the Gravity day with grip-size issues."
     },
     {
-      date: "Prior", opponent: "Jose", level: "Intermediate and Below", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Jose", level: "Pro / Very High", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "~10-6 super tiebreak", status: "Completed",
       units: [{ type: "Super TB", result: "W", score: "~10-6" }],
@@ -279,7 +279,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Earlier Charles match."
     },
     {
-      date: "Prior", opponent: "Lucas", level: "Intermediate and Below", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Lucas", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "6-4, 6-1", status: "Completed",
       units: [
@@ -290,7 +290,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second win over Lucas; using 6-4, 6-1 as the conservative remembered score."
     },
     {
-      date: "Prior", opponent: "Lucas", level: "Intermediate and Below", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Lucas", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Lynx Tour",
       score: "6-2, 6-0", status: "Completed",
       units: [
