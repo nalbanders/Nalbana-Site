@@ -14,7 +14,7 @@ window.TENNIS_HQ_DATA = {
   ],
   sessions: [
     {
-      date: "2026-11-21", opponent: "CEEC RR1", era: "Stabilized", period: "Unknown",
+      date: "2026-11-21", opponent: "CEEC RR1", level: "Intermediate and Below", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "6-1", status: "Completed",
       sessionResult: "W",
@@ -23,7 +23,7 @@ window.TENNIS_HQ_DATA = {
       notes: "CEEC tournament round robin 1. Started hot; limited resistance. Return game felt very strong throughout the day."
     },
     {
-      date: "2026-11-21", opponent: "CEEC RR2", era: "Stabilized", period: "Unknown",
+      date: "2026-11-21", opponent: "CEEC RR2", level: "Intermediate and Below", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "6-0", status: "Completed",
       sessionResult: "W",
@@ -32,7 +32,7 @@ window.TENNIS_HQ_DATA = {
       notes: "CEEC tournament round robin 2. Dominant win; limited resistance. Return game felt very strong throughout the day."
     },
     {
-      date: "2026-11-21", opponent: "CEEC Semifinal", era: "Stabilized", period: "Unknown",
+      date: "2026-11-21", opponent: "CEEC Semifinal", level: "Intermediate and Below", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "6-3", status: "Completed",
       sessionResult: "W",
@@ -41,7 +41,7 @@ window.TENNIS_HQ_DATA = {
       notes: "CEEC semifinal. Won 6-3. Return game felt very strong throughout the day."
     },
     {
-      date: "2026-11-21", opponent: "CEEC Final", era: "Stabilized", period: "Unknown",
+      date: "2026-11-21", opponent: "CEEC Final", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "5-5; won tiebreak 7-3", status: "Completed",
       sessionResult: "W",
@@ -52,7 +52,7 @@ window.TENNIS_HQ_DATA = {
       notes: "CEEC final. First serious competition of the day. User was up 2-1 40-15 but dumped that game, missed additional break-point chances, then fell behind 4-5 before forcing the tiebreak and winning it 7-3. Forehand was somewhat off and opponent used slice to blunt pace. Opponent was chop-slicing returns, so user adjusted serve pattern to heavy spin into the body and barely missed first serves with that pattern. Serve adaptation carried the match while ground game was less clean; strings also felt somewhat dead. Backhand passing shots were a major positive, including several clutch passes and scramble-point wins in the tiebreak under crowd pressure. A notable heavy crosscourt forehand winner and the repeated passing shots likely had an intimidation effect, making the opponent less comfortable attacking forward or leaving balls short. User also overcame a highly consequential blown umpire call late in the match; even the opponent's friend reportedly said the ball was in. The bad call did not derail composure or the eventual close. Return game felt very strong in the tournament overall, a notable improvement from the recently identified return weakness. Final opponent was a genuinely strong player: younger than the user, about 6 ft 2 in, with a big serve; had trained at Piatti, works with the same coach in Saigon, and made the match difficult with smart shot selection plus deep, heavy balls. He had been hyping his level beforehand, which made the win especially satisfying. User felt notably faster than anyone on court and believes the scramble/recovery speed created its own intimidation factor—opponents had to expect one more ball and difficult passes even after apparently winning positions. Main negative: too many errors on aggressive shots. Roughly half were selection errors—going for too much from the wrong ball—and half were simply botched execution on the right attacking opportunity. Overall, user was proud of his patience: stayed composed, accepted neutral phases, resisted forcing every opening, and generally managed energy and point construction well throughout the tournament."
     },
     {
-      date: "2026-11-20", opponent: "Junior coach", era: "Stabilized", period: "Unknown",
+      date: "2026-11-20", opponent: "Junior coach", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "Won super tiebreak 10-8", status: "Completed",
       sessionResult: "W",
@@ -61,7 +61,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Lesson / point-play session. Junior coach described as the best junior coach. User won the breaker 10-8. Main technical work: approach to the backhand and +1 volley—stay patient, stay put through contact, keep the racket face slightly open, and let the racket do the work rather than forcing the volley."
     },
     {
-      date: "2026-11-20", opponent: "Trang", era: "Stabilized", period: "Unknown",
+      date: "2026-11-20", opponent: "Trang", level: "Pro", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "Lost super tiebreak 8-10", status: "Completed",
       sessionResult: "L",
@@ -70,7 +70,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Senior coach Mr. Trang, former top junior in Vietnam. User lost a close breaker 8-10 and felt proud of the level. Forehand was deadly, backhand solid, serve generally good but first-serve percentage too low. At 8-8, user missed a key forehand return long while returning from too far back. Trang advised returning only about one step farther back than the user's normal position; the attempted position was likely closer to two steps back and left the contact too passive/late. Tactical discussion: use wider serves on deuce court with lower pace, hit with more margin over the net and farther from the lines into the opponent's backhand while still swinging relatively fast, stay patient and relaxed, avoid overextending energy, and use more spin / less over-aggression on first serves. Volley cue from lesson: patience, stay put on contact, slightly open face, let the racket do the work."
     },
     {
-      date: "2026-11-19", opponent: "Dat & Charles", era: "Stabilized", period: "Afternoon",
+      date: "2026-11-19", opponent: "Dat & Charles", level: "Advanced / Similar", era: "Stabilized", period: "Afternoon",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 grip with thinned replacement and tightly stretched tacky overgrip, ridges aligned, wrapped to throat split",
       score: "Won 4 super tiebreaks: Dat 10-~4, 10-1; Charles 10-~5, 10-6",
       status: "Completed", sessionResult: "W",
@@ -84,7 +84,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second session of the day. Both opponents played well and reportedly traded head-to-head results with each other, but user was dominant across four match tiebreaks. Forehand was deadly, serve very good; low errors while swinging out confidently. Charles' floating high balls and kick serves to the backhand exposed the main defensive-loop challenge, but user managed it well. One notable short-ball putaway miss came from guiding a soft roll and losing racket-head speed. Still recovering from illness. Strong confirmation that refined tacky grip and racket setup no longer inhibit aggressive swings."
     },
     {
-      date: "2026-11-19", opponent: "Bao", era: "Stabilized", period: "Morning",
+      date: "2026-11-19", opponent: "Bao", level: "Pro", era: "Stabilized", period: "Morning",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 thinned replacement grip and tacky tightly stretched overgrip, overlaps aligned, extended to throat split for spaced 2HBH hands",
       score: "Groundstroke/crosscourt drills; split 2 informal games 1-1",
       status: "Practice", competitiveSession: false, units: [],
@@ -92,7 +92,7 @@ window.TENNIS_HQ_DATA = {
       notes: "High-level groundstroke rally and crosscourt drills on both sides; seemingly even with Bao. Both practice games close. Warmup error counts appeared similar; any fitness or consistency edge remains undetermined. Strong forehand winners and serves; began swinging aggressively without questioning equipment. Still sick. Grip breakthrough: modified #3 feels approximately like conventional #2, with overgrip ridges aligned to replacement grip for one set of ridges and less bulk under forehand fingers; tightly stretched tacky overgrip continues up to throat split to make room for separated hands on two-handed backhand. Grip-size concern now feels resolved."
     },
     {
-      date: "2026-11-17", opponent: "Dat", era: "Stabilized", period: "Day",
+      date: "2026-11-17", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Day",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "4-1 when stopped early", status: "Stopped early",
       sessionResult: "W",
@@ -101,7 +101,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Tested sickness by playing after initially planning only to rally. Felt very dizzy and winded and stopped early while leading 4-1. Despite that, played unusually well—calm and intentional. Forehand focus came from watching Alcaraz: looked for open-stance opportunities, increased shoulder-hip separation, then uncoiled hard; forehand felt like a true weapon. Strategy was to pound Dat's backhand corner until an attackable ball appeared. Backhand was very solid with only one forced error and a couple of DTL passing shots. Return focus was staying grounded and firm. Dat was serving well, but user does not recall missing any returns; they were not plus returns, but they were neutral—not weak/short and not dumped into the net. Main weakness was putaway execution in one game: missed an easy volley, misjudged a high volley that was allowed to pass and landed in, and missed one crosscourt +1. Serve sample was only two service games with essentially no warm-up; user recalls missing only about one first serve. Serves were not especially big yet because the motion was still warming up, but the renewed cue of more back-leg load, lower knee bend, and stronger reverse shoulder tilt appeared to improve first-serve reliability substantially."
     },
     {
-      date: "2026-11-15", opponent: "Dat", era: "Stabilized", period: "Unknown",
+      date: "2026-11-15", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "6-2; lost super tiebreak 2-10; won 4-0 mini set",
       status: "Completed",
@@ -113,7 +113,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Dat played better than usual and applied real pressure early. Set was tight at 3-2 with Dat serving 40-0 before the comeback break. Dat tired faster and became more aggressive to shorten points, with mixed success. Groundstrokes felt only average; indecision/late decisions showed up. Return quality looked like a real weakness. Serve experimentation hurt timing in the tiebreak, then back-leg load / reverse shoulder tilt clicked in the mini set and produced noticeably more power and a long-lever whip / trebuchet feel."
     },
     {
-      date: "2026-11-13", opponent: "Dat", era: "Stabilized", period: "Unknown",
+      date: "2026-11-13", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "5-3 when time expired; then ~10-3 super tiebreak win",
       status: "Completed",
@@ -122,7 +122,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second session of the day after an earlier grinder. Much higher level than the morning: forehand lights out, ripping winners, serve power good. Still leaked games from 30-0 and 40-0. Finished the breaker with an ace exactly where aimed. Serve cue: loose arm + hit up at the ball."
     },
     {
-      date: "2026-11-13", opponent: "Kien", era: "Stabilized", period: "Day",
+      date: "2026-11-13", opponent: "Kien", level: "Advanced / Similar", era: "Stabilized", period: "Day",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "4-6", status: "Completed",
       units: [{ type: "Set", result: "L", score: "4-6" }],
@@ -130,7 +130,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Coach/pro. Competitive loss on an off day. Lost two games from 40-15 and had about five double faults. Ground exchanges felt nearly even; Kien separated with fitness, defense, and exceptional drop/lob percentage."
     },
     {
-      date: "2026-11-12", opponent: "Dat", era: "Stabilized", period: "Day",
+      date: "2026-11-12", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Day",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "Won 4 straight 10-point tiebreaks; last stopped at 8-2",
       status: "Completed",
@@ -144,7 +144,7 @@ window.TENNIS_HQ_DATA = {
       notes: "One breaker was close; the others were not. Dat stopped the last from exhaustion while trailing 8-2. Serve patterns repeatedly created short balls and early forehand +1 opportunities."
     },
     {
-      date: "2026-11-08", opponent: "Dat + Taz", era: "Stabilized", period: "Unknown",
+      date: "2026-11-08", opponent: "Dat + Taz", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · exact string state not logged",
       score: "Won tiebreaks; exact count and scores unknown",
       status: "Completed",
@@ -153,7 +153,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Sunday tiebreak session; beat both Dat and Taz."
     },
     {
-      date: "2026-10-30", opponent: "Charles", era: "Stabilized", period: "Day",
+      date: "2026-10-30", opponent: "Charles", level: "Advanced / Similar", era: "Stabilized", period: "Day",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite Soft 17 · 51/49",
       score: "4-4", status: "Rainout",
       units: [],
@@ -161,7 +161,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Fell from 1-0 and 40-15 to 1-4, then came back by reapplying pressure. Charles attacked routine BH crosscourt and defended unusually well."
     },
     {
-      date: "2026-10-14", opponent: "Brother", era: "Stabilized", period: "Unknown",
+      date: "2026-10-14", opponent: "Brother", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite Soft 17 · 51/49",
       score: "6-2, 6-0 + 2 super tiebreak wins", status: "Completed",
       units: [
@@ -174,7 +174,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Los Angeles. Forehand dream day; almost zero BH errors; strong spin serve and newly accessible kicker; free depth on high loopy balls."
     },
     {
-      date: "2026-10-13", opponent: "Brother", era: "Historical", period: "Night",
+      date: "2026-10-13", opponent: "Brother", level: "Advanced / Similar", era: "Historical", period: "Night",
       racket: "Mixed", setup: "Started Aero 98 → EZONE 98 · Tour Bite Soft 17 · 50/48",
       score: "6-4", status: "Completed",
       units: [{ type: "Set", result: "W", score: "6-4" }],
@@ -182,7 +182,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Los Angeles. Switched at 1-3 down; EZONE serve confidence and aggressive DTL backhand were major positives."
     },
     {
-      date: "Early Oct 2026", opponent: "Alex Gelato", era: "Historical", period: "Night",
+      date: "Early Oct 2026", opponent: "Alex Gelato", level: "Advanced / Similar", era: "Historical", period: "Night",
       racket: "Mixed", setup: "Set 1 EZONE 98 · TB Soft 17 50/48; Set 2 Gravity MP",
       score: "6-3; 4-3 unfinished second set", status: "Lights out",
       units: [{ type: "Set", result: "W", score: "6-3" }],
@@ -190,7 +190,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Alex Gelato (previously logged as Italian 4.5). Started 5-0 with EZONE before Alex shifted heavily to junk balls, slice, lobs, drops, and underhand serves."
     },
     {
-      date: "Aug 2026", opponent: "Song", era: "Historical", period: "Unknown",
+      date: "Aug 2026", opponent: "Song", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "Pure Strike", setup: "Pure Strike · Tour Bite Soft · 50/48",
       score: "6-0", status: "Completed",
       units: [{ type: "Set", result: "W", score: "6-0" }],
@@ -198,7 +198,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Korean opponent. Older player with a good rally ball and solid consistency, but limited serve and movement made it difficult for him to seriously compete over a full set. Straight 6-0 win."
     },
     {
-      date: "2026-06-13 approx.", opponent: "Mike", era: "Historical", period: "Unknown",
+      date: "2026-06-13 approx.", opponent: "Mike", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "Super tiebreak win; exact score unknown", status: "Completed",
       units: [{ type: "Super TB", result: "W", score: "score unknown" }],
@@ -206,7 +206,7 @@ window.TENNIS_HQ_DATA = {
       notes: "High-pace true-4.5 reference point; backhand excellent and forehand spacing notably clean."
     },
     {
-      date: "Prior", opponent: "Christian", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Christian", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "Gravity MP", setup: "Gravity MP",
       score: "6-4, 6-2", status: "Completed",
       units: [
@@ -217,7 +217,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Two-set win on the Gravity day with grip-size issues."
     },
     {
-      date: "Prior", opponent: "Jose", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Jose", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "~10-6 super tiebreak", status: "Completed",
       units: [{ type: "Super TB", result: "W", score: "~10-6" }],
@@ -225,7 +225,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Approximate remembered score."
     },
     {
-      date: "Early Oct 2026", opponent: "Justin Nguyen", era: "Historical", period: "Unknown",
+      date: "Early Oct 2026", opponent: "Justin Nguyen", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "EZONE 98", setup: "EZONE 98 · TB Soft 17 · 50/48",
       score: "10-1, 10-2 super tiebreak wins", status: "Completed",
       units: [
@@ -236,7 +236,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Merged duplicate records. Two super-tiebreak wins over Justin Nguyen. The separate young French player hit was informal played points only and is not part of the formal record."
     },
     {
-      date: "Prior", opponent: "Jordan", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Jordan", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · RPM Blast",
       score: "6-2, 6-4", status: "Completed",
       units: [
@@ -247,7 +247,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Two-set win on the Aero/RPM Blast day."
     },
     {
-      date: "Next day, early Oct 2026", opponent: "Alex Gelato", era: "Historical", period: "Unknown",
+      date: "Next day, early Oct 2026", opponent: "Alex Gelato", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "EZONE 98", setup: "EZONE 98",
       score: "3-6; second set tied when stopped (exact score unknown)", status: "Time expired",
       units: [{ type: "Set", result: "L", score: "3-6" }],
@@ -255,7 +255,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second consecutive day vs Alex. Low-pace / pusher-style match; forehand became erratic with short and net misses."
     },
     {
-      date: "Prior", opponent: "Brother", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Brother", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "5-7", status: "Completed",
       units: [{ type: "Set", result: "L", score: "5-7" }],
@@ -263,7 +263,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Los Angeles. Close loss; user recalls it may instead have reached 6-6 / tiebreak territory, so 5-7 is logged conservatively."
     },
     {
-      date: "Prior", opponent: "Charles", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Charles", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Pure Strike", setup: "Modified Pure Strike Team · Tour Bite Soft 17 · 51/49",
       score: "6-4", status: "Completed",
       units: [{ type: "Set", result: "W", score: "6-4" }],
@@ -271,7 +271,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Led about 5-0 before backing off; Charles is a strong baseline player who likes to attack the backhand."
     },
     {
-      date: "Prior", opponent: "Charles", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Charles", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "6-4", status: "Completed",
       units: [{ type: "Set", result: "W", score: "6-4" }],
@@ -279,7 +279,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Earlier Charles match."
     },
     {
-      date: "Prior", opponent: "Lucas", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Lucas", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "6-4, 6-1", status: "Completed",
       units: [
@@ -290,7 +290,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second win over Lucas; using 6-4, 6-1 as the conservative remembered score."
     },
     {
-      date: "Prior", opponent: "Lucas", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Lucas", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Lynx Tour",
       score: "6-2, 6-0", status: "Completed",
       units: [
@@ -301,7 +301,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Flat hitter with pace; Lynx gave easy power and backhand depth but could feel slingy."
     },
     {
-      date: "Prior", opponent: "Dat", era: "Historical", period: "Unknown",
+      date: "Prior", opponent: "Dat", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "Unknown", setup: "Unknown",
       score: "6-0", status: "Completed",
       units: [{ type: "Set", result: "W", score: "6-0" }],
