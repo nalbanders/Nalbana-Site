@@ -87,7 +87,7 @@ window.TENNIS_HQ_DATA = {
       date: "2026-11-19", opponent: "Bao", era: "Stabilized", period: "Morning",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 thinned replacement grip and tacky tightly stretched overgrip, overlaps aligned, extended to throat split for spaced 2HBH hands",
       score: "Groundstroke/crosscourt drills; split 2 informal games 1-1",
-      status: "Practice", sessionResult: "T", units: [],
+      status: "Practice", competitiveSession: false, units: [],
       excluded: "Two informal games split 1-1 are practice observations only; exclude from match results and competitive game totals.",
       notes: "High-level groundstroke rally and crosscourt drills on both sides; seemingly even with Bao. Both practice games close. Warmup error counts appeared similar; any fitness or consistency edge remains undetermined. Strong forehand winners and serves; began swinging aggressively without questioning equipment. Still sick. Grip breakthrough: modified #3 feels approximately like conventional #2, with overgrip ridges aligned to replacement grip for one set of ridges and less bulk under forehand fingers; tightly stretched tacky overgrip continues up to throat split to make room for separated hands on two-handed backhand. Grip-size concern now feels resolved."
     },
