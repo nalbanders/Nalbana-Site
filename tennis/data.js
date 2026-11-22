@@ -15,7 +15,7 @@ window.TENNIS_HQ_DATA = {
   sessions: [
     {
       date: "2026-11-22", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
-      racket: "Aero 98", setup: "Aero 98 · fresh strings",
+      racket: "Aero 98", setup: "Aero 98 · fresh Tour Bite Soft; Toalson wet grip aligned to undergrip ridges and wrapped long to throat",
       score: "6-1; won super tiebreak 10-8", status: "Completed",
       sessionResult: "W",
       units: [
@@ -23,7 +23,7 @@ window.TENNIS_HQ_DATA = {
         { type: "Super TB", result: "W", score: "10-8" }
       ],
       excluded: "",
-      notes: "Dominant session. Conditions strongly favored user's game: new strings, fast court, and lively Wilson balls with minimal fluff. User felt in control throughout and especially effective with serve/forehand pace in the faster conditions."
+      notes: "Dominant session. Conditions strongly favored user's game: fresh Tour Bite Soft, fast court, and lively Wilson balls with minimal fluff. User felt in control throughout and especially effective with serve/forehand pace in the faster conditions. Full trust in the current setup: Toalson wet grip wrapped to align with the undergrip ridges and extended long to the throat. The contrast reinforced that the prior strings had been tired. Backhand is becoming a genuine weapon; user hit another standout defensive backhand passing shot. Main concern now is recurring arm pain."
     },
     {
       date: "2026-11-21", opponent: "CEEC RR1", level: "Intermediate and Below", era: "Stabilized", period: "Unknown",
