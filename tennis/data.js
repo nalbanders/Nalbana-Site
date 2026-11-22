@@ -150,7 +150,7 @@ window.TENNIS_HQ_DATA = {
       status: "Completed",
       units: [],
       excluded: "Exact breaker count unknown; excluded from record",
-      notes: "Sunday tiebreak session; beat both Dat and Taz."
+      notes: "Sunday tiebreak session; beat both Dat and Taz. Taz is classified Advanced / Similar relative to user."
     },
     {
       date: "2026-10-30", opponent: "Charles", level: "Advanced / Similar", era: "Stabilized", period: "Day",
@@ -182,7 +182,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Los Angeles. Switched at 1-3 down; EZONE serve confidence and aggressive DTL backhand were major positives."
     },
     {
-      date: "Early Oct 2026", opponent: "Alex Gelato", level: "Advanced / Similar", era: "Historical", period: "Night",
+      date: "Early Oct 2026", opponent: "Alex Gelato", level: "Intermediate and Below", era: "Historical", period: "Night",
       racket: "Mixed", setup: "Set 1 EZONE 98 · TB Soft 17 50/48; Set 2 Gravity MP",
       score: "6-3; 4-3 unfinished second set", status: "Lights out",
       units: [{ type: "Set", result: "W", score: "6-3" }],
@@ -225,7 +225,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Approximate remembered score."
     },
     {
-      date: "Early Oct 2026", opponent: "Justin Nguyen", level: "Intermediate and Below", era: "Historical", period: "Unknown",
+      date: "Early Oct 2026", opponent: "Justin Nguyen", level: "Advanced / Similar", era: "Historical", period: "Unknown",
       racket: "EZONE 98", setup: "EZONE 98 · TB Soft 17 · 50/48",
       score: "10-1, 10-2 super tiebreak wins", status: "Completed",
       units: [
@@ -247,7 +247,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Miami. Two-set win on the Aero/RPM Blast day."
     },
     {
-      date: "Next day, early Oct 2026", opponent: "Alex Gelato", level: "Advanced / Similar", era: "Historical", period: "Unknown",
+      date: "Next day, early Oct 2026", opponent: "Alex Gelato", level: "Intermediate and Below", era: "Historical", period: "Unknown",
       racket: "EZONE 98", setup: "EZONE 98",
       score: "3-6; second set tied when stopped (exact score unknown)", status: "Time expired",
       units: [{ type: "Set", result: "L", score: "3-6" }],
