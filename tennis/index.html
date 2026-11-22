@@ -285,7 +285,10 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   }
   function sessionRecord(sessions){
     let w=0,l=0,t=0;
-    sessions.forEach(s=>{const r=sessionResult(s); if(r==="W")w++; else if(r==="L")l++; else t++;});
+    sessions.filter(s=>s.competitiveSession!==false).forEach(s=>{
+      const r=sessionResult(s);
+      if(r==="W")w++; else if(r==="L")l++; else t++;
+    });
     return {w,l,t};
   }
   const pct=(w,l)=>w+l?((100*w/(w+l)).toFixed(1)+"%"):"—";
@@ -367,9 +370,9 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   function passesDrill(s){
     if(!drill) return true;
     const r=sessionResult(s);
-    if(drill==="session-w") return r==="W";
-    if(drill==="session-l") return r==="L";
-    if(drill==="session-t") return r==="T";
+    if(drill==="session-w") return s.competitiveSession!==false && r==="W";
+    if(drill==="session-l") return s.competitiveSession!==false && r==="L";
+    if(drill==="session-t") return s.competitiveSession!==false && r==="T";
     if(drill==="set-w") return s.units.some(u=>u.type==="Set"&&u.result==="W");
     if(drill==="set-l") return s.units.some(u=>u.type==="Set"&&u.result==="L");
     if(drill==="tb-w") return s.units.some(u=>/TB/i.test(u.type)&&u.result==="W");
