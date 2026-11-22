@@ -1,5 +1,5 @@
 window.TENNIS_HQ_DATA = {
-  updated: "2026-11-19",
+  updated: "2026-11-22",
   trackingStart: "2026-10-14",
   records: {
     sets: { wins: 21, losses: 3 },
@@ -13,6 +13,18 @@ window.TENNIS_HQ_DATA = {
     { area: "Closing games", status: "Priority", detail: "Recent leakage from 30-0 / 40-0 leads. Keep first-strike intent without overplaying scoreboard situations." }
   ],
   sessions: [
+    {
+      date: "2026-11-22", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · fresh strings",
+      score: "6-1; won super tiebreak 10-8", status: "Completed",
+      sessionResult: "W",
+      units: [
+        { type: "Set", result: "W", score: "6-1" },
+        { type: "Super TB", result: "W", score: "10-8" }
+      ],
+      excluded: "",
+      notes: "Dominant session. Conditions strongly favored user's game: new strings, fast court, and lively Wilson balls with minimal fluff. User felt in control throughout and especially effective with serve/forehand pace in the faster conditions."
+    },
     {
       date: "2026-11-21", opponent: "CEEC RR1", level: "Intermediate and Below", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
