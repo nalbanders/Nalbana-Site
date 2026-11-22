@@ -385,7 +385,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   }
 
   function filteredSessions(){
-    const q=$("#search").value.toLowerCase().trim(), rf=$("#resultFilter").value, op=$("#opponent").value, rk=$("#racket").value, per=$("#period").value, st=$("#status").value;
+    const q=$("#search").value.toLowerCase().trim(), rf=$("#resultFilter").value, op=$("#opponent").value, lv=$("#level").value, rk=$("#racket").value, per=$("#period").value, st=$("#status").value;
     return eraSessions().filter(s=>{
       const hay=[s.opponent,s.level,s.racket,s.setup,s.score,s.notes,s.excluded,s.status].join(" ").toLowerCase();
       return passesDrill(s)&&(!q||hay.includes(q))&&(!rf||sessionResult(s)===rf)&&(!op||s.opponent===op)&&(!lv||s.level===lv)&&(!rk||s.racket===rk)&&(!per||s.period===per)&&(!st||s.status===st);
