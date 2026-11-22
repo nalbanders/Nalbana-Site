@@ -61,7 +61,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Lesson / point-play session. Junior coach described as the best junior coach. User won the breaker 10-8. Main technical work: approach to the backhand and +1 volley—stay patient, stay put through contact, keep the racket face slightly open, and let the racket do the work rather than forcing the volley."
     },
     {
-      date: "2026-11-20", opponent: "Trang", level: "Pro", era: "Stabilized", period: "Unknown",
+      date: "2026-11-20", opponent: "Trang", level: "Pro / Very High", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49",
       score: "Lost super tiebreak 8-10", status: "Completed",
       sessionResult: "L",
@@ -84,7 +84,7 @@ window.TENNIS_HQ_DATA = {
       notes: "Second session of the day. Both opponents played well and reportedly traded head-to-head results with each other, but user was dominant across four match tiebreaks. Forehand was deadly, serve very good; low errors while swinging out confidently. Charles' floating high balls and kick serves to the backhand exposed the main defensive-loop challenge, but user managed it well. One notable short-ball putaway miss came from guiding a soft roll and losing racket-head speed. Still recovering from illness. Strong confirmation that refined tacky grip and racket setup no longer inhibit aggressive swings."
     },
     {
-      date: "2026-11-19", opponent: "Bao", level: "Pro", era: "Stabilized", period: "Morning",
+      date: "2026-11-19", opponent: "Bao", level: "Pro / Very High", era: "Stabilized", period: "Morning",
       racket: "Aero 98", setup: "Aero 98 · Tour Bite 17 · 51/49; #3 thinned replacement grip and tacky tightly stretched overgrip, overlaps aligned, extended to throat split for spaced 2HBH hands",
       score: "Groundstroke/crosscourt drills; split 2 informal games 1-1",
       status: "Practice", competitiveSession: false, units: [],
