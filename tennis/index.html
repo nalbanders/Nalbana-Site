@@ -52,7 +52,7 @@ h1{font-size:36px;line-height:1;margin:5px 0 0;letter-spacing:-.045em}
 .chart-bar{fill:var(--green)}
 .chart-foot{font-size:9px;color:#718576;margin-top:8px}
 .toolbar-wrap{border:1px solid var(--line);background:#0d1a12;border-radius:16px;padding:10px;margin-bottom:12px}
-.toolbar{display:grid;grid-template-columns:1.55fr repeat(5,minmax(120px,1fr));gap:8px}
+.toolbar{display:grid;grid-template-columns:1.55fr repeat(6,minmax(115px,1fr));gap:8px}
 input,select{width:100%;min-width:0;background:#08130d;color:var(--text);border:1px solid #284432;border-radius:10px;padding:9px 10px;outline:none}
 input:focus,select:focus{border-color:var(--green2)}
 .filter-summary{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;color:var(--muted);font-size:11px}
@@ -68,7 +68,7 @@ input:focus,select:focus{border-color:var(--green2)}
 
 .table-shell{border:1px solid var(--line);border-radius:16px;overflow:auto;background:#0b1710}
 table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:1040px}
-col.result{width:58px} col.date{width:108px} col.opp{width:160px} col.session{width:auto} col.sets{width:135px} col.tbs{width:135px} col.games{width:95px} col.status{width:100px} col.expand{width:44px}
+col.result{width:58px} col.date{width:108px} col.opp{width:150px} col.level{width:145px} col.session{width:auto} col.sets{width:130px} col.tbs{width:130px} col.games{width:90px} col.status{width:95px} col.expand{width:44px}
 th,td{padding:10px 11px;border-bottom:1px solid #1a3123;text-align:left;vertical-align:middle}
 th{position:sticky;top:0;background:#13251b;color:#9fb0a4;font-size:9px;letter-spacing:.09em;text-transform:uppercase;z-index:2;white-space:nowrap}
 tbody tr.data-row{cursor:pointer}
@@ -211,6 +211,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         <option value="T">Ties / unfinished</option>
       </select>
       <select id="opponent"><option value="">Opponent: all</option></select>
+      <select id="level"><option value="">Level: all</option><option>Pro</option><option>Advanced / Similar</option><option>Intermediate and Below</option></select>
       <select id="racket"><option value="">Racket: all</option></select>
       <select id="period"><option value="">Day/night: all</option><option>Day</option><option>Night</option><option>Unknown</option></select>
       <select id="status"><option value="">Status: all</option><option>Completed</option><option>Rainout</option><option>Lights out</option><option>Time expired</option><option>Stopped early</option></select>
@@ -224,10 +225,10 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   <section class="table-shell">
     <table>
       <colgroup>
-        <col class="result"><col class="date"><col class="opp"><col class="session"><col class="sets"><col class="tbs"><col class="games"><col class="status"><col class="expand">
+        <col class="result"><col class="date"><col class="opp"><col class="level"><col class="session"><col class="sets"><col class="tbs"><col class="games"><col class="status"><col class="expand">
       </colgroup>
       <thead>
-        <tr><th>R</th><th>Date</th><th>Opponent</th><th>Session score</th><th>Sets</th><th>Tiebreaks</th><th>Games</th><th>Status</th><th></th></tr>
+        <tr><th>R</th><th>Date</th><th>Opponent</th><th>Level</th><th>Session score</th><th>Sets</th><th>Tiebreaks</th><th>Games</th><th>Status</th><th></th></tr>
       </thead>
       <tbody id="rows"></tbody>
     </table>
@@ -386,8 +387,8 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   function filteredSessions(){
     const q=$("#search").value.toLowerCase().trim(), rf=$("#resultFilter").value, op=$("#opponent").value, rk=$("#racket").value, per=$("#period").value, st=$("#status").value;
     return eraSessions().filter(s=>{
-      const hay=[s.opponent,s.racket,s.setup,s.score,s.notes,s.excluded,s.status].join(" ").toLowerCase();
-      return passesDrill(s)&&(!q||hay.includes(q))&&(!rf||sessionResult(s)===rf)&&(!op||s.opponent===op)&&(!rk||s.racket===rk)&&(!per||s.period===per)&&(!st||s.status===st);
+      const hay=[s.opponent,s.level,s.racket,s.setup,s.score,s.notes,s.excluded,s.status].join(" ").toLowerCase();
+      return passesDrill(s)&&(!q||hay.includes(q))&&(!rf||sessionResult(s)===rf)&&(!op||s.opponent===op)&&(!lv||s.level===lv)&&(!rk||s.racket===rk)&&(!per||s.period===per)&&(!st||s.status===st);
     });
   }
 
@@ -399,6 +400,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         +'<td class="result '+r+'">'+r+'</td>'
         +'<td class="date-cell">'+esc(s.date)+'</td>'
         +'<td class="opp-cell">'+esc(s.opponent)+'</td>'
+        +'<td><span class="status-chip">'+esc(s.level||"Unclassified")+'</span></td>'
         +'<td class="session-score">'+esc(s.score)+'</td>'
         +'<td>'+unitChips(s,"set")+'</td>'
         +'<td>'+unitChips(s,"tb")+'</td>'
@@ -406,7 +408,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         +'<td><span class="status-chip">'+esc(s.status)+'</span></td>'
         +'<td><span class="chev">›</span></td>'
         +'</tr>'
-        +'<tr class="detail-row" id="'+id+'"><td colspan="9"><div class="detail-grid">'
+        +'<tr class="detail-row" id="'+id+'"><td colspan="10"><div class="detail-grid">'
         +'<div><div class="detail-label">Equipment</div><div class="detail-value">'+esc(s.setup)+'</div><div class="detail-label" style="margin-top:10px">Day / night</div><div class="detail-value">'+esc(s.period)+'</div></div>'
         +'<div><div class="detail-label">Notes</div><div class="detail-value">'+esc(s.notes)+(s.excluded?'<div class="excluded">'+esc(s.excluded)+'</div>':'')+'</div></div>'
         +'</div></td></tr>';
@@ -423,6 +425,7 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     if(drill) active.push(drill.replace(/-/g," "));
     if($("#resultFilter").value) active.push("result "+$("#resultFilter").value);
     if($("#opponent").value) active.push($("#opponent").value);
+    if($("#level").value) active.push($("#level").value);
     if($("#racket").value) active.push($("#racket").value);
     if($("#period").value) active.push($("#period").value);
     if($("#status").value) active.push($("#status").value);
@@ -446,9 +449,9 @@ td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     renderRows();
     document.querySelector(".table-shell").scrollIntoView({behavior:"smooth",block:"start"});
   }));
-  ["search","resultFilter","opponent","racket","period","status"].forEach(id=>$("#"+id).addEventListener(id==="search"?"input":"change",renderRows));
+  ["search","resultFilter","opponent","level","racket","period","status"].forEach(id=>$("#"+id).addEventListener(id==="search"?"input":"change",renderRows));
   $("#clearFilters").addEventListener("click",()=>{
-    drill=""; $("#search").value=""; $("#resultFilter").value=""; $("#opponent").value=""; $("#racket").value=""; $("#period").value=""; $("#status").value="";
+    drill=""; $("#search").value=""; $("#resultFilter").value=""; $("#opponent").value=""; $("#level").value=""; $("#racket").value=""; $("#period").value=""; $("#status").value="";
     $$("[data-drill]").forEach(b=>b.classList.remove("active")); renderRows();
   });
 
