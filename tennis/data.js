@@ -1,5 +1,5 @@
 window.TENNIS_HQ_DATA = {
-  updated: "2026-11-22",
+  updated: "2026-11-24",
   trackingStart: "2026-10-14",
   records: {
     sets: { wins: 21, losses: 3 },
@@ -13,6 +13,18 @@ window.TENNIS_HQ_DATA = {
     { area: "Closing games", status: "Priority", detail: "Recent leakage from 30-0 / 40-0 leads. Keep first-strike intent without overplaying scoreboard situations." }
   ],
   sessions: [
+    {
+      date: "2026-11-24", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
+      racket: "Aero 98", setup: "Aero 98 · Tour Bite Soft",
+      score: "6-3; won super tiebreak 10-5", status: "Completed",
+      sessionResult: "W",
+      units: [
+        { type: "Set", result: "W", score: "6-3" },
+        { type: "Super TB", result: "W", score: "10-5" }
+      ],
+      excluded: "",
+      notes: "Did not feel like user's best tennis. Possible factors: took the previous day off and, more importantly, confidence was high enough that user was experimenting and trying too many things rather than playing a clean default game. Still won the set 6-3 and the super tiebreak 10-5."
+    },
     {
       date: "2026-11-22", opponent: "Dat", level: "Advanced / Similar", era: "Stabilized", period: "Unknown",
       racket: "Aero 98", setup: "Aero 98 · fresh Tour Bite Soft; Toalson wet grip aligned to undergrip ridges and wrapped long to throat",
